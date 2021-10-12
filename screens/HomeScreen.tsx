@@ -253,39 +253,37 @@ class HomeScreen extends React.Component{
             .then(value => {
                     if(value !== null){
                         console.log('value.items');
-                        console.log(value);
+                        console.log(value.result.data);
                         console.log('value.items.length')
-                        console.log(value.items.length)
-                        if(value.items.length > 20)
+                        console.log(value.result.data)
+                        if(value.result.data.length > 20)
                         {
                             this.setState({
-                                list: value.items,
-                                listWithoutFilter: value.items,
-                                currentPageLink: value._links.self.href,
-                                prevPage: value._links.prev.href,
-                                nextPage: value._links.next.href,
-                                firstPage: value._links.first.href,
-                                lastPage: value._links.last.href,
-                                currentPage: value._meta.currentPage,
-                                totalPageCount: 0,
-                                totalReqCount: value._meta.totalCount,
-                                reqCountInOnePage: value.items.length,
+                                list: value.result.data,
+                                // listWithoutFilter: value.items,
+                                // currentPageLink: value._links.self.href,
+                                // prevPage: value._links.prev.href,
+                                // nextPage: value._links.next.href,
+                                // firstPage: value._links.first.href,
+                                // lastPage: value._links.last.href,
+                                // currentPage: value._meta.currentPage,
+                                // totalPageCount: 0,
+                                // totalReqCount: value._meta.totalCount,
+                                // reqCountInOnePage: value.items.length,
                             });
                         }
                         else
                         {
                             this.setState({
-                                list: value.items,
-                                listWithoutFilter: value.items,
-                                currentPageLink: value._links.self.href,
-                                // prevPage: value._links.prev.href,
-                                // nextPage: value._links.next.href,
-                                firstPage: value._links.first.href,
-                                lastPage: value._links.last.href,
-                                currentPage: value._meta.currentPage,
-                                totalPageCount: value._meta.pageCount,
-                                totalReqCount: value._meta.totalCount,
-                                reqCountInOnePage: value.items.length,
+                                list: value.result.data,
+                                // listWithoutFilter: value.items,
+                                // currentPageLink: value._links.self.href,
+                                // firstPage: value._links.first.href,
+                                // lastPage: value._links.last.href,
+                                // currentPage: value._meta.currentPage,
+                                // totalPageCount: value._meta.pageCount,
+                                // totalReqCount: value._meta.totalCount,
+                                // reqCountInOnePage: value.items.length,
                             });
                         }
                     }
@@ -514,7 +512,7 @@ class HomeScreen extends React.Component{
                         <Left>
                         </Left>
                         <Body style={{ flex: 3 }}>
-                            <Title style={{ color: '#1a192a' }}>Мои заявки</Title>
+                            <Title style={{ color: '#1a192a' }}>Квартиры</Title>
                         </Body>
                         <Right>
                             <AntDesign
@@ -551,26 +549,26 @@ class HomeScreen extends React.Component{
                             { this.state.topCategoryCheckedId == 2 ?
                                 <Button style={styles.topButton} onPress={() => this.changeCategory(2)}>
                                     <Text style={{textAlign: 'center', color: "#535353",}}>
-                                        Мои
+                                        Продажа
                                     </Text>
                                 </Button>
                                 :
                                 <Button style={styles.topButtonNonActive} onPress={() => this.changeCategory(2)}>
                                     <Text style={{textAlign: 'center', color: "#646464",}}>
-                                        Мои
+                                        Продажа
                                     </Text>
                                 </Button>
                             }
                             { this.state.topCategoryCheckedId == 3 ?
                                 <Button style={styles.topButton} onPress={() => this.changeCategory(3)}>
                                     <Text style={{textAlign: 'center', color: "#535353",}}>
-                                        Архив
+                                        Аренда
                                     </Text>
                                 </Button>
                                 :
                                 <Button style={styles.topButtonNonActive} onPress={() => this.changeCategory(3)}>
                                     <Text style={{textAlign: 'center', color: "#646464",}}>
-                                        Архив
+                                        Аренда
                                     </Text>
                                 </Button>
                             }
@@ -605,35 +603,19 @@ class HomeScreen extends React.Component{
                                         <Body>
                                             <TouchableOpacity
                                                 activeOpacity={0.7}
-                                                onPress={() => this._onReviewButtonClicked(i)}
+                                                onPress={() => this.onInfoButtonClicked(doc.id)}
                                             >
                                                 <View style={styles.row}>
                                                     <View style={{width: 280,}}>
-                                                        <View style={{
-                                                            flexDirection: 'row',
-                                                            width: 270,
-                                                        }}>
-                                                            <Text style={styles.label}>Заявка </Text>
-                                                            <Text style={styles.nameTxt}>№{doc.dic_city.name}</Text>
-                                                        </View>
-                                                        <View style={styles.nameContainer}>
-                                                            <Text style={styles.label}>Услуга: </Text>
-                                                            <Text style={styles.nameTxt}>{doc.dic_city.name}</Text>
-                                                        </View>
-                                                        <View style={styles.end}>
-                                                            <Text style={styles.time}>{doc.descr.substring(0, 140)+'....'}</Text>
-                                                        </View>
                                                         <View style={styles.nameContainer2}>
-                                                            <Image style={styles.ava_img_small} source={{uri: 'https://smart24.kz/img/default/ava_businessman_400.jpg'}}></Image>
-                                                            {/*{doc.clientUser != null ?*/}
-                                                            {/*    <View style={{paddingLeft: 5}}>*/}
-                                                            {/*        <Text style={styles.label}>Инициатор:</Text>*/}
-                                                            {/*        <Text style={styles.nameTxt}>{doc.clientUser.person_name}</Text>*/}
-                                                            {/*    </View>*/}
-                                                            {/*    : null }*/}
-                                                        </View>
-                                                        <View style={styles.end}>
-                                                            <Text style={styles.time}>{this.state.authorName}</Text>
+                                                            <Image style={styles.ava_img_small} source={{uri: 'https://srbu.ru/images/stroitelnye-raboty/studiya-ili-odnokomnatnaya-kvartira-chto-luchshe/studiya-ili-odnokomnatnaya-kvartira-chto-luchshe.jpg'}}></Image>
+                                                            {doc.dic_city.name != null ?
+                                                                <View style={{paddingLeft: 5}}>
+                                                                    <Text style={styles.label}>{doc.dic_type_sale.name} </Text>
+                                                                    <Text style={styles.nameTxt}>{doc.dic_type_home.name}</Text>
+                                                                    <Text style={styles.nameTxt}>{doc.dic_city.name}</Text>
+                                                                </View>
+                                                                : null }
                                                         </View>
                                                     </View>
                                                     <View style={{
@@ -646,42 +628,6 @@ class HomeScreen extends React.Component{
                                                     </View>
                                                 </View>
                                             </TouchableOpacity>
-                                            {this.state.isDocReviewSelected == i &&
-                                            <View style={{
-                                                flexDirection: 'row',
-                                                justifyContent: 'space-between',
-                                                flex: 1,
-                                                backgroundColor: '#fafbfc',
-                                                zIndex: -10,
-                                            }}>
-                                                {/*<View style={{width: 280, padding: 20}}>*/}
-                                                {/*    <Text style={styles.textSmallValue}>Шаблон обработки заявок: </Text>*/}
-                                                {/*    {doc.solution != null ?*/}
-                                                {/*        <Text style={styles.textSmallTitle}>{doc.solution.name || ""}</Text>*/}
-                                                {/*        : null }*/}
-                                                {/*    {doc.appId != null ?*/}
-                                                {/*        <Text style={styles.textSmallValue}>Приложение: </Text>*/}
-                                                {/*        : null }*/}
-                                                {/*    <Text style={styles.textSmallValue}>Вид заявки на обслуживание: </Text>*/}
-                                                {/*    <Text style={styles.textSmallTitle}>{doc.product.subject}</Text>*/}
-                                                {/*    <Text style={styles.textSmallValue}>Время обращения: </Text>*/}
-                                                {/*    <Text style={styles.textSmallTitle}>{doc.createdAt}</Text>*/}
-                                                {/*    <Text style={styles.textSmallValue}>Срок исполнение: </Text>*/}
-                                                {/*    <Text style={styles.textSmallTitle}>{doc.deadlineAt}</Text>*/}
-                                                {/*</View>*/}
-                                                {/*<View style={styles.buttonsContainer}>*/}
-                                                {/*    <TouchableOpacity*/}
-                                                {/*        activeOpacity={0.7}*/}
-                                                {/*        style={[styles.button, styles.btn]}*/}
-                                                {/*        onPress={() => this.onInfoButtonClicked(doc.id)}*/}
-                                                {/*    >*/}
-                                                {/*        /!*<Entypo name="triangle-right" size={24} color="#1a192a" />*!/*/}
-                                                {/*        <MaterialIcons name="more-vert" size={30} color='#1a192a' />*/}
-                                                {/*        <Text style={{ color: '#1e1e2d' }}>Подробнее</Text>*/}
-                                                {/*    </TouchableOpacity>*/}
-                                                {/*</View>*/}
-                                            </View>
-                                            }
                                         </Body>
                                     </ListItem>
                                 ))}
@@ -1274,7 +1220,7 @@ const styles = StyleSheet.create({
             margin: 10,
             height: 30,
             borderRadius: 15,
-            width: 80,
+            width: 100,
             alignContent: 'center',
             justifyContent: 'center',
         },
@@ -1284,7 +1230,7 @@ const styles = StyleSheet.create({
             margin: 10,
             height: 30,
             borderRadius: 15,
-            width: 80,
+            width: 100,
             alignContent: 'center',
             justifyContent: 'center',
             color: "#646464",
@@ -1554,9 +1500,8 @@ const styles = StyleSheet.create({
         },
     ava_img_small:
         {
-            width: 25,
-            height: 25,
-            borderRadius: 120,
+            width: 150,
+            height: 100,
             justifyContent: 'center',
             alignContent: 'center',
             alignItems: 'center',
