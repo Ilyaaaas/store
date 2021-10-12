@@ -1,0 +1,43 @@
+{
+  "expo": {
+    "name": "Bezposrednikov",
+    "description": "Покупка жилья без посредников",
+    "slug": "Bezposrednikov",
+    "version": "16.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/logo/logo-512.png",
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "splash": {
+      "image": "./assets/logo/logo-splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0,
+      "enabled": true,
+      "checkAutomatically": "ON_LOAD"
+    },
+    "notification": {
+      "iosDisplayInForeground": false,
+      "androidMode": "default"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "bundleIdentifier": "kz.bezposrednikov.www",
+      "supportsTablet": true
+    },
+    "android": {
+      "useNextNotificationsApi": true,
+      "googleServicesFile": "./google-services.json",
+      "package": "kz.bezposrednikov.www",
+      "versionCode": 16,
+      "permissions": []
+    }
+  }
+}
+
