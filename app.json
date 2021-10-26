@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "Bezposrednikov",
-    "description": "Покупка жилья без посредников",
-    "slug": "Bezposrednikov",
-    "version": "16.0.0",
+    "name": "bezposrednikov",
+    "description": "Мобильное приложение bezposrednikov",
+    "slug": "bezposrednikov",
+    "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/logo/logo-512.png",
     "platforms": [
@@ -28,14 +28,14 @@
       "**/*"
     ],
     "ios": {
-      "bundleIdentifier": "kz.bezposrednikov.www",
+      "bundleIdentifier": "kz.bezposrednikov.letsoft",
       "supportsTablet": true
     },
     "android": {
       "useNextNotificationsApi": true,
       "googleServicesFile": "./google-services.json",
-      "package": "kz.bezposrednikov.www",
-      "versionCode": 16,
+      "package": "kz.bezposrednikov.letsoft",
+      "versionCode": 1,
       "permissions": []
     }
   }

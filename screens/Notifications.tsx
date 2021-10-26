@@ -127,7 +127,7 @@ export default class Notifications extends React.Component{
             <Container>
                 <Header style={styles.headerTop}>
                     <Body style={{ flex: 3 }}>
-                        <Title style={{ color: '#1a192a' }}>Уведомления</Title>
+                        <Title style={{ color: '#1a192a' }}>Сообщения</Title>
                     </Body>
                 </Header>
                 <Content

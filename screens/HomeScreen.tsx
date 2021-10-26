@@ -1,4 +1,4 @@
-import {AntDesign, Ionicons, MaterialIcons, FontAwesome, Entypo} from '@expo/vector-icons';
+import {Feather, AntDesign, Ionicons, MaterialIcons, FontAwesome, Entypo} from '@expo/vector-icons';
 import {
     Container,
     Content,
@@ -15,6 +15,7 @@ import {
     ActionSheet,
     Toast, Root, Button, Tab, TabHeading, Tabs,
 } from 'native-base';
+import ImageCarousel from 'react-native-image-carousel';
 import React, {useEffect} from 'react';
 import {
     StyleSheet,
@@ -36,6 +37,8 @@ import {API, getToken} from './constants';
 import DropDownPicker from "react-native-dropdown-picker";
 import DatePicker from 'react-native-datepicker';
 
+import Carousel, { Pagination } from 'react-native-x2-carousel';
+
 let ScreenHeight = Dimensions.get("window").height;
 let ScreenWidth = Dimensions.get("window").width;
 
@@ -45,6 +48,12 @@ function PagesPagin()
 {
     return
 }
+
+const DATA = [
+    { text: '#1' },
+    { text: '#2' },
+    { text: '#3' },
+];
 
 class HomeScreen extends React.Component{
     constructor(props) {
@@ -96,9 +105,8 @@ class HomeScreen extends React.Component{
 
     _getUrl = async (url) => {
         const API_URL = API+url;
-        console.log(API);
-        console.log(url);
-        console.log(this.state.token);
+        console.log('API_URL');
+        console.log(API_URL);
 
         try {
             const response = await fetch(API_URL, {
@@ -113,7 +121,7 @@ class HomeScreen extends React.Component{
             const responseJson = await response.json();
             console.log('responseJson');
             console.log(responseJson);
-            return responseJson;
+            return responseJson.result;
             // if (responseJson !== null) {
             //   if(responseJson.success == false){
             //     Toast.show({
@@ -242,9 +250,6 @@ class HomeScreen extends React.Component{
 
     _getDoctorList = async () => {
         var url = API;
-        console.log('url')
-        console.log(url)
-        console.log('url')
         if(this.state.currentPageLink != '0')
         {
             url = this.state.currentPageLink;
@@ -253,29 +258,10 @@ class HomeScreen extends React.Component{
             .then(value => {
                     if(value !== null){
                         console.log('value.items');
-                        console.log(value.result.data);
+                        console.log(value.result.list.data);
                         console.log('value.items.length')
-                        console.log(value.result.data)
-                        if(value.result.data.length > 20)
-                        {
                             this.setState({
-                                list: value.result.data,
-                                // listWithoutFilter: value.items,
-                                // currentPageLink: value._links.self.href,
-                                // prevPage: value._links.prev.href,
-                                // nextPage: value._links.next.href,
-                                // firstPage: value._links.first.href,
-                                // lastPage: value._links.last.href,
-                                // currentPage: value._meta.currentPage,
-                                // totalPageCount: 0,
-                                // totalReqCount: value._meta.totalCount,
-                                // reqCountInOnePage: value.items.length,
-                            });
-                        }
-                        else
-                        {
-                            this.setState({
-                                list: value.result.data,
+                                list: value.result.list.data,
                                 // listWithoutFilter: value.items,
                                 // currentPageLink: value._links.self.href,
                                 // firstPage: value._links.first.href,
@@ -285,7 +271,6 @@ class HomeScreen extends React.Component{
                                 // totalReqCount: value._meta.totalCount,
                                 // reqCountInOnePage: value.items.length,
                             });
-                        }
                     }
                 }
             )
@@ -425,7 +410,7 @@ class HomeScreen extends React.Component{
     }
 
     onInfoButtonClicked = async (docid) => {
-        await this._getUrl('service-requests/v1/request/'+docid+'?access-token='+this.state.token+'&_format=json&expand=app,solution,currentPerformerUser,clientUser,status,product,type')
+        await this._getUrl(docid)
             .then(value => {
                 this.setState({
                     listGrade: value,
@@ -499,6 +484,22 @@ class HomeScreen extends React.Component{
             duration: 3000
         });
     }
+
+    like = () => {
+        alert('like')
+    }
+
+    renderItem = (data) => (
+        <View key={data.id} style={{height:400}}>
+            <Image
+                style={{height: 400, width: 400, marginTop: 0,}}
+                source={{
+                    uri: 'https://bezrieltora.kz/' + data.pic,
+                    height: 100,
+                }}
+            />
+        </View>
+    );
 
     render() {
         // {console.log('this.state.list')}
@@ -582,13 +583,6 @@ class HomeScreen extends React.Component{
                             />
                         }
                     >
-                        {/*<View>*/}
-                        {/*  <TextInput*/}
-                        {/*      style={styles.textInput}*/}
-                        {/*      placeholder="Поиск"*/}
-                        {/*      onChangeText={text => this.searchRequest({text})}*/}
-                        {/*  />*/}
-                        {/*</View>*/}
                         {this.state.refreshing ? (
                             <Text style={{ textAlign: "center", fontSize: 14, flex: 1, marginTop: 20, width: '100%' }}>Подождите идет загрузка данных</Text>
                         ) : (
@@ -608,10 +602,10 @@ class HomeScreen extends React.Component{
                                                 <View style={styles.row}>
                                                     <View style={{width: 280,}}>
                                                         <View style={styles.nameContainer2}>
-                                                            <Image style={styles.ava_img_small} source={{uri: 'https://srbu.ru/images/stroitelnye-raboty/studiya-ili-odnokomnatnaya-kvartira-chto-luchshe/studiya-ili-odnokomnatnaya-kvartira-chto-luchshe.jpg'}}></Image>
+                                                            <Image style={styles.ava_img_small} source={{uri: 'https://bezrieltora.kz/'+doc.home_pics[0].pic}}></Image>
                                                             {doc.dic_city.name != null ?
                                                                 <View style={{paddingLeft: 5}}>
-                                                                    <Text style={styles.label}>{doc.dic_type_sale.name} </Text>
+                                                                    <Text style={styles.label}>{doc.dic_type_home.name} </Text>
                                                                     <Text style={styles.nameTxt}>{doc.dic_type_home.name}</Text>
                                                                     <Text style={styles.nameTxt}>{doc.dic_city.name}</Text>
                                                                 </View>
@@ -625,6 +619,7 @@ class HomeScreen extends React.Component{
                                                         width: 80,
                                                         justifyContent: 'center',
                                                     }}>
+                                                        <FontAwesome onPress={() => this.like()} name="star-o" size={24} color="black" />
                                                     </View>
                                                 </View>
                                             </TouchableOpacity>
@@ -671,389 +666,76 @@ class HomeScreen extends React.Component{
                 <Modal
                     animationType={"slide"}
                     visible={this.state.modal}
+                    transparent={true}
                 >
-                    <Root>
+                    <View style={{
+                        backgroundColor: 'rgba(30, 30, 45, 0.8)',
+                        flex: 1,
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center'}}>
                         <View style={{
                             flex: 1,
-                            flexDirection: 'column',
-                            justifyContent: 'space-between',
-                            padding: 20,
+                            marginTop: 90,
                         }}>
-                            {Platform.OS === 'ios'
-                                ?
-                                <ScrollView style={{ paddingTop: 40, }}>
-                                    <View>
-                                        <View style={{flexDirection:'row', justifyContent:'space-between',
-                                        }}>
-                                            <View>
-                                                {this.state.avaurl == null ?
-                                                    <Image style={styles.message_img} source={{uri: 'https://smart24.kz/img/default/ava_businessman_400.jpg'}}></Image>
-                                                    :
-                                                    <Image style={styles.message_img} source={{uri: 'https://smart24.kz/'+this.state.list.avaFile}}></Image>
-                                                }
-                                            </View>
-                                            <View style={{ justifyContent: 'center',
-                                                alignItems: 'left',
-                                                paddingLeft: 10,
-                                                flex: 1,
-                                            }}>
-                                                {this.state.listGrade.clientUser != null ?
-                                                    <Text style={{fontSize: 16, }}>
-                                                        {this.state.listGrade.clientUser.person_name}
-                                                    </Text>
-                                                    :
-                                                    null
-                                                }
-                                                {this.state.listGrade.clientUser != null ?
-                                                    <Text style={{fontSize: 12, color: '#717171', paddingTop: 5, textAlign: 'left'}}>
-                                                        {this.state.listGrade.clientUser.company_name}
-                                                    </Text>
-                                                    :
-                                                    null
-                                                }
-                                            </View>
-                                            <View style={{ justifyContent: 'center', //Centered horizontally
-                                                alignItems: 'center', //Centered vertically
-                                                flex:1}}>
-                                                <FontAwesome
-                                                    name="refresh"
-                                                    size={24}
-                                                    style={{justifyContent: 'center', color: '#5867dd', alignItems: 'center', alignContent: 'center', alignSelf: 'center'}}
-                                                />
+                            <View style={styles.container}>
+                                <View style={{height: 30, width: '100%', alignItems: 'center', backgroundColor: '#dfdfdf'}}>
+                                    <Feather onPress={()=>this.setState({ modal: false})} name="chevrons-down" size={24} color="black" />
+                                </View>
+                                <View style={styles.container}>
+                                    {this.state.listGrade.images != undefined ?
+                                        <Carousel
+                                            pagination={Pagination}
+                                            renderItem={this.renderItem}
+                                            data={this.state.listGrade.images}
+                                        /> :
+                                        null
+                                    }
+                                </View>
+                                {console.log(this.state.listGrade)}
 
-                                                {this.state.listGrade.status != null ?
-                                                    <Text style={{fontSize: 12, color: '#5867dd'}}>
-                                                        {this.state.listGrade.status.name}
-                                                    </Text>
-                                                    :
-                                                    null
-                                                }
-                                            </View>
-                                        </View>
-                                        <Body style={{ paddingLeft: 10 }}>
-                                            <Text style={{ fontSize: 20, paddingVertical: 5 }}>
-                                                {this.state.author_name}
-                                            </Text>
-                                            {/*<Text style={{ fontSize: 12 }}>*/}
-                                            {/*  {this.state.company_name}*/}
-                                            {/*</Text>*/}
-                                            <Text style={{ fontSize: 12 }}>
-                                                {this.state.created_at}
-                                            </Text>
-                                        </Body>
-                                    </View>
-                                    <View style={{backgroundColor: '#fff'}}>
-                                        <Tabs style={{backgroundColor: '#fff'}}>
-                                            <Tab style={{backgroundColor: '#fff'}} heading={<TabHeading style={{backgroundColor: '#fff'}}>
-                                                <Text>Инфо</Text>
-                                            </TabHeading>}>
-                                                <View style={{padding: 10}}>
-                                                    <View>
-                                                        <Text style={styles.tabsContentLabel}>Услуга: </Text>
-                                                    </View>
-                                                    <View>
-                                                        {this.state.listGrade.product != null ?
-                                                            <Text style={styles.tabsContentText}>{this.state.listGrade.product.subject}</Text>
-                                                            :
-                                                            <Text> </Text>
-                                                        }
-                                                    </View>
-                                                    <View>
-                                                        <Text style={styles.tabsContentLabel}>Описание: </Text>
-                                                    </View>
-                                                    <View>
-                                                        <Text style={styles.tabsContentText}>{this.state.listGrade.descr}</Text>
-                                                    </View>
-                                                    <View>
-                                                        <Text style={styles.tabsContentLabel}>Время обращения: </Text>
-                                                    </View>
-                                                    <View>
-                                                        <Text style={styles.tabsContentText}>{this.state.listGrade.createdAt}</Text>
-                                                    </View>
-                                                </View>
-                                            </Tab>
-                                            <Tab style={{backgroundColor: '#fff'}} heading={
-                                                <TabHeading style={{backgroundColor: '#fff'}}>
-                                                    <Text>Журнал</Text>
-                                                </TabHeading>
-                                            }>
-                                                <View style={{ flexDirection: "column" }}>
-                                                    {/*<Text style={{ fontSize: 16 }}>Журнал</Text>*/}
-                                                    {/*<Text style={{ fontSize: 12, marginTop: 5, color: '#6f6f6f' }}>дата</Text>*/}
-                                                </View>
-                                            </Tab>
-                                            <Tab heading={
-                                                <TabHeading style={{backgroundColor: '#fff'}}>
-                                                    <Text style={{backgroundColor: '#fff'}}>Комментарии</Text>
-                                                </TabHeading>
-                                            }>
-                                                <View>
-                                                    <TextInput
-                                                        style={styles.textArea3}
-                                                        underlineColorAndroid="transparent"
-                                                        placeholder="Комментарий"
-                                                        placeholderTextColor="grey"
-                                                        numberOfLines={4}
-                                                        multiline={true}
-                                                        onChangeText={text => this.setState({ otziv: text})}
-                                                    />
-                                                    <TextInput
-                                                        style={styles.textArea4}
-                                                        underlineColorAndroid="transparent"
-                                                        placeholder="Ваши контакты"
-                                                        placeholderTextColor="grey"
-                                                        onChangeText={text => this.setState({callPhone: text})}
-                                                    />
-                                                    <Button
-                                                        success={true}
-                                                        style={{
-                                                            backgroundColor: '#0abb87',
-                                                            borderRadius: 15,
-                                                            shadowColor: '#989898',
-                                                            width: '100%',
-                                                            height: 60,
-                                                            padding: 20,
-                                                            borderWidth: 10,
-                                                            borderColor: '#fff',
-                                                        }}>
-                                                        <Text style={{ width: '100%', textAlign: "center", color: '#fff', fontSize: 16}}>отправить</Text>
-                                                    </Button>
-                                                </View>
-                                            </Tab>
-                                        </Tabs>
-                                    </View>
-                                </ScrollView>
-                                :
-                                <ScrollView style={{ paddingTop: 40, }}>
-                                    <View>
-                                        <View style={{flexDirection:'row', justifyContent:'space-between',}}>
-                                            <View>
-                                                {this.state.avaurl == null ?
-                                                    <Image style={styles.message_img} source={{uri: 'https://smart24.kz/img/default/ava_businessman_400.jpg'}}></Image>
-                                                    :
-                                                    <Image style={styles.message_img} source={{uri: 'https://smart24.kz/'+this.state.list.avaFile}}></Image>
-                                                }
-                                            </View>
-                                            <View style={{ justifyContent: 'center',
-                                                // alignItems: 'left',
-                                                paddingLeft: 10,
-                                                // flex: 1,
-                                            }}>
-                                                {this.state.listGrade.clientUser != null ?
-                                                    <Text style={{fontSize: 16, }}>
-                                                        {this.state.listGrade.clientUser.person_name}
-                                                    </Text>
-                                                    :
-                                                    null
-                                                }
-                                                {this.state.listGrade.clientUser != null ?
-                                                    <Text style={{fontSize: 12, color: '#717171', paddingTop: 5, textAlign: 'left'}}>
-                                                        {this.state.listGrade.clientUser.company_name}
-                                                    </Text>
-                                                    :
-                                                    null
-                                                }
-                                            </View>
-                                            <View style={{ justifyContent: 'center', //Centered horizontally
-                                                alignItems: 'center', //Centered vertically
-                                                flex:1}}>
-                                                <FontAwesome
-                                                    name="refresh"
-                                                    size={24}
-                                                    style={{justifyContent: 'center', color: '#5867dd', alignItems: 'center', alignContent: 'center', alignSelf: 'center'}}
-                                                />
-
-                                                {this.state.listGrade.status != null ?
-                                                    <Text style={{fontSize: 12, color: '#5867dd'}}>
-                                                        {this.state.listGrade.status.name}
-                                                    </Text>
-                                                    :
-                                                    null
-                                                }
-                                            </View>
-                                        </View>
-                                        <Body style={{ paddingLeft: 10 }}>
-                                            <Text style={{ fontSize: 20, paddingVertical: 5 }}>
-                                                {this.state.author_name}
-                                            </Text>
-                                            {/*<Text style={{ fontSize: 12 }}>*/}
-                                            {/*  {this.state.company_name}*/}
-                                            {/*</Text>*/}
-                                            <Text style={{ fontSize: 12 }}>
-                                                {this.state.created_at}
-                                            </Text>
-                                        </Body>
-                                    </View>
-                                    <View style={{backgroundColor: '#fff'}}>
-                                        <Tabs
-                                            activeTabStyle={{backgroundColor: 'red'}} activeTextStyle={{color: '#fff722', fontWeight: 'normal'}}>
-                                            <Tab heading={
-                                                <TabHeading style={{backgroundColor: '#eeeeee'}}>
-                                                    <Text>Инфо</Text>
-                                                </TabHeading>}>
-                                                <View style={{padding: 10}}>
-                                                    <View>
-                                                        <Text style={styles.tabsContentLabel}>Услуга: </Text>
-                                                    </View>
-                                                    <View>
-                                                        <Text style={styles.tabsContentText}>{this.state.listGrade.descr}</Text>
-                                                    </View>
-                                                    <View>
-                                                        <Text style={styles.tabsContentLabel}>Описание: </Text>
-                                                    </View>
-                                                    <View>
-                                                        <Text style={styles.tabsContentText}>{this.state.listGrade.descr}</Text>
-                                                    </View>
-                                                    <View>
-                                                        <Text style={styles.tabsContentLabel}>Время обращения: </Text>
-                                                    </View>
-                                                    <View>
-                                                        <Text style={styles.tabsContentText}>{this.state.listGrade.createdAt}</Text>
-                                                    </View>
-                                                </View>
-                                            </Tab>
-                                            <Tab heading={
-                                                <TabHeading style={{backgroundColor: '#eeeeee'}}>
-                                                    <Text>Журнал</Text>
-                                                </TabHeading>
-                                            }>
-                                                <View style={{ flexDirection: "column" }}>
-                                                    {/*<Text style={{ fontSize: 16 }}>Журнал</Text>*/}
-                                                    {/*<Text style={{ fontSize: 12, marginTop: 5, color: '#6f6f6f' }}>дата</Text>*/}
-                                                </View>
-                                            </Tab>
-                                            <Tab heading={
-                                                <TabHeading style={{backgroundColor: '#eeeeee'}}>
-                                                    <Text>Комментарии</Text>
-                                                </TabHeading>
-                                            }>
-                                                <View>
-                                                    <TextInput
-                                                        style={styles.textArea3}
-                                                        underlineColorAndroid="transparent"
-                                                        placeholder="Комментарий"
-                                                        placeholderTextColor="grey"
-                                                        numberOfLines={4}
-                                                        multiline={true}
-                                                        onChangeText={text => this.setState({ otziv: text})}
-                                                    />
-                                                    <TextInput
-                                                        style={styles.textArea4}
-                                                        underlineColorAndroid="transparent"
-                                                        placeholder="Ваши контакты"
-                                                        placeholderTextColor="grey"
-                                                        onChangeText={text => this.setState({callPhone: text})}
-                                                    />
-                                                    <Button
-                                                        success={true}
-                                                        style={{
-                                                            backgroundColor: '#0abb87',
-                                                            borderRadius: 15,
-                                                            shadowColor: '#989898',
-                                                            width: '100%',
-                                                            height: 60,
-                                                            padding: 20,
-                                                            borderWidth: 10,
-                                                            borderColor: '#fff',
-                                                        }}>
-                                                        <Text style={{ width: '100%', textAlign: "center", color: '#fff', fontSize: 16}}>отправить</Text>
-                                                    </Button>
-                                                </View>
-                                            </Tab>
-                                        </Tabs>
-                                    </View>
-                                </ScrollView>
-                            }
-                            <View style={{
-                                flexDirection: 'row',
-                                justifyContent: 'space-between',
-                                // backgroundColor: '#898989',
-                            }}>
-                                <Left>
-                                    <Button
-                                        success={true}
-                                        style={{
-                                            backgroundColor: '#ffb822',
-                                            margin: 25,
-                                            height: 40,
-                                            borderRadius: 15,
-                                            shadowColor: '#989898',
-                                            shadowOpacity: 2,
-                                            elevation: 1,
-                                            shadowRadius: 2,
-                                            shadowOffset : { width: 0, height: 5},
-                                            borderWidth:0,
-                                        }}
-                                        onPress={() => {
-                                            this.setState({modal: false});
-                                        }}
-                                    >
-                                        <Text style={{ width: '100%', textAlign: "center", color: '#fff', fontSize: 14}}>закрыть</Text>
-                                    </Button>
-                                </Left>
-                                <Right>
-                                    {/*<Button*/}
-                                    {/*    block*/}
-                                    {/*    onPress={() => this.acceptRequest(this.state.listGrade.id)}*/}
-                                    {/*    style={{*/}
-                                    {/*        backgroundColor: '#0abb87',*/}
-                                    {/*        margin: 25,*/}
-                                    {/*        height: 40,*/}
-                                    {/*        borderRadius: 15,*/}
-                                    {/*        shadowColor: '#989898',*/}
-                                    {/*        shadowOpacity: 2,*/}
-                                    {/*        elevation: 1,*/}
-                                    {/*        shadowRadius: 2,*/}
-                                    {/*        shadowOffset : { width: 0, height: 5},*/}
-                                    {/*        borderWidth:0,*/}
-                                    {/*    }}*/}
-                                    {/*>*/}
-                                    {/*    <Text style={{ width: '100%', textAlign: "center", color: 'white', fontSize: 12}}>Начать исполнение</Text>*/}
-                                    {/*</Button>*/}
-                                    {this.state.listGrade.statusId == 13 ?
-                                        <Button
-                                            block
-                                            onPress={() => this.acceptRequest(this.state.listGrade.id)}
-                                            style={{
-                                                backgroundColor: '#0abb87',
-                                                margin: 25,
-                                                height: 40,
-                                                borderRadius: 15,
-                                                shadowColor: '#989898',
-                                                shadowOpacity: 2,
-                                                elevation: 1,
-                                                shadowRadius: 2,
-                                                shadowOffset : { width: 0, height: 5},
-                                                borderWidth:0,
-                                            }}
-                                        >
-                                            <Text style={{ width: '100%', textAlign: "center", color: '#fff', fontSize: 14}}>начать исполнение</Text>
-                                        </Button>
-                                        : null }
-                                    {this.state.listGrade.statusId == 2 ?
-                                        <Button
-                                            block
-                                            onPress={() => this.closeRequest(this.state.listGrade.id)}
-                                            style={{
-                                                backgroundColor: '#5d78ff',
-                                                margin: 25,
-                                                height: 40,
-                                                borderRadius: 15,
-                                                shadowColor: '#989898',
-                                                shadowOpacity: 2,
-                                                elevation: 1,
-                                                shadowRadius: 2,
-                                                shadowOffset : { width: 0, height: 5},
-                                                borderWidth:0,
-                                            }}
-                                        >
-                                            <Text style={{ width: '100%', textAlign: "center", color: '#fff', fontSize: 14}}>завершить исполнение</Text>
-                                        </Button>
-                                        : null }
-                                </Right>
+                                <View>
+                                    <Text style={styles.modalPrice}>{this.state.listGrade.price} тг</Text>
+                                    <Text style={styles.modalItemDetail}>{this.state.listGrade.type_home_name} площадью {this.state.listGrade.total_area} м2</Text>
+                                    <Text style={styles.modalItemDetailTitle}>{this.state.listGrade.address}</Text>
+                                    <Text style={styles.modalItemDetails}>{this.state.listGrade.city_name}</Text>
+                                    <Text style={styles.modalItemDetails}>Год постройки: {this.state.listGrade.year_construction}</Text>
+                                    <Text style={styles.modalItemDetails}>Общая площадь:{this.state.listGrade.total_area}</Text>
+                                    <Text style={styles.modalItemDetails}>Состояние:{this.state.listGrade.condit_name}</Text>
+                                    <Text style={styles.modalItemDetails}>________________________</Text>
+                                    <Text style={styles.modalItemDetails}>Дата публикации:{this.state.listGrade.date_set}</Text>
+                                    {/*<Text style={styles.modalItemDetails}>Просмотров:{this.state.listGrade.condit_name}</Text>*/}
+                                </View>
                             </View>
+                            <List style={{
+                                marginBottom: 0,
+                                backgroundColor: '#fff',
+                            }}>
+                                <ListItem>
+                                    <Left>
+                                        <Button
+                                            success={true}
+                                            style={{
+                                                width: '90%',
+                                                borderRadius: 10,
+                                                backgroundColor: '#5cb85c',}}
+                                        >
+                                            <Text style={{ width: '100%', textAlign: "center", color: 'white'}}>Написать</Text>
+                                        </Button>
+                                    </Left>
+                                    <Body>
+                                        <Button
+                                            style={{
+                                                borderRadius: 10,
+                                                backgroundColor: '#007aff',}}
+                                        >
+                                            <Text style={{ width: '100%', textAlign: "center", color: 'white'}}>Позвонить</Text>
+                                        </Button>
+                                    </Body>
+                                </ListItem>
+                            </List>
                         </View>
-                    </Root>
+                    </View>
                 </Modal>
                 <Modal
                     animationType={"fade"}
@@ -1265,8 +947,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
     },
     headerTop: {
         backgroundColor: '#fff',
@@ -1517,7 +1197,24 @@ const styles = StyleSheet.create({
             alignItems: 'center',
             alignSelf: 'center',
         },
+    modalPrice:
+        {
+            fontSize: 20,
+        },
+    modalItemDetail:
+        {
+            fontSize: 12,
+        },
+    modalItemDetailTitle:
+        {
+            fontSize: 16,
+        },
+    modalItemDetails:
+        {
+            fontSize: 12,
+        },
 })
 
 export default HomeScreen;
+
 

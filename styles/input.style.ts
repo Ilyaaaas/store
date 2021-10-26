@@ -2,9 +2,10 @@ import { StyleSheet } from 'react-native';
 
 export const inputStyle = StyleSheet.create({
   inputItem: {
-    borderRadius: 8,
+    borderRadius: 10,
     overflow: 'hidden',
-    backgroundColor: '#a2a3b7',
+    backgroundColor: '#D8D8D8',
     marginTop: 8,
+    borderColor: '#D8D8D8',
   },
 });

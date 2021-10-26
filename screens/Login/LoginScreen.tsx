@@ -2,7 +2,7 @@ import { useNavigation, StackActions } from '@react-navigation/native';
 import {Button, Form, Input, Item, Toast} from 'native-base';
 import * as React from 'react';
 import {useEffect, useState} from 'react';
-import {Alert, AsyncStorage, FlatList, Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Alert, AsyncStorage, FlatList, Platform, StyleSheet, Text, TouchableOpacity, View, KeyboardAvoidingView, } from 'react-native';
 
 import { AuthScreenWrapper } from '../../components/AuthScreenWrapper';
 import { IdInput } from '../../components/IdInput';
@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
     color: '#a2a3b7',
   },
   btnSubmit: {
-    backgroundColor: '#db1430',
+    backgroundColor: '#ffae45',
     marginTop: 2,
     paddingTop: 15,
     paddingBottom: 15,
@@ -109,30 +109,30 @@ export const LoginScreen = () => {
       credentials: 'same-origin',
       mode: 'same-origin',
       body: JSON.stringify({
-        // username: login,
+        // email: login,
         // password: password,
-        // username: 'i.akhmetov@digital.sk.kz',
-        // password: 'Astana2022!',
-        // username: 'a.iskaliyev@skbs.kz',
-        // password: 'U7cXPraHSU',
-        username: 'b.rysbek@skbs.kz',
-        password: 'ec682c6',
+        email: 'admin@mail.ru',
+        password: '12345678',
       }),
       headers: {
         'Accept':       'application/json',
         'Content-Type': 'application/json',
       }
     }
+    let lst = {
+      'iin': login,
+      'pass': password,
+      'activ': 1
+    }
+    let loginList = JSON.stringify(lst);
+    AsyncStorage.clear();
+    AsyncStorage.setItem('login_save', loginList);
 
-    fetch('http://api.smart24.kz/portal/v1/profile/login', data)
-        // .then((response) => response.json())
-        // .then((responseData) => {
-        //   console.log(responseData)
-        // })
-        // .then(response => response.json())
+    fetch('http://bezrieltora.kz/api/users/login', data)
         .then(response => response.json())
+        // .then(json => {console.log(json.result)})
         .then(json => {
-              if(json.accessToken === undefined)
+              if(json.result.token === undefined)
               {
                 // alert('Введен неправильный пароль или логин');
                 Toast.show({
@@ -145,8 +145,8 @@ export const LoginScreen = () => {
               else
               {
                 console.log(json);
-                setAccessTokenFunc('@accessToken', json.accessToken, json.userId, expoPushToken);
-                navigation.dispatch(StackActions.replace('HomeScreen'));
+                setAccessTokenFunc('@accessToken', json.result.token, json.result.user.id, json.result.user.name, expoPushToken);
+                navigation.dispatch(StackActions.replace('MainITSMScreen'));
               }
             }
         )
@@ -187,21 +187,21 @@ export const LoginScreen = () => {
   }
 
   const AlertSaveLogin = async () => {
-    // if(login.trim() == ''){
-    //   Toast.show({
-    //     text: 'Поле логин не может быть пустым!',
-    //     type: 'danger',
-    //   });
-    //   return false;
-    // }
-    //
-    // if(password.trim() == ''){
-    //   Toast.show({
-    //     text: 'Поле Пароль не может быть пустым!',
-    //     type: 'danger',
-    //   });
-    //   return false;
-    // }
+    if(login.trim() == ''){
+      Toast.show({
+        text: 'Поле логин не может быть пустым!',
+        type: 'danger',
+      });
+      return false;
+    }
+
+    if(password.trim() == ''){
+      Toast.show({
+        text: 'Поле Пароль не может быть пустым!',
+        type: 'danger',
+      });
+      return false;
+    }
 
     // let getLogin = await AsyncStorage.getItem('login_save');
     let getLogin = null;
@@ -232,22 +232,12 @@ export const LoginScreen = () => {
   }
 
   const getUserLogin = async () => {
-    // const loginList = await AsyncStorage.getItem('login_save');
-    const loginList = null;
+    const getLogin = await AsyncStorage.getItem('login_save');
+    let logineds = JSON.parse(getLogin);
 
-    if(loginList !== null) {
-      let logineds = JSON.parse(loginList);
-
-      logineds.map((e, i) => {
-        if (e.activ) {
-          if (e.activ == 1) {
-            setLogin(e.iin);
-            setPassword(e.pass);
-          }
-        }
-        logineds[i].key = i;
-      });
-
+    if(getLogin !== null) {
+      setLogin(logineds.iin);
+      setPassword(logineds.pass);
       setListLogins(logineds);
     }
   }
@@ -257,55 +247,58 @@ export const LoginScreen = () => {
   }, []);
 
   return (
-    <AuthScreenWrapper>
-      <Form style={{ zIndex: 2001, marginTop: 40}}>
-        <Item regular style={inputStyle.inputItem}>
-          {/*<IdInput onChangeText={(text) => setLogin(text)} value={login} />*/}
-          <Input
-              placeholder="Логин"
-              onChangeText={(text) => setLogin(text)}
-              value={login}
-          />
-        </Item>
+      <AuthScreenWrapper>
+        <Form style={{ zIndex: 2001, marginTop: 200}}>
+          <Item regular style={inputStyle.inputItem}>
+            {/*<IdInput onChangeText={(text) => setLogin(text)} value={login} />*/}
+            <Input
+                placeholder="Логин"
+                onChangeText={(text) => setLogin(text)}
+                value={login}
+                style={{color: '#595758'}}
+            />
+          </Item>
 
-        <Item regular style={inputStyle.inputItem}>
-          <Input
-            placeholder="Пароль"
-            onChangeText={setPassword}
-            value={password}
-            secureTextEntry={passView}
-          />
-          <TouchableOpacity style={{ marginRight: 10}} onPress={ShowHidePass}>
-          {
-            passView ? (
-                <Entypo name="eye-with-line" size={24} color="black" />
-            ) : (
-                <Entypo name="eye" size={24} color="black" />
-            )
-          }
-          </TouchableOpacity>
-        </Item>
-      </Form>
-      <Button
-          transparent
-          block
-          onPress={() => navigation.navigate('RestorePassword')}>
-        <Text style={styles.secondaryButton}>Восстановить пароль</Text>
-      </Button>
-      {/*{passwordRecoveryIsVisible && (*/}
-      {/*)}*/}
-      <TouchableOpacity
-        style={[!passwordRecoveryIsVisible && { marginTop: 1, zIndex: 100 }] && styles.btnSubmit}
-        onPress={AlertSaveLogin}
-      >
-        <Text style={{ color: '#ffff', textAlign: "center" }}>ВОЙТИ</Text>
-      </TouchableOpacity>
-      {/*<Button*/}
-      {/*  transparent*/}
-      {/*  block*/}
-      {/*  onPress={() => navigation.navigate('Registration')}>*/}
-      {/*  <Text style={styles.secondaryButton}>Регистрация</Text>*/}
-      {/*</Button>*/}
-    </AuthScreenWrapper>
+          <Item regular style={inputStyle.inputItem}>
+            <Input
+                placeholder="Пароль"
+                onChangeText={setPassword}
+                value={password}
+                secureTextEntry={passView}
+                style={{color: '#595758'}}
+            />
+            <TouchableOpacity style={{ marginRight: 10}} onPress={ShowHidePass}>
+              {
+                passView ? (
+                    <Entypo name="eye-with-line" size={24} color="black" />
+                ) : (
+                    <Entypo name="eye" size={24} color="black" />
+                )
+              }
+            </TouchableOpacity>
+          </Item>
+        </Form>
+        <View style={{marginTop: 10, }}></View>
+        {/*<Button*/}
+        {/*    transparent*/}
+        {/*    block*/}
+        {/*    onPress={() => navigation.navigate('RestorePassword')}>*/}
+        {/*  <Text style={styles.secondaryButton}>Восстановить пароль</Text>*/}
+        {/*</Button>*/}
+        {/*{passwordRecoveryIsVisible && (*/}
+        {/*)}*/}
+        <TouchableOpacity
+            style={[!passwordRecoveryIsVisible && { marginTop: 1, zIndex: 100 }] && styles.btnSubmit}
+            onPress={AlertSaveLogin}
+        >
+          <Text style={{ color: '#fff', textAlign: "center" }}>ВОЙТИ</Text>
+        </TouchableOpacity>
+        {/*<Button*/}
+        {/*  transparent*/}
+        {/*  block*/}
+        {/*  onPress={() => navigation.navigate('Registration')}>*/}
+        {/*  <Text style={styles.secondaryButton}>Регистрация</Text>*/}
+        {/*</Button>*/}
+      </AuthScreenWrapper>
   );
 };
