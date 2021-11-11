@@ -1,4 +1,4 @@
-import {Feather, AntDesign, Ionicons, MaterialIcons, FontAwesome, Entypo} from '@expo/vector-icons';
+import {SimpleLineIcons, Feather, AntDesign, Ionicons, MaterialIcons, FontAwesome, Entypo} from '@expo/vector-icons';
 import {
     Container,
     Content,
@@ -523,8 +523,8 @@ class HomeScreen extends React.Component{
                                 style={{marginRight: 10}}
                                 onPress={() => this.goToCreateReq()}
                             />
-                            <AntDesign
-                                name="filter"
+                            <SimpleLineIcons
+                                name="equalizer"
                                 size={24}
                                 color="#1a192a"
                                 style={{marginRight: 10}}
@@ -602,7 +602,13 @@ class HomeScreen extends React.Component{
                                                 <View style={styles.row}>
                                                     <View style={{width: 280,}}>
                                                         <View style={styles.nameContainer2}>
-                                                            <Image style={styles.ava_img_small} source={{uri: 'https://bezrieltora.kz/'+doc.home_pics[0].pic}}></Image>
+                                                            {console.log('doc.home_pics')}
+                                                            {console.log(doc.home_pics.length)}
+                                                            {doc.home_pics.length != 0 ?
+                                                                <Image style={styles.ava_img_small} source={{uri: 'https://bezrieltora.kz/'+doc.home_pics[0].pic}}></Image>
+                                                            :
+                                                                <Image style={styles.ava_img_small} source={{uri: 'http://bezrieltora.kz/images/noimage.jpg'}}></Image>
+                                                            }
                                                             {doc.dic_city.name != null ?
                                                                 <View style={{paddingLeft: 5}}>
                                                                     <Text style={styles.label}>{doc.dic_type_home.name} </Text>

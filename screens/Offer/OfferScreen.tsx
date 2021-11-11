@@ -25,7 +25,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as DocumentPicker from 'expo-document-picker';
-import RNPickerSelect from 'react-native-picker-select';
+// import RNPickerSelect from 'react-native-picker-select';
 
 const BottomTab = createBottomTabNavigator();
 
@@ -42,20 +42,9 @@ export default function OfferScreen({ navigation }) {
     const [sendedFileName, setSendedFileName] = useState('');
     const [reqId, setReqId] = useState([]);
     const [sendFileState, setSendFileState] = useState(false);
-
-    const [openCheck, setOpenCheck] = useState(false);
-    const [firstClick, setfirstClick] = useState(true);
     const [spinnerState, setSpinnerState] = useState(false);
-    const [typeUrl, setTypeURL] = useState(0);
-    const [vidPriem, setVidPriem] = useState('');
     const [offerDescr, setOfferDescr] = useState('');
-    const [services, setServices] = useState();
-    const [catalogs, setCatalogs] = useState();
     const [file, setFile] = useState();
-    const [selectedService, setSelectedService] = useState();
-    const [selectedServiceName, setSelectedServiceName] = useState('Не выбрано');
-    const [selectedCatalog, setSelectedCatalog] = useState();
-    const [selectedCatalogName, setSelectedCatalogName] = useState('Не выбрано');
     const [token, setToken] = useState('');
     const [userId, setUserId] = useState(0);
     const [personId, setPersonId] = useState(0);
@@ -63,22 +52,32 @@ export default function OfferScreen({ navigation }) {
     const { date = [], time = '', times = [], shedId = '' } = form;
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        // console.log({route.params});
-        async function fetchMyAPI() {
-            await AsyncStorage.getItem('accessToken').then(req => JSON.parse(req))
-                .then(json =>
-                {
-                    setToken(json[0].accessToken);
-                    setUserId(json[1].userId)
-                    getServices(json[0].accessToken, 0);
-                    getCatalogs(json[0].accessToken);
-                    _getPersonInfo(json[0].accessToken, json[1].userId);
-                })
-                .catch(error => console.log(error))
-        }
-        fetchMyAPI()
+    const [id_type_sale, set_id_type_sale] = useState(0);
+    const [id_type_home, set_id_type_home] = useState(0);
+    const [id_city, set_id_city] = useState(0);
+    const [address, set_address] = useState(0);
+    const [cnt_rooms, set_cnt_rooms] = useState(0);
+    const [cnt_loggia, set_cnt_loggia] = useState(0);
+    const [cnt_balkony, set_cnt_balkony] = useState(0);
+    const [cnt_toilet, set_cnt_toilet] = useState(0);
+    const [toilet_from_bathroom, set_toilet_from_bathroom] = useState(0);
+    const [total_area, set_total_area] = useState(0);
+    const [living_area, set_living_area] = useState(0);
+    const [kitchen_area, set_kitchen_area] = useState(0);
+    const [year_construction, set_year_construction] = useState(0);
+    const [floor, set_floor] = useState(0);
+    const [floor_all, set_floor_all] = useState(0);
+    const [id_condit, set_id_condit] = useState(0);
+    const [id_rc, set_id_rc] = useState(0);
+    const [other_comment, set_other_comment] = useState(0);
+    const [phone, set_phone] = useState(0);
+    const [phone2, set_phone2] = useState(0);
+    const [phone3, set_phone3] = useState(0);
+    const [price, set_price] = useState(0);
+    const [images, set_images] = useState(0);
 
+    useEffect(() => {
+        console.log('start');
     }, [])
 
     async function _getToken()
@@ -90,125 +89,38 @@ export default function OfferScreen({ navigation }) {
 
     const createOffer = async () =>
     {
-        setSpinnerState(true)
-        if(selectedService == '')
-        {
-            alert('Выберите категорию');
-            return
-        }
-        if(offerDescr == '')
-        {
-            alert('Заполните описание заявки');
-            return
-        }
-
-        // var fileInfo = sendFile(file)
-
-        await fetch('http://api.smart24.kz/service-requests/v1/request',
-            {
-                method:'POST',
-                headers: {"x-api-key": token,
-                    'Accept':       'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: '{"product_id": "'+selectedService+'", "descr": "'+offerDescr+'", "client_person_id": "'+personId+'"}'}
-        )
-            .then(response => response.json())
-            .then(function(data){
-                // setReqId(data);
-                sendFileId(data.id, sendedFileId, sendedFileName);
-                Toast.show({
-                    text: 'Заявка успешно отправлена!',
-                    type: "success",
-                    duration: 3000
-                });
-                // alert('Заявка успешно отправлена!');
-                navigation.goBack();
+        fetch('https://bezrieltora.kz/api/home', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNmYwMGRkODc2MTcyNTVlNzIzM2UzNzA4MmRjMGRjZTEzMTkyYWNjMDNlYWJkYWU2ZTg4ZTU0YTYxMDM0ZjFjMWRmYjhlYWRjNjU0NDdhYzAiLCJpYXQiOjE2MzQwMTM5NzQuODg4NzQ0MSwibmJmIjoxNjM0MDEzOTc0Ljg4ODc1NTEsImV4cCI6MTY2NTU0OTk3NC44NzEzODAxLCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.K3qsylWcRj14zH0hsyeEl6-qm_ao4h8atR3w6Xv3iN632J8kZ3_nELbPIenqIU-xO7fWAyKRnthRWZIWmGPimDkek2muCqdT4SPb0hEjLiTzGfdfEsX3XisKWVKF4ODLwE9kX1FsseKxKC8gHjHyvlR6cK9r4hpkg7CZej4epIUajBl6NwWhflA_DAY84FaGH7VuI28IkMDjkeJb8TYy2C49F7Kx4i8V-0FO8diCN1xKKM-o5xKwhR8IorCL1obCxP4EHiByG0YlWuPIKCIJq0itjQGYBKSqTxsfCpFa4mcVF6H8Ho1KFx9prRtn9nV5UGLyM1inn6PnpH9XizbAlzPWN96Luh0CKTKj93jWltXo4IKmPzs5TkbM-Jtd3dS50ogxYGR8at3aNGMq2tch4WnPEojfVQkESFujfOBgFuixBwe4f7Sgoyb9AYlY0Sop3yT8p0x1nQqAq5aE0KaFwv7Bd09ImVKlWhSZSD4Jc2cYgMnjxsXpbmde4zBapDraqt5_Uzks3d_Gox54J0fPOFnToPRteXVBqt8XyTI-Jkmlc6fLSnu1LKX5QYWkd_ZIpc8eqRyAqmKgbC7k5asnl26_iTs-pWv1h4QpzWz_nBd_kbg6yQDIsOyoOIAmuO1VURyJkIWD9QMcLBTj86UE80KNH686atdDlHUPgmh0c00'
+            },
+            body: JSON.stringify({
+                "id_type_sale" : 1,
+                "id_type_home" : 1,
+                "id_city" : 1,
+                "address" : "ул. Туркестана 77 кв 5",
+                "cnt_rooms" : 1,
+                "cnt_loggia" : 0,
+                "cnt_balkony" : 1,
+                "cnt_toilet" : 0,
+                "toilet_from_bathroom"  : false,
+                "total_area" : 25,
+                "living_area" : 20,
+                "kitchen_area" : 5,
+                "year_construction" : 1980,
+                "floor" : 1,
+                "floor_all" : 5,
+                "id_condit" : 4,
+                "id_rc": 1,
+                "other_comment" : "",
+                "phone" : "+77013214589",
+                "phone2" : "",
+                "phone3" : "",
+                "price" : 10000,
+                "images" : []
             })
-            .catch(error => console.error(error))
-            .finally(setSpinnerState(false))
-    }
-
-    const getCatalogs = async (tokenParam) =>
-    {
-        var usingToken = token;
-        if(token == '')
-        {
-            usingToken = tokenParam
-        }
-        fetch('http://api.smart24.kz/service-catalog/v1/catalog?access-token='+usingToken+'&_format=json',
-            {method:'GET',
-                headers: {
-                    "Content-type": "application/json",
-                    "Accept": "application/json"},
-            }
-        )
-            .then(response => response.json())
-            .then(function(data){
-                setCatalogs(data.items);
-            })
-            .catch(error => console.error(error))
-            .then()
-            .finally()
-    }
-
-    const getServices = async (tokenParam, catalogId) =>
-    {
-        var usingToken = token;
-        if(token == '')
-        {
-            usingToken = tokenParam
-        }
-        fetch('http://api.smart24.kz/service-catalog/v1/product?access-token='+usingToken+'&_format=json',
-            {method:'GET',
-                headers: {
-                    "Content-type": "application/json",
-                    "Accept": "application/json"},
-            }
-        )
-            .then(response => response.json())
-            .then(function(data){
-                setServices(data.items);
-            })
-            .catch(error => console.error(error))
-            .then()
-            .finally()
-    }
-
-    function _renderServices()
-    {
-        if(services != undefined)
-        {
-            return
-            <Picker
-                // style={{your_style}}
-                mode="dropdown"
-                selectedValue={services}
-                onValueChange={()=>{}}>
-                {services.map((key) => {
-                    return (<Picker.Item label={key.id} value={key.subject} key={key.id}/>)
-                })}
-            </Picker>
-        }
-        else
-        {
-            return <Text>Ошибка, обратитесь к администратору</Text>
-        }
-    }
-
-    function changeSelectedCatalog(selectedCatalogId, catalogName)
-    {
-        setSelectedCatalog(selectedCatalogId);
-        setSelectedCatalogName(catalogName);
-        getServices(token, selectedCatalogId);
-    }
-
-    function changeSelectedService(selectedServiceId, serviceName)
-    {
-        console.log(services);
-        // alert(selectedServiceId+' '+serviceName);
-        setSelectedService(selectedServiceId);
-        setSelectedServiceName(serviceName);
+        });
     }
 
     async function chooseFiles()
@@ -353,30 +265,6 @@ export default function OfferScreen({ navigation }) {
             .catch(error => console.error(error))
     }
 
-    async function sendFileId(reqId, sendedFileId, sendedFileName)
-    {
-        console.log('reqId');
-        console.log(reqId);
-        console.log('{"fileId": '+sendedFileId+', "typeId": 2, "descr": "'+sendedFileName+'"}');
-        fetch("http://api.smart24.kz/service-requests/v1/request/"+reqId+"/add-attachments", {
-            body: '{"fileId": '+sendedFileId+', "descr": "'+sendedFileName+'"}',
-            headers: {
-                "Content-Type": "application/json",
-                "X-Api-Key": token
-            },
-            method: "POST"
-        })
-            .then(response => response.json())
-            .then(function(data){
-                console.log('sendFileId');
-                console.log(data);
-                console.log('sendFileId');
-            })
-            .catch(error => console.error(error))
-            .then()
-            .finally()
-    }
-
     var localIndex = 0;
     var localIndexCatalog = 0;
     return (
@@ -400,69 +288,158 @@ export default function OfferScreen({ navigation }) {
             <Content style={{ paddingHorizontal: 20, backgroundColor: '#fff' }}>
                 <View style={{ paddingHorizontal: 20, backgroundColor: '#fff', marginTop: 20 }}>
                     <View style={{ marginVertical: 10 }}>
-                        {/*{_renderShifts()}*/}
-                        {/*{ _renderServices() }*/}
-                        <View style={{zIndex: 1}}>
-                            <Text>Выберите каталог</Text>
-                            {catalogs != undefined ?
-                                <RNPickerSelect
-                                    onValueChange={(itemValue, index) => {
-                                        localIndexCatalog = index-1;
-                                        if(index == 0)
-                                        {
-                                            changeSelectedCatalog('', 'Не выбрано')
-                                        }
-                                        else
-                                        {
-                                            changeSelectedCatalog(itemValue, catalogs[localIndexCatalog].name)
-                                        }
-                                    }}
-                                    items={catalogs.map(item=> ({label: item.name, value: item.id}))}
-                                    placeholder={{
-                                        label: 'Не выбрано',
-                                        value: 0,
-                                    }}
-                                >
-                                    <View style={{backgroundColor:'#F2F2F2', borderRadius: 10, padding: 10,}}>
-                                        <Text>
-                                            {selectedCatalogName}
-                                        </Text>
-                                    </View>
-                                </RNPickerSelect>
-                                :
-                                <Text>Загрузка...</Text>
-                            }
+                        <View style={{zIndex: -10, marginTop: 20}}>
+                            <Text>Тип обьявления</Text>
+                            <TextInput
+                                placeholder="Опишите услугу"
+                                onChangeText={set_id_type_sale}
+                                value={id_type_sale}
+                                style={{backgroundColor: '#F2F2F2', borderRadius: 10, padding: 10}}
+                            />
                         </View>
-                        <View style={{marginTop: 20}}>
-                            <Text>Выберите услугу</Text>
-                            {services != undefined ?
-                                <RNPickerSelect
-                                    onValueChange={(itemValue, index) => {
-                                        localIndex = index-1;
-                                        if(index == 0)
-                                        {
-                                            changeSelectedService('', 'Не выбрано')
-                                        }
-                                            else
-                                        {
-                                            changeSelectedService(itemValue, services[localIndex].subject)
-                                        }
-                                    }}
-                                    items={services.map(item=> ({label: item.subject, value: item.id}))}
-                                    placeholder={{
-                                        label: 'Не выбрано',
-                                        value: 0,
-                                    }}
-                                >
-                                    <View style={{backgroundColor:'#F2F2F2', borderRadius: 10, padding: 10,}}>
-                                        <Text>
-                                            {selectedServiceName}
-                                        </Text>
-                                    </View>
-                                </RNPickerSelect>
-                                :
-                                <Text>Загрузка...</Text>
-                            }
+                        <View style={{zIndex: -10, marginTop: 20}}>
+                            <Text>Тип недвижимости</Text>
+                            <TextInput
+                                placeholder="Опишите услугу"
+                                onChangeText={set_id_type_home}
+                                value={id_type_home}
+                                style={{backgroundColor: '#F2F2F2', borderRadius: 10, padding: 10}}
+                            />
+                        </View>
+                        <View style={{zIndex: -10, marginTop: 20}}>
+                            <Text>Кол-во комнат</Text>
+                            <TextInput
+                                placeholder="Опишите услугу"
+                                onChangeText={set_cnt_rooms}
+                                value={cnt_rooms}
+                                style={{backgroundColor: '#F2F2F2', borderRadius: 10, padding: 10}}
+                            />
+                        </View>
+                        <View style={{zIndex: -10, marginTop: 20}}>
+                            <Text>Сумма/Цена</Text>
+                            <TextInput
+                                placeholder="Опишите услугу"
+                                onChangeText={set_price}
+                                value={price}
+                                style={{backgroundColor: '#F2F2F2', borderRadius: 10, padding: 10}}
+                            />
+                        </View>
+                        <View style={{zIndex: -10, marginTop: 20}}>
+                            <Text>Город</Text>
+                            <TextInput
+                                placeholder="Опишите услугу"
+                                onChangeText={set_id_city}
+                                value={id_city}
+                                style={{backgroundColor: '#F2F2F2', borderRadius: 10, padding: 10}}
+                            />
+                        </View>
+                        <View style={{zIndex: -10, marginTop: 20}}>
+                            <Text>Жилой комплекс</Text>
+                            <TextInput
+                                placeholder="Опишите услугу"
+                                onChangeText={setOfferDescr}
+                                value={offerDescr}
+                                style={{backgroundColor: '#F2F2F2', borderRadius: 10, padding: 10}}
+                            />
+                        </View>
+                        <View style={{zIndex: -10, marginTop: 20}}>
+                            <Text>Район</Text>
+                            <TextInput
+                                placeholder="Опишите услугу"
+                                onChangeText={setOfferDescr}
+                                value={offerDescr}
+                                style={{backgroundColor: '#F2F2F2', borderRadius: 10, padding: 10}}
+                            />
+                        </View>
+                        <View style={{zIndex: -10, marginTop: 20}}>
+                            <Text>Адрес</Text>
+                            <TextInput
+                                placeholder="Опишите услугу"
+                                onChangeText={set_address}
+                                value={address}
+                                style={{backgroundColor: '#F2F2F2', borderRadius: 10, padding: 10}}
+                            />
+                        </View>
+                        <View style={{zIndex: -10, marginTop: 20}}>
+                            <Text>Общая площадь м2</Text>
+                            <TextInput
+                                placeholder="Опишите услугу"
+                                onChangeText={setOfferDescr}
+                                value={offerDescr}
+                                style={{backgroundColor: '#F2F2F2', borderRadius: 10, padding: 10}}
+                            />
+                        </View>
+                        <View style={{zIndex: -10, marginTop: 20}}>
+                            <Text>Жилая площадь м2</Text>
+                            <TextInput
+                                placeholder="Опишите услугу"
+                                onChangeText={set_living_area}
+                                value={living_area}
+                                style={{backgroundColor: '#F2F2F2', borderRadius: 10, padding: 10}}
+                            />
+                        </View>
+                        <View style={{zIndex: -10, marginTop: 20}}>
+                            <Text>Кухня м2</Text>
+                            <TextInput
+                                placeholder="Опишите услугу"
+                                onChangeText={set_kitchen_area}
+                                value={kitchen_area}
+                                style={{backgroundColor: '#F2F2F2', borderRadius: 10, padding: 10}}
+                            />
+                        </View>
+                        <View style={{zIndex: -10, marginTop: 20}}>
+                            <Text>Год постройки</Text>
+                            <TextInput
+                                placeholder=""
+                                onChangeText={set_year_construction}
+                                value={year_construction}
+                                style={{backgroundColor: '#F2F2F2', borderRadius: 10, padding: 10}}
+                            />
+                        </View>
+                        <View style={{zIndex: -10, marginTop: 20}}>
+                            <Text>Этаж</Text>
+                            <TextInput
+                                placeholder=""
+                                onChangeText={set_floor}
+                                value={floor}
+                                style={{backgroundColor: '#F2F2F2', borderRadius: 10, padding: 10}}
+                            />
+                        </View>
+                        <View style={{zIndex: -10, marginTop: 20}}>
+                            <Text>Кол-во этажей в доме</Text>
+                            <TextInput
+                                placeholder=""
+                                onChangeText={set_floor_all}
+                                value={floor_all}
+                                style={{backgroundColor: '#F2F2F2', borderRadius: 10, padding: 10}}
+                            />
+                        </View>
+                        <View style={{zIndex: -10, marginTop: 20}}>
+                            <Text>Состояние недвижимости</Text>
+                            <TextInput
+                                placeholder=""
+                                onChangeText={set_id_condit}
+                                value={id_condit}
+                                style={{backgroundColor: '#F2F2F2', borderRadius: 10, padding: 10}}
+                            />
+                        </View>
+                        <View style={{zIndex: -10, marginTop: 20}}>
+                            <Text>Добавить описание</Text>
+                            <TextInput
+                                placeholder="Описание"
+                                onChangeText={setOfferDescr}
+                                value={offerDescr}
+                                style={{backgroundColor: '#F2F2F2', borderRadius: 10, padding: 10}}
+                            />
+                        </View>
+                        <View style={{zIndex: -10, marginTop: 20}}>
+                            <Text>Номера телефонов</Text>
+                            <TextInput
+                                placeholder="Номера телефонов"
+                                onChangeText={set_phone}
+                                value={phone}
+                                style={{backgroundColor: '#F2F2F2', borderRadius: 10, padding: 10}}
+                            />
                         </View>
                         <View style={{zIndex: -10, marginTop: 20}}>
                             <TextInput
