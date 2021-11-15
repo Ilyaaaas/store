@@ -1,6 +1,6 @@
 import moment from 'moment';
 import React, { useState, useEffect } from 'react';
-import {View, StyleSheet, AsyncStorage, Picker, Platform, TextInput, TouchableOpacity, Modal} from 'react-native';
+import {View, StyleSheet, AsyncStorage, Platform, TextInput, TouchableOpacity, Modal} from 'react-native';
 import 'moment/locale/ru';
 import CalendarStrip from 'react-native-calendar-strip';
 import {AntDesign, Ionicons, FontAwesome, MaterialIcons} from '@expo/vector-icons';
@@ -25,7 +25,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as DocumentPicker from 'expo-document-picker';
-// import RNPickerSelect from 'react-native-picker-select';
 
 const BottomTab = createBottomTabNavigator();
 
@@ -51,6 +50,8 @@ export default function OfferScreen({ navigation }) {
     const form = useSelector((state) => state.form);
     const { date = [], time = '', times = [], shedId = '' } = form;
     const dispatch = useDispatch();
+    const [catalogs, setCatalogs] = useState([{id:1, name:"Doe"}, {id:2, name:"ddd2"}]);
+    const [selectedCatalog, setSelectedCatalog] = useState();
 
     const [id_type_sale, set_id_type_sale] = useState(0);
     const [id_type_home, set_id_type_home] = useState(0);
@@ -125,49 +126,48 @@ export default function OfferScreen({ navigation }) {
 
     async function chooseFiles()
     {
-        console.log('chooseFiles');
         let result = await DocumentPicker.getDocumentAsync({
             type: "*/*",
         })
         const Mydata = new FormData();
         Mydata.append('file', result);
-        console.log('tststs')
-        // setFile(Mydata);
-        // setSendFileState(true)
         var name = Mydata['_parts'][0][1].name;
         var size = Mydata['_parts'][0][1].size;
         var uri = Mydata['_parts'][0][1].uri;
-        console.log('tststs')
-        let body = new FormData();
-        body.append('file', { uri: uri, name: name, size: size, type: 'JPG' });
-        console.log('body '+uri+' '+name+' '+size);
-        fetch(
-            'http://api.smart24.kz/storage/v1/file/upload',
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'Accept': '*/*',
-                    'x-api-key': token,
-                },
-                body,
-            })
-            .then(response => {
-                console.log('fetch');
-                setSpinnerState(true);
-                return response.json()
-            })
-            .then(responseJson => {
-                setSendedFileId(responseJson.id)
-                setSendedFileName(responseJson.name)
-                console.log('responseJson2');
-                console.log(responseJson);
-            })
-            .finally(responseJson2 => {
-                    setSpinnerState(false)
-                }
-            )
-            .catch(error => console.error(error));
+        // const body = new FormData
+        // // console.log('body '+uri+' '+name+' '+size);
+        // console.log(Mydata);
+        // body.append("image", uri)
+        //
+        // fetch("https://bezrieltora.kz/api/home/upload_image", {
+        //     body,
+        //     headers: {
+        //         Authorization: "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYTgyMzZiN2Y1NzE4NzllMjBiMGMyOTA2MTkyZjE3OTAwM2I3MGY4ZThmMWRhNGEzYjU4ZWRiZTVlYjgwY2JkYTRkYTA5YjMwYzY4OGM1ZTIiLCJpYXQiOjE2MzM2NjgwMTQuNzcwODI5LCJuYmYiOjE2MzM2NjgwMTQuNzcwODc5LCJleHAiOjE2NjUyMDQwMTQuNDY5ODYsInN1YiI6IjEiLCJzY29wZXMiOltdfQ.0Sd1Baq5Pfz8VMCbm2T-rtCZZCsys2CNtr-BS-U26M9QQRvFQx_dlDIrvSzYH8G6OTxUBtJNmvTPhDajEPYW6ukTYyizg9yeq2JMY453uKByd0PqL9mvblhYcEr348OpZncWWwFPltEbMFt9tF35wpTOyFHis-vXqeX72Csz557BnBvF37kFL9G1YjiYviBM2Rnikxrzj0PIYooKXDQLj_2XQXL2NGYK70dymOQU0SKDFbfBCY-c84AeUh55XR8ZmUEhv5KUuu_ppIQKWehXO80NwfndZ7N-MbVBUQYTKCau7ZoAV8ys2Xu8J-kWmSk3bRZS5G584OgAhY-EknfR7mmC432zHSk430wvHwv0ShawTF1rYuBPb2KbzkSlm2Y-dLDe5yuY2uWqHy6WrD4bayPzCHxh9FyNpFc77VzgOzd37ShQw_9bpwjAPPkvUcxkl9RwHaQTc3J2O4GOQnG3EGdgdLqtWa0GCBh_7XXodQP32WkZYkceLf1uVJMZXYjDRdR8HaHe4nf_Qn_yl-pxICshPfNtgPy10ncJ_dlTGmZGPZmg9mh7guMaakGurBQ9KwrkSDwySOOCUsL796brpJcFzhy2uJGUyL7CKjAl187vSI5_kEFN265XQSrnkMgj1gw7bl6R60N55Ec_gJFqIIm8SNjRj3QemjCVFOz8asM",
+        //         "Content-Type": "multipart/form-data",
+        //         Token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzU0OTJjYWFlZjU3NTQzNjFmNDNkOWIxMmRlY2Q2ODRiOGRlZjA4MGJjYjUwMWU3ZjIyMmE2MjgzMjk0M2U1NjlkOTJjNTliOTc1MjM0ZWMiLCJpYXQiOjE2MzY5NTQ0ODkuMjU0MjU3LCJuYmYiOjE2MzY5NTQ0ODkuMjU0MjcwMSwiZXhwIjoxNjY4NDkwNDg5LjIyNTg4MjEsInN1YiI6IjEiLCJzY29wZXMiOltdfQ.Hqc3Pe_YixPJJmVya32sU1jlm5l1mYKGA9QqyyGnvbtHkeeF2DTjbRDmBr7JWRfK2rz2jLfC3fo4deckysqUbmGHlAXsZTwg8MfQBqwwZvspI2X2ap0_JJMB3TiXMeIXL4rdTUdU8Kla4gW4njlE0MDIvVSj-WjAcMlPwq-BjEK0OSEB_Lr3BaCazXoCAUKlVfJMV9oPUlCq5qHgf2eIzSBB01iYQGHZxNNQfmfwHmVpjDwyjM0ks4LjvnHs50bcOa8TzOepfftzeshLq0o-k3lUgWC1gg4XoKBpwr27c3LXFJZ35eqvzZYkHDteYEryq01TgGLVOASqf46dGJ94d9wIOILvfz9kdyMcGN-5ch-YOxhRjFHDaXJIaB5-RHAau-2Jgr8S-1SC8cW5e3sVcZsZZHspOMoc4zIzhB2srJqSbxHPnVlNZTeWWDYiVaiTw_ulF2Sxh8LSnqGRZhOArDVSEgWUyxK0tb_l8BPSwDh9iqo64qfeECd-rXGNQFpySyDj_W3HikE9Gf3H-F20ePVA0vKOb5WqgaBthHWV0ywJZpVRWUUBriiJqfTVYO7Q_R3BbhiDG7MBN2OkKErAKY4KCgiQ3rFQ4JTmxlGNNI-Bsy3oWuGk_Fr3fcq4BsN5Ah32pHSU0lFrfDdTljBu_MQtPPSwldRWValu79B0vzU"
+        //     },
+        //     method: "POST"
+        // })
+        // .then(response => {
+        //     console.log('fetch');
+        //     setSpinnerState(true);
+        //     console.log(response.text());
+        //     setSpinnerState(false);
+        // })
+        // .catch(error => console.error(error));
+
+        const formData = new FormData();
+        formData.append("image", uri);
+        let onmain = (images.length === 0);
+        axios.post('https://bezrieltora.kz/api/home/upload_image', formData).then(async (res) => {
+            // if (res.data.success === true) {
+                // setImages([...images, {
+                //     pic: res.data.result.image,
+                //     general: onmain,
+                // }])
+            // }
+            console.log(res.data);
+        })
     }
 
     useEffect(() => {
@@ -265,6 +265,16 @@ export default function OfferScreen({ navigation }) {
             .catch(error => console.error(error))
     }
 
+    let index = 0;
+    const data = [
+        { key: index++, section: true, label: 'Fruits' },
+        { key: index++, label: 'Red Apples' },
+        { key: index++, label: 'Cherries' },
+        { key: index++, label: 'Cranberries', accessibilityLabel: 'Tap here for cranberries' },
+        // etc...
+        // Can also add additional custom keys which are passed to the onChange callback
+        { key: index++, label: 'Vegetable', customKey: 'Not a fruit' }
+    ];
     var localIndex = 0;
     var localIndexCatalog = 0;
     return (
