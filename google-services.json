@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "945876432138",
-    "project_id": "smart24-20b5f",
-    "storage_bucket": "smart24-20b5f.appspot.com"
+    "project_number": "829940439551",
+    "project_id": "bezposrednikovkz-a0075",
+    "storage_bucket": "bezposrednikovkz-a0075.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:945876432138:android:458139208c494d258eb6f3",
+        "mobilesdk_app_id": "1:829940439551:android:fd8a54cfcab96989796fca",
         "android_client_info": {
-          "package_name": "kz.sk.smart"
+          "package_name": "com.bezrieltora.letsoft"
         }
       },
       "oauth_client": [
         {
-          "client_id": "945876432138-j69e98obg6qjifk5h48e21opv0gcphte.apps.googleusercontent.com",
+          "client_id": "829940439551-lpde15kfkl5c9omgnamsgb5ekinsgq5r.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBMymaOYMnxXuftd12JGc1-W5pbP87JRFo"
+          "current_key": "AIzaSyCgcL8YWxeB6JZg2QLnKQvrPM6hrAhZ-48"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "945876432138-j69e98obg6qjifk5h48e21opv0gcphte.apps.googleusercontent.com",
+              "client_id": "829940439551-lpde15kfkl5c9omgnamsgb5ekinsgq5r.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

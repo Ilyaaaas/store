@@ -3,7 +3,7 @@
     "name": "bezposrednikov",
     "description": "Мобильное приложение bezposrednikov",
     "slug": "bezposrednikov",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "orientation": "portrait",
     "icon": "./assets/logo/logo-512.png",
     "platforms": [
@@ -28,14 +28,14 @@
       "**/*"
     ],
     "ios": {
-      "bundleIdentifier": "kz.bezposrednikov.letsoft",
+      "bundleIdentifier": "com.bezrieltora.letsoft",
       "supportsTablet": true
     },
     "android": {
       "useNextNotificationsApi": true,
       "googleServicesFile": "./google-services.json",
-      "package": "kz.bezposrednikov.letsoft",
-      "versionCode": 1,
+      "package": "com.bezrieltora.letsoft",
+      "versionCode": 2,
       "permissions": []
     }
   }
