@@ -37,12 +37,13 @@ Notifications.setNotificationHandler({
   }),
 });
 
-export const LoginScreen = () => {
+export const LoginScreen = ({route}) => {
   const navigation = useNavigation();
   const [passView, setpassView] = useState(true);
   const [showIINS, setShowIINS] = useState(false);
   const [listLogins, setListLogins] = useState([]);
   const [login, setLogin] = useState<string>('');
+  const [fromScreenName, setFromScreenName] = useState<string>('MainITSMScreen');
   const [password, setPassword] = useState<string>('');
   const [passwordRecoveryIsVisible, setPasswordRecoveryIsVisible] = useState<boolean>(false);
 
@@ -52,6 +53,7 @@ export const LoginScreen = () => {
   const responseListener = useRef();
 
   useEffect(() => {
+    setFromScreenName(route)
     registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
 
     // This listener is fired whenever a notification is received while the app is foregrounded
@@ -144,9 +146,10 @@ export const LoginScreen = () => {
               }
               else
               {
-                console.log(json);
+                console.log('fromScreenName');
+                console.log(fromScreenName.params.fromScreen);
                 setAccessTokenFunc('@accessToken', json.result.token, json.result.user.id, json.result.user.name, expoPushToken);
-                navigation.dispatch(StackActions.replace('MainITSMScreen'));
+                navigation.dispatch(StackActions.replace(fromScreenName.params.fromScreen));
               }
             }
         )

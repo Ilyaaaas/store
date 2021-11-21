@@ -25,6 +25,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as DocumentPicker from 'expo-document-picker';
+import {StackActions} from "@react-navigation/native";
 
 const BottomTab = createBottomTabNavigator();
 
@@ -79,12 +80,30 @@ export default function OfferScreen({ navigation }) {
 
     useEffect(() => {
         console.log('start');
+        _getToken();
     }, [])
+
+    async function checkAuth()
+    {
+        alert(token);
+    }
 
     async function _getToken()
     {
-        await AsyncStorage.getItem('accessToken2').then(req => JSON.parse(req))
-            .then(json => setToken(json[0].accessToken))
+        await AsyncStorage.getItem('accessToken').then(req => JSON.parse(req))
+            .then(json =>
+                {
+                    if(json == null)
+                    {
+                        navigation.dispatch(StackActions.replace('Login', { fromScreen: 'OfferScreen' }));
+                    }
+                        else
+                    {
+                        // setToken(json[0].accessToken)
+                        navigation.dispatch(StackActions.replace('Login', { fromScreen: 'OfferScreen' }));
+                    }
+                }
+            )
             .catch(error => console.log(error))
     }
 
