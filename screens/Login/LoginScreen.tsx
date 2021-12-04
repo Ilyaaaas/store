@@ -13,6 +13,8 @@ import * as Permissions from "expo-permissions";
 import * as Notifications from "expo-notifications";
 import {useRef} from "react";
 import Constants from "expo-constants";
+import * as Google from 'expo-google-app-auth';
+import * as Facebook from 'expo-facebook';
 
 const styles = StyleSheet.create({
   secondaryButton: {
@@ -48,6 +50,9 @@ export const LoginScreen = ({route}) => {
   const [passwordRecoveryIsVisible, setPasswordRecoveryIsVisible] = useState<boolean>(false);
 
   const [expoPushToken, setExpoPushToken] = useState('');
+  const [signedIn, setSignedIn] = useState('');
+  const [name, setName] = useState('');
+  const [photoUrl, setPhotoUrl] = useState('');
   const [notification, setNotification] = useState(false);
   const notificationListener = useRef();
   const responseListener = useRef();
@@ -71,6 +76,47 @@ export const LoginScreen = ({route}) => {
       Notifications.removeNotificationSubscription(responseListener.current);
     };
   }, []);
+
+  async function signInWithFB() {
+    try {
+      await Facebook.initializeAsync({
+        appId: '619196829232714',
+      });
+      const {
+        type,
+        token,
+        expirationDate,
+        permissions,
+        declinedPermissions,
+      } = await Facebook.logInWithReadPermissionsAsync({
+        permissions: ['public_profile'],
+      });
+      if (type === 'success') {
+        const response = await fetch(`https://graph.facebook.com/me?access_token=${token}`);
+        console.log(await response.json());
+      } else {
+        // type === 'cancel'
+      }
+    } catch ({ message }) {
+      alert(`Facebook Login Error: ${message}`);
+    }
+  }
+
+  async function signInWithGoogleAsync() {
+    try {
+      const result = await Google.logInAsync({
+        androidClientId: `527529150331-rfh8fbt55ckeuh9qo0phlslbg7jmdelm.apps.googleusercontent.com`,
+      });
+
+      if (result.type === 'success') {
+        return result.accessToken;
+      } else {
+        return { cancelled: true };
+      }
+    } catch (e) {
+      return { error: true };
+    }
+  }
 
   async function registerForPushNotificationsAsync() {
     let token;
@@ -295,6 +341,18 @@ export const LoginScreen = ({route}) => {
             onPress={AlertSaveLogin}
         >
           <Text style={{ color: '#fff', textAlign: "center" }}>ВОЙТИ</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+            style={[!passwordRecoveryIsVisible && { marginTop: 1, zIndex: 100 }] && styles.btnSubmit}
+            onPress={signInWithGoogleAsync}
+        >
+          <Text style={{ color: '#fff', textAlign: "center" }}>ВОЙТИ с помощью гугл</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+            style={[!passwordRecoveryIsVisible && { marginTop: 1, zIndex: 100 }] && styles.btnSubmit}
+            onPress={signInWithFB}
+        >
+          <Text style={{ color: '#fff', textAlign: "center" }}>ВОЙТИ с помощью facebook</Text>
         </TouchableOpacity>
         {/*<Button*/}
         {/*  transparent*/}
