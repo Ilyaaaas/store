@@ -105,7 +105,8 @@ export const LoginScreen = ({route}) => {
   async function signInWithGoogleAsync() {
     try {
       const result = await Google.logInAsync({
-        androidClientId: `527529150331-rfh8fbt55ckeuh9qo0phlslbg7jmdelm.apps.googleusercontent.com`,
+        androidClientId: `527529150331-u2j3cghso61rggtia3ms38mhb3o971ut.apps.googleusercontent.com`,
+        scopes: ['profile', 'email'],
       });
 
       if (result.type === 'success') {
