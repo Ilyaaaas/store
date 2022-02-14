@@ -55,7 +55,7 @@ export default class Notifications extends React.Component{
     }
 
     _getUrl = async (url) => {
-        const API_URL = `${API}${url}`;
+        const API_URL = `https://bezrieltora.kz/api/home/get_favorite`;
         console.log('API_URL');
         console.log(API_URL);
 
@@ -127,7 +127,7 @@ export default class Notifications extends React.Component{
             <Container>
                 <Header style={styles.headerTop}>
                     <Body style={{ flex: 3 }}>
-                        <Title style={{ color: '#1a192a' }}>Сообщения</Title>
+                        <Title style={{ color: '#1a192a' }}>Избранное</Title>
                     </Body>
                 </Header>
                 <Content

@@ -9,6 +9,7 @@ import { ConfirmPrivacyPolicy } from '../../containers/ConfirmPrivacyPolicy';
 import { useAppDispatch } from '../../helpers/hooks/app-dispatch.hook';
 import { registrationAction } from '../../redux/auth.actions';
 import { inputStyle } from '../../styles/input.style';
+import {useNavigation} from "@react-navigation/native";
 
 const styles = StyleSheet.create({
   submitBtn: {
@@ -25,6 +26,7 @@ type RegistrationFormValues = typeof initialValues;
 
 export const RegistrationForm = () => {
   const dispatch = useAppDispatch();
+  const navigation = useNavigation();
 
   const handleSubmit = (values: RegistrationFormValues) => {
     let msg = '';
@@ -81,6 +83,9 @@ export const RegistrationForm = () => {
           </Form>
           <Button block onPress={props.handleSubmit} style={styles.submitBtn}>
             <Text>Продолжить</Text>
+          </Button>
+          <Button block onPress={() => navigation.navigate('Login')} style={styles.submitBtn}>
+            <Text>Войти</Text>
           </Button>
           <ConfirmPrivacyPolicy
             onChecked={(checked) => props.setFieldValue('confirmed', checked)}

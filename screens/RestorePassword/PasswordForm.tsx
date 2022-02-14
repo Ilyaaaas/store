@@ -155,6 +155,9 @@ export const PasswordForm = () => {
       <Button style={styles.submitBtn} block onPress={handleSubmit}>
         <NBText>Продолжить</NBText>
       </Button>
+      <Button style={styles.submitBtn} onPress={() => navigation.navigate('Login')}>
+        <NBText>Войти</NBText>
+      </Button>
     </>
   );
 };

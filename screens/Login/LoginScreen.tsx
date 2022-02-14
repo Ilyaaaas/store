@@ -8,7 +8,7 @@ import { AuthScreenWrapper } from '../../components/AuthScreenWrapper';
 import { IdInput } from '../../components/IdInput';
 import { authService } from '../../services/auth.service';
 import { inputStyle } from '../../styles/input.style';
-import { Entypo } from "@expo/vector-icons";
+import {AntDesign, Entypo} from "@expo/vector-icons";
 import * as Permissions from "expo-permissions";
 import * as Notifications from "expo-notifications";
 import {useRef} from "react";
@@ -21,14 +21,16 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
     fontWeight: 'bold',
     color: '#a2a3b7',
+    marginRight: 5,
+    marginLeft: 5,
   },
   btnSubmit: {
     backgroundColor: '#ffae45',
     marginTop: 2,
     paddingTop: 15,
     paddingBottom: 15,
-    borderRadius: 3
-  }
+    borderRadius: 3,
+  },
 });
 
 Notifications.setNotificationHandler({
@@ -94,6 +96,7 @@ export const LoginScreen = ({route}) => {
       if (type === 'success') {
         const response = await fetch(`https://graph.facebook.com/me?access_token=${token}`);
         console.log(await response.json());
+        handleSubmitByFB('645783406608230', 'Ilyas Akhmetov');
       } else {
         // type === 'cancel'
       }
@@ -102,9 +105,52 @@ export const LoginScreen = ({route}) => {
     }
   }
 
+  const handleSubmitByFB = async (id, name) => {
+    let data = {
+      method: 'POST',
+      body: {
+        social_name : 'facebook',
+        params:
+            {
+              id : id,
+              name : name,
+            }
+      }
+    }
+    AsyncStorage.clear();
+
+    // fetch('http://bezrieltora.kz/api/users/login', data)
+    //     .then(response => response.json())
+    //     // .then(json => {console.log(json.result)})
+    //     .then(
+    //         navigation.dispatch(StackActions.replace(fromScreenName.params.fromScreen));
+    //       json => {
+    //           if(json.result.token === undefined)
+    //           {
+    //             // alert('Введен неправильный пароль или логин');
+    //             Toast.show({
+    //               text: 'Ошибка: Неправильный логин или пароль',
+    //               buttonText: 'Ok',
+    //               type: 'danger',
+    //               duration: 3000,
+    //             });
+    //           }
+    //             else
+    //           {
+    //             console.log('fromScreenName');
+    //             console.log(fromScreenName.params.fromScreen);
+    //             setAccessTokenFunc('@accessToken', json.result.token, json.result.user.id, json.result.user.name, expoPushToken);
+    //             navigation.dispatch(StackActions.replace(fromScreenName.params.fromScreen));
+    //           }
+    //         }
+    //     )
+    // navigation.dispatch(StackActions.replace(fromScreenName.params.fromScreen));
+  };
+
   async function signInWithGoogleAsync() {
     try {
       const result = await Google.logInAsync({
+        iosClientId: `<YOUR_IOS_CLIENT_ID_FOR_EXPO>`,
         androidClientId: `527529150331-u2j3cghso61rggtia3ms38mhb3o971ut.apps.googleusercontent.com`,
         scopes: ['profile', 'email'],
       });
@@ -117,6 +163,7 @@ export const LoginScreen = ({route}) => {
     } catch (e) {
       return { error: true };
     }
+    navigation.dispatch(StackActions.replace(fromScreenName.params.fromScreen));
   }
 
   async function registerForPushNotificationsAsync() {
@@ -153,53 +200,7 @@ export const LoginScreen = ({route}) => {
   }
 
   const handleSubmit = async (onSaveLogin = false) => {
-    let data = {
-      method: 'POST',
-      credentials: 'same-origin',
-      mode: 'same-origin',
-      body: JSON.stringify({
-        // email: login,
-        // password: password,
-        email: 'admin@mail.ru',
-        password: '12345678',
-      }),
-      headers: {
-        'Accept':       'application/json',
-        'Content-Type': 'application/json',
-      }
-    }
-    let lst = {
-      'iin': login,
-      'pass': password,
-      'activ': 1
-    }
-    let loginList = JSON.stringify(lst);
-    AsyncStorage.clear();
-    AsyncStorage.setItem('login_save', loginList);
-
-    fetch('http://bezrieltora.kz/api/users/login', data)
-        .then(response => response.json())
-        // .then(json => {console.log(json.result)})
-        .then(json => {
-              if(json.result.token === undefined)
-              {
-                // alert('Введен неправильный пароль или логин');
-                Toast.show({
-                  text: 'Ошибка: Неправильный логин или пароль',
-                  buttonText: 'Ok',
-                  type: 'danger',
-                  duration: 3000,
-                });
-              }
-              else
-              {
-                console.log('fromScreenName');
-                console.log(fromScreenName.params.fromScreen);
-                setAccessTokenFunc('@accessToken', json.result.token, json.result.user.id, json.result.user.name, expoPushToken);
-                navigation.dispatch(StackActions.replace(fromScreenName.params.fromScreen));
-              }
-            }
-        )
+    navigation.dispatch(StackActions.replace('MainITSMScreen'));
   };
 
   const setAccessTokenFunc = async (key, value, userId, expoPushToken) => {
@@ -308,7 +309,6 @@ export const LoginScreen = ({route}) => {
                 style={{color: '#595758'}}
             />
           </Item>
-
           <Item regular style={inputStyle.inputItem}>
             <Input
                 placeholder="Пароль"
@@ -328,39 +328,49 @@ export const LoginScreen = ({route}) => {
             </TouchableOpacity>
           </Item>
         </Form>
-        <View style={{marginTop: 10, }}></View>
-        {/*<Button*/}
-        {/*    transparent*/}
-        {/*    block*/}
-        {/*    onPress={() => navigation.navigate('RestorePassword')}>*/}
-        {/*  <Text style={styles.secondaryButton}>Восстановить пароль</Text>*/}
-        {/*</Button>*/}
-        {/*{passwordRecoveryIsVisible && (*/}
-        {/*)}*/}
-        <TouchableOpacity
-            style={[!passwordRecoveryIsVisible && { marginTop: 1, zIndex: 100 }] && styles.btnSubmit}
-            onPress={AlertSaveLogin}
-        >
-          <Text style={{ color: '#fff', textAlign: "center" }}>ВОЙТИ</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-            style={[!passwordRecoveryIsVisible && { marginTop: 1, zIndex: 100 }] && styles.btnSubmit}
-            onPress={signInWithGoogleAsync}
-        >
-          <Text style={{ color: '#fff', textAlign: "center" }}>ВОЙТИ с помощью гугл</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-            style={[!passwordRecoveryIsVisible && { marginTop: 1, zIndex: 100 }] && styles.btnSubmit}
-            onPress={signInWithFB}
-        >
-          <Text style={{ color: '#fff', textAlign: "center" }}>ВОЙТИ с помощью facebook</Text>
-        </TouchableOpacity>
-        {/*<Button*/}
-        {/*  transparent*/}
-        {/*  block*/}
-        {/*  onPress={() => navigation.navigate('Registration')}>*/}
-        {/*  <Text style={styles.secondaryButton}>Регистрация</Text>*/}
-        {/*</Button>*/}
+        <View style={{marginTop: 10}}>
+          <TouchableOpacity
+              style={[!passwordRecoveryIsVisible && { marginTop: 1, zIndex: 100 }] && styles.btnSubmit}
+              onPress={AlertSaveLogin}
+          >
+            <Text style={{ color: '#fff', textAlign: "center" }}>ВОЙТИ</Text>
+          </TouchableOpacity>
+          <View style={{flexDirection: 'row',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        marginTop: 10,
+          }}>
+            <AntDesign
+                name="facebook-square"
+                size={34}
+                color='#a2a3b7'
+                onPress={signInWithFB}
+                style={{marginLeft: 5, marginRight: 5}}
+            />
+            <AntDesign
+                name="google"
+                size={34}
+                color='#a2a3b7'
+                onPress={signInWithGoogleAsync}
+                style={{marginLeft: 5, marginRight: 5,}}
+            />
+          </View>
+          <View style={{flexDirection: 'row',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+          }}>
+            <Button
+                transparent>
+              <Text style={styles.secondaryButton} onPress={() => navigation.navigate('RestorePassword')}>Восстановить пароль</Text>
+            </Button>
+            <Button
+                transparent
+                style={{width: 100,}}
+            >
+              <Text onPress={() => navigation.navigate('Registration')} style={styles.secondaryButton}>Регистрация</Text>
+            </Button>
+          </View>
+        </View>
       </AuthScreenWrapper>
   );
 };

@@ -7,6 +7,7 @@ import { IdInput } from '../../components/IdInput';
 import { useAppDispatch } from '../../helpers/hooks/app-dispatch.hook';
 import { refreshCodeAction } from '../../redux/auth.actions';
 import { inputStyle } from '../../styles/input.style';
+import {useNavigation} from "@react-navigation/native";
 
 const styles = StyleSheet.create({
   submitBtn: {
@@ -15,6 +16,7 @@ const styles = StyleSheet.create({
 });
 export const UserDataForm = () => {
   const dispatch = useAppDispatch();
+  const navigation = useNavigation();
 
   const [login, setLogin] = useState<string>('');
 
@@ -42,6 +44,12 @@ export const UserDataForm = () => {
         style={styles.submitBtn}
         disabled={!isCanSubmit}>
         <Text>Продолжить</Text>
+      </Button>
+      <Button
+        block
+        onPress={() => navigation.navigate('Login')}
+        style={styles.submitBtn}>
+        <Text>Войти</Text>
       </Button>
     </>
   );

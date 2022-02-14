@@ -55,7 +55,7 @@ export const RegistrationScreen = () => {
 
   return (
     <ImageBackground
-      source={require('../../assets/design/home/back.png')}
+      source={require('../../assets/design/home/back2.png')}
       style={authScreenStyles.image}>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View

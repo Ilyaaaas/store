@@ -32,14 +32,14 @@ class MainITSMScreen extends React.Component{
                         }}
                     />
                     <BottomTab.Screen name=" " component={OfferScreen}
-                                      options={{
-                                          tabBarIcon: ({ color,  }) => <MaterialCommunityIcons
-                                              name="plus-box"
-                                              size={30}
-                                              color="#1a192a"
-                                              onPress={() => this.props.navigation.navigate('OfferScreen')}
-                                          />,
-                                      }}
+                          options={{
+                              tabBarIcon: ({ color,  }) => <MaterialCommunityIcons
+                                  name="plus-box"
+                                  size={30}
+                                  color="#1a192a"
+                                  onPress={() => this.props.navigation.navigate('OfferScreen')}
+                              />,
+                          }}
                     />
                     <BottomTab.Screen name="Сообщения" component={Notifications}
                         options={{

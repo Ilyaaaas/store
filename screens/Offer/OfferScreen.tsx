@@ -53,7 +53,6 @@ export default function OfferScreen({ navigation }) {
     const dispatch = useDispatch();
     const [catalogs, setCatalogs] = useState([{id:1, name:"Doe"}, {id:2, name:"ddd2"}]);
     const [selectedCatalog, setSelectedCatalog] = useState();
-
     const [id_type_sale, set_id_type_sale] = useState(0);
     const [id_type_home, set_id_type_home] = useState(0);
     const [id_city, set_id_city] = useState(0);
@@ -83,27 +82,10 @@ export default function OfferScreen({ navigation }) {
         _getToken();
     }, [])
 
-    async function checkAuth()
-    {
-        alert(token);
-    }
-
     async function _getToken()
     {
         await AsyncStorage.getItem('accessToken').then(req => JSON.parse(req))
-            .then(json =>
-                {
-                    if(json == null)
-                    {
-                        navigation.dispatch(StackActions.replace('Login', { fromScreen: 'OfferScreen' }));
-                    }
-                        else
-                    {
-                        // setToken(json[0].accessToken)
-                        navigation.dispatch(StackActions.replace('Login', { fromScreen: 'OfferScreen' }));
-                    }
-                }
-            )
+            .then(json => {})
             .catch(error => console.log(error))
     }
 
@@ -164,11 +146,6 @@ export default function OfferScreen({ navigation }) {
         var size = Mydata['_parts'][0][1].size;
         var uri = Mydata['_parts'][0][1].uri;
         console.log(Mydata);
-        // axios.post('https://bezrieltora.kz/api/home/upload_image', formData).then(async (res) => {
-        //     setSendedFileName(name);
-        //     console.log(res.data);
-        // })
-
         formData.append('image', {
             uri: uri,
             type: 'image/jpg',
@@ -200,36 +177,6 @@ export default function OfferScreen({ navigation }) {
             }
         }
     });
-
-    async function sendFileByAxios(fileArg) {
-        var name = fileArg['_parts'][0][1].name;
-        var size = fileArg['_parts'][0][1].size;
-        var uri = fileArg['_parts'][0][1].uri;
-        let body = new FormData();
-        body.append('file', { uri: uri, name: name, size: size, type: 'JPG' });
-        console.log('333 '+uri+' '+name+' '+size);
-        await axios({
-            url    : 'http://api.smart24.kz/storage/v1/file/upload',
-            method : 'POST',
-            data   : body,
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'multipart/form-data',
-                'x-api-key': token,
-            }
-        })
-            .then(function (response) {
-                console.log("response :", response);
-                setSendedFileId(response.data.id)
-                setSendedFileName(response.data.name)
-                console.log(response.data.name);
-                console.log(response.data.id);
-            })
-            .catch(function (error) {
-                console.log('errorerror');
-                console.log(error);
-            })
-    }
 
     async function sendFile(fileArg)
     {
@@ -265,36 +212,7 @@ export default function OfferScreen({ navigation }) {
         console.log('finish');
     }
 
-    function _getPersonInfo(tokenParam, userIdParam)
-    {
-        fetch("http://api.smart24.kz/portal/v1/user/"+userIdParam+"?ccess-token="+tokenParam, {
-            headers: {
-                "Content-Type": "application/json",
-                "X-Api-Key": tokenParam
-            },
-            method: "GET"
-        })
-            .then(response => response.json())
-            .then(function(data){
-                console.log('userIdParam');
-                console.log(data.personId);
-                setPersonId(data.personId);
-            })
-            .catch(error => console.error(error))
-    }
-
     let index = 0;
-    const data = [
-        { key: index++, section: true, label: 'Fruits' },
-        { key: index++, label: 'Red Apples' },
-        { key: index++, label: 'Cherries' },
-        { key: index++, label: 'Cranberries', accessibilityLabel: 'Tap here for cranberries' },
-        // etc...
-        // Can also add additional custom keys which are passed to the onChange callback
-        { key: index++, label: 'Vegetable', customKey: 'Not a fruit' }
-    ];
-    var localIndex = 0;
-    var localIndexCatalog = 0;
     return (
         <Container>
             <Header style={styles.headerTop}>
@@ -317,153 +235,18 @@ export default function OfferScreen({ navigation }) {
                 <View style={{ paddingHorizontal: 20, backgroundColor: '#fff', marginTop: 20 }}>
                     <View style={{ marginVertical: 10 }}>
                         <View style={{zIndex: -10, marginTop: 20}}>
-                            <Text>Тип обьявления</Text>
+                            <Text>Поле 1</Text>
                             <TextInput
-                                placeholder="Опишите услугу"
-                                onChangeText={set_id_type_sale}
-                                value={id_type_sale}
-                                style={{backgroundColor: '#F2F2F2', borderRadius: 10, padding: 10}}
-                            />
-                        </View>
-                        <View style={{zIndex: -10, marginTop: 20}}>
-                            <Text>Тип недвижимости</Text>
-                            <TextInput
-                                placeholder="Опишите услугу"
-                                onChangeText={set_id_type_home}
-                                value={id_type_home}
-                                style={{backgroundColor: '#F2F2F2', borderRadius: 10, padding: 10}}
-                            />
-                        </View>
-                        <View style={{zIndex: -10, marginTop: 20}}>
-                            <Text>Кол-во комнат</Text>
-                            <TextInput
-                                placeholder="Опишите услугу"
-                                onChangeText={set_cnt_rooms}
-                                value={cnt_rooms}
-                                style={{backgroundColor: '#F2F2F2', borderRadius: 10, padding: 10}}
-                            />
-                        </View>
-                        <View style={{zIndex: -10, marginTop: 20}}>
-                            <Text>Сумма/Цена</Text>
-                            <TextInput
-                                placeholder="Опишите услугу"
-                                onChangeText={set_price}
-                                value={price}
-                                style={{backgroundColor: '#F2F2F2', borderRadius: 10, padding: 10}}
-                            />
-                        </View>
-                        <View style={{zIndex: -10, marginTop: 20}}>
-                            <Text>Город</Text>
-                            <TextInput
-                                placeholder="Опишите услугу"
-                                onChangeText={set_id_city}
-                                value={id_city}
-                                style={{backgroundColor: '#F2F2F2', borderRadius: 10, padding: 10}}
-                            />
-                        </View>
-                        <View style={{zIndex: -10, marginTop: 20}}>
-                            <Text>Жилой комплекс</Text>
-                            <TextInput
-                                placeholder="Опишите услугу"
-                                onChangeText={setOfferDescr}
-                                value={offerDescr}
-                                style={{backgroundColor: '#F2F2F2', borderRadius: 10, padding: 10}}
-                            />
-                        </View>
-                        <View style={{zIndex: -10, marginTop: 20}}>
-                            <Text>Район</Text>
-                            <TextInput
-                                placeholder="Опишите услугу"
-                                onChangeText={setOfferDescr}
-                                value={offerDescr}
-                                style={{backgroundColor: '#F2F2F2', borderRadius: 10, padding: 10}}
-                            />
-                        </View>
-                        <View style={{zIndex: -10, marginTop: 20}}>
-                            <Text>Адрес</Text>
-                            <TextInput
-                                placeholder="Опишите услугу"
+                                placeholder="Поле 1"
                                 onChangeText={set_address}
                                 value={address}
                                 style={{backgroundColor: '#F2F2F2', borderRadius: 10, padding: 10}}
                             />
                         </View>
                         <View style={{zIndex: -10, marginTop: 20}}>
-                            <Text>Общая площадь м2</Text>
+                            <Text>Поле 2</Text>
                             <TextInput
-                                placeholder="Опишите услугу"
-                                onChangeText={setOfferDescr}
-                                value={offerDescr}
-                                style={{backgroundColor: '#F2F2F2', borderRadius: 10, padding: 10}}
-                            />
-                        </View>
-                        <View style={{zIndex: -10, marginTop: 20}}>
-                            <Text>Жилая площадь м2</Text>
-                            <TextInput
-                                placeholder="Опишите услугу"
-                                onChangeText={set_living_area}
-                                value={living_area}
-                                style={{backgroundColor: '#F2F2F2', borderRadius: 10, padding: 10}}
-                            />
-                        </View>
-                        <View style={{zIndex: -10, marginTop: 20}}>
-                            <Text>Кухня м2</Text>
-                            <TextInput
-                                placeholder="Опишите услугу"
-                                onChangeText={set_kitchen_area}
-                                value={kitchen_area}
-                                style={{backgroundColor: '#F2F2F2', borderRadius: 10, padding: 10}}
-                            />
-                        </View>
-                        <View style={{zIndex: -10, marginTop: 20}}>
-                            <Text>Год постройки</Text>
-                            <TextInput
-                                placeholder=""
-                                onChangeText={set_year_construction}
-                                value={year_construction}
-                                style={{backgroundColor: '#F2F2F2', borderRadius: 10, padding: 10}}
-                            />
-                        </View>
-                        <View style={{zIndex: -10, marginTop: 20}}>
-                            <Text>Этаж</Text>
-                            <TextInput
-                                placeholder=""
-                                onChangeText={set_floor}
-                                value={floor}
-                                style={{backgroundColor: '#F2F2F2', borderRadius: 10, padding: 10}}
-                            />
-                        </View>
-                        <View style={{zIndex: -10, marginTop: 20}}>
-                            <Text>Кол-во этажей в доме</Text>
-                            <TextInput
-                                placeholder=""
-                                onChangeText={set_floor_all}
-                                value={floor_all}
-                                style={{backgroundColor: '#F2F2F2', borderRadius: 10, padding: 10}}
-                            />
-                        </View>
-                        <View style={{zIndex: -10, marginTop: 20}}>
-                            <Text>Состояние недвижимости</Text>
-                            <TextInput
-                                placeholder=""
-                                onChangeText={set_id_condit}
-                                value={id_condit}
-                                style={{backgroundColor: '#F2F2F2', borderRadius: 10, padding: 10}}
-                            />
-                        </View>
-                        <View style={{zIndex: -10, marginTop: 20}}>
-                            <Text>Добавить описание</Text>
-                            <TextInput
-                                placeholder="Описание"
-                                onChangeText={setOfferDescr}
-                                value={offerDescr}
-                                style={{backgroundColor: '#F2F2F2', borderRadius: 10, padding: 10}}
-                            />
-                        </View>
-                        <View style={{zIndex: -10, marginTop: 20}}>
-                            <Text>Номера телефонов</Text>
-                            <TextInput
-                                placeholder="Номера телефонов"
+                                placeholder="Поле 2"
                                 onChangeText={set_phone}
                                 value={phone}
                                 style={{backgroundColor: '#F2F2F2', borderRadius: 10, padding: 10}}
@@ -471,7 +254,7 @@ export default function OfferScreen({ navigation }) {
                         </View>
                         <View style={{zIndex: -10, marginTop: 20}}>
                             <TextInput
-                                placeholder="Опишите услугу"
+                                placeholder="Поле 3"
                                 multiline={true}
                                 numberOfLines={4}
                                 onChangeText={setOfferDescr}
