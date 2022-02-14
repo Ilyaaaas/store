@@ -255,7 +255,7 @@ class HomeScreen extends React.Component{
     ItemView = ({item}) => {
         return (
             // Flat List Item
-            <View style={{width: '100%', borderWidth: 1,}}>
+            <View style={{width: '50%', borderWidth: 1,}}>
                 <TouchableOpacity
                     onPress={() => alert('test')}
                 >
@@ -263,11 +263,11 @@ class HomeScreen extends React.Component{
                         <View>
                             <AntDesign name="hearto" size={24} color="black" />
                         </View>
-                        <View style={{height: 100}}>
-                            <Text>{item.title}</Text>
-                        </View>
                         <View>
                             <Image style={styles.ava_img_small} source={{uri: 'https://skstore.kz/api/getfile/'+item.id}}></Image>
+                        </View>
+                        <View style={{height: 100}}>
+                            <Text>{item.title}</Text>
                         </View>
                     </View>
                 </TouchableOpacity>
@@ -304,6 +304,7 @@ class HomeScreen extends React.Component{
         return (
             <SafeAreaView style={{flex: 1}}>
                 <FlatList
+                    numColumns={2}
                     data={this.state.list}
                     extraData={this.state.list}
                     keyExtractor={(item, index) => index.toString()}
