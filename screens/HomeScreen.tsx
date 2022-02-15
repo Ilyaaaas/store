@@ -299,9 +299,11 @@ class HomeScreen extends React.Component {
               />
             </View>
 
-            <Text style={{fontWeight: 'bold', fontSize: 12, marginTop: 10}}>
-              {item.title}
-            </Text>
+            <View style={{height: 60}}>
+              <Text style={{fontWeight: 'bold', fontSize: 12, marginTop: 10}}>
+                {item.title}
+              </Text>
+            </View>
             <View
                 style={{
                   flexDirection: 'row',
@@ -341,13 +343,7 @@ class HomeScreen extends React.Component {
 
   ItemSeparatorView = () => {
     return (
-      <View
-        style={{
-          height: 1,
-          width: '100%',
-          backgroundColor: 'blue',
-        }}
-      />
+      <View/>
     );
   };
 
@@ -722,7 +718,7 @@ const styles = StyleSheet.create({
     borderColor: 'green',
   },
   card: {
-    height: 330,
+    height: 350,
     backgroundColor: 'white',
     marginHorizontal: 2,
     borderRadius: 10,
