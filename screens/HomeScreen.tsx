@@ -74,6 +74,7 @@ class HomeScreen extends React.Component {
       listWithoutFilter: [],
       list: [],
       extraList: [],
+      currentGood: [],
       isReview: null,
       docInfo: null,
       isDocReviewSelected: null,
@@ -161,6 +162,7 @@ class HomeScreen extends React.Component {
     const pageNum = this.state.pageNum;
     const response = await fetch(
       `https://skstore.kz/api/goods?search=&page=${pageNum}&count=12&price_from=0&price_to=8000000&tru=&kato=710000000&brand=&cat=&sort=created_at+desc&filter=&otp=0`,
+      // `https://skstore.kz/mobile/goods?search=&page=${pageNum}&count=12`,
       {
         method: 'GET',
         headers: {
@@ -261,16 +263,18 @@ class HomeScreen extends React.Component {
     </View>
   );
 
-  getItem = (item) => {
-    // Function for click on an item
-    alert('Id : ' + item.id + ' Title : ' + item.title);
+  getItem = async (item: any) => {
+    this.setState({
+      currentGood: item,
+      modal: true,
+    });
   };
 
   ItemView = ({ item }) => {
     return (
         <TouchableOpacity
             activeOpacity={0.8}
-            onPress={() => alert('Details')}
+            onPress={() => this.getItem(item)}
             style={{width: '50%'}}
         >
           <View style={styles.card}>
@@ -311,7 +315,7 @@ class HomeScreen extends React.Component {
                   marginTop: 5,
                 }}>
               <Text style={{fontSize: 19, fontWeight: 'bold'}}>
-                $99
+                {item.price}
               </Text>
               <View
                   style={{
@@ -348,13 +352,13 @@ class HomeScreen extends React.Component {
   };
 
   getMoreGoods = () => {
-    console.log('getMoreGoods');
     this._getGoodsList();
   };
 
   render() {
-    {console.log(this.state.list)}
+    // {console.log(this.state.list)}
     return (
+        <Container>
       <SafeAreaView style={{ flex: 1 }}>
         <FlatList
           numColumns={2}
@@ -371,11 +375,67 @@ class HomeScreen extends React.Component {
           }}
         />
       </SafeAreaView>
+          <Modal
+              animationType={"slide"}
+              visible={this.state.modal}
+              transparent={true}
+          >
+            <View style={{
+              backgroundColor: 'rgba(30, 30, 45, 0.8)',
+              flex: 1,
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center'}}>
+              <View style={{
+                flex: 1,
+                marginTop: 90,
+              }}>
+                <View style={styles.container}>
+                  <View style={{height: 30, width: '100%', alignItems: 'center', backgroundColor: '#dfdfdf'}}>
+                    <Feather onPress={()=>this.setState({ modal: false})} name="chevrons-down" size={24} color="black" />
+                  </View>
+                  {console.log(this.state.currentGood)}
+
+                  <View>
+                    <Image
+                        source={{ uri: 'https://skstore.kz/api/getfile/' + this.state.currentGood.file_id }}
+                        style={{resizeMode: 'contain', width: 400, height: 400,}}
+                    />
+                    <View style={{paddingLeft: 20, paddingRight: 20}}>
+                      <Text style={styles.modalPrice}>{this.state.currentGood.price} тг</Text>
+                      <Text style={styles.modalItemDetail}>{this.state.currentGood.goodtitle}</Text>
+                      <Text style={styles.modalItemDetail}>{this.state.currentGood.brand}</Text>
+                      <Text style={styles.modalItemDetailTitle}>{this.state.currentGood.Postavshik}</Text>
+                      <Text style={styles.modalItemDetails}>{this.state.currentGood.cat}</Text>
+                      <Text style={styles.modalItemDetails}>{this.state.currentGood.trutitle}</Text>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            </View>
+          </Modal>
+        </Container>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  modalPrice:
+      {
+        fontSize: 20,
+      },
+  modalItemDetail:
+      {
+        fontSize: 12,
+      },
+  modalItemDetailTitle:
+      {
+        fontSize: 16,
+      },
+  modalItemDetails:
+      {
+        fontSize: 12,
+      },
   topButtonView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -439,6 +499,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    margin: 20,
+    padding: 20,
   },
   headerTop: {
     backgroundColor: '#fff',

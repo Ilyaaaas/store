@@ -21,7 +21,7 @@ class MainITSMScreen extends React.Component{
                         inactiveTintColor: '#898989',
                     }}
                     >
-                    <BottomTab.Screen name="Обьявления" component={HomeScreen}
+                    <BottomTab.Screen name="Лоты" component={HomeScreen}
                         options={{
                             tabBarIcon: ({ color }) => <MaterialIcons name="home" size={30} color={color}/>,
                         }}
