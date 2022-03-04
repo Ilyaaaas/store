@@ -1,8 +1,7 @@
 import {AsyncStorage} from "react-native";
 import moment from "moment";
 
-//export const API = 'http://api.smart24.kz/'; //Production
-export const API = 'http://bezrieltora.kz/api/'; //Test
+export const API = 'https://skstore.kz/mobile/'; //Test
 
 export const DOCTOR = 'type:doctor';
 export const SPEC_TYPE = 'type:spec-type';

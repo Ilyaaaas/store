@@ -54,6 +54,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import DatePicker from 'react-native-datepicker';
 
 import Carousel, { Pagination } from 'react-native-x2-carousel';
+import { black } from 'react-native-paper/lib/typescript/styles/colors';
 
 let ScreenHeight = Dimensions.get('window').height;
 let ScreenWidth = Dimensions.get('window').width;
@@ -75,10 +76,6 @@ class HomeScreen extends React.Component {
       list: [],
       extraList: [],
       currentGood: [],
-      isReview: null,
-      docInfo: null,
-      isDocReviewSelected: null,
-      isDocInfoSelected: null,
       modal: false,
       listGrade: [],
       activeDoc: null,
@@ -86,26 +83,9 @@ class HomeScreen extends React.Component {
       callPhone: '',
       ratingSet: 0,
       filterModal: false,
-      dataDocStatusId: 0,
-      dataDocId: 0,
-      author_name: '',
-      avaUrl: '',
       created_at: '',
       company_name: '',
-      user: {
-        fname: '',
-        sname: '',
-        section_txt: '',
-      },
-      currentPage: 0,
-      prevPage: 0,
-      firstPage: 0,
-      lastPage: 0,
-      totalPageCount: 0,
-      totalReqCount: 0,
-      reqCountInOnePage: 0,
       currentPageLink: '0',
-      authorName: [],
       topCategoryCheckedId: 1,
       userId: 0,
       exponentPushToken: '',
@@ -119,9 +99,8 @@ class HomeScreen extends React.Component {
   }
 
   _getUrl = async (url) => {
+    console.log('_getUrl');
     const API_URL = API + url;
-    // console.log('API_URL');
-    // console.log(API_URL);
 
     try {
       const response = await fetch(API_URL, {
@@ -134,35 +113,18 @@ class HomeScreen extends React.Component {
       });
 
       const responseJson = await response.json();
-      // console.log('responseJson');
-      // console.log(responseJson);
       return responseJson.result;
-      // if (responseJson !== null) {
-      //   if(responseJson.success == false){
-      //     Toast.show({
-      //       text: responseJson.message,
-      //       type: 'danger',
-      //       duration: 3000
-      //     });
-      //     return null;
-      //   }
-      //   return responseJson.result;
-      // }
     } catch (error) {
       //console.log('Error when call API: ' + error.message);
     }
     return null;
   };
 
-  changeSelectedFilterState = (selectedFilerStateId) => {
-    this.setState({ selectedFilerStateId: selectedFilerStateId });
-  };
-
-  _getGoodsList = async () => {
+  _getGoodsList = async (text = '') => {
+    console.log('_getGoodsList');
     const pageNum = this.state.pageNum;
     const response = await fetch(
-      `https://skstore.kz/api/goods?search=&page=${pageNum}&count=12&price_from=0&price_to=8000000&tru=&kato=710000000&brand=&cat=&sort=created_at+desc&filter=&otp=0`,
-      // `https://skstore.kz/mobile/goods?search=&page=${pageNum}&count=12`,
+      `https://skstore.kz/api/goods?search=${text}&page=${pageNum}&count=12&price_from=0&price_to=8000000&tru=&kato=710000000&brand=&cat=&sort=created_at+desc&filter=&otp=0`,
       {
         method: 'GET',
         headers: {
@@ -203,6 +165,7 @@ class HomeScreen extends React.Component {
   };
 
   _refreshPage = async () => {
+    console.log('refresh');
     this.setState({ refreshing: true });
     // await this._getToken();
     await this._getGoodsList();
@@ -213,57 +176,7 @@ class HomeScreen extends React.Component {
     this._refreshPage();
   }
 
-  onInfoButtonClicked = async (docid) => {
-    await this._getUrl(docid).then((value) => {
-      this.setState({
-        listGrade: value,
-        activeDoc: docid,
-        modal: true,
-      });
-    });
-  };
-
-  renderStatus = () => {
-    <Text style={{ backgroundColor: 'red' }}>test</Text>;
-  };
-
-  goToCreateReq = () => {
-    this.props.navigation.navigate('OfferScreen');
-  };
-
-  filterCategoryArchive = (categoryId) => {
-    let data = this.state.listWithoutFilter;
-
-    data = data
-      .filter(
-        (item) =>
-          item.statusId == 5 ||
-          item.statusId == 9 ||
-          item.statusId == 12 ||
-          item.statusId == 8 ||
-          item.statusId == 1
-      )
-      .map((item) => item);
-    this.setState({ list: data });
-  };
-
-  like = () => {
-    alert('like');
-  };
-
-  renderItem = (data) => (
-    <View key={data.id} style={{ height: 600 }}>
-      <Image
-        style={{ height: 600 }}
-        source={{
-          uri: 'https://bezrieltora.kz/' + data.pic,
-          height: 400,
-        }}
-      />
-    </View>
-  );
-
-  getItem = async (item: any) => {
+  getSelectedItem = async (item: any) => {
     this.setState({
       currentGood: item,
       modal: true,
@@ -272,68 +185,65 @@ class HomeScreen extends React.Component {
 
   ItemView = ({ item }) => {
     return (
-        <TouchableOpacity
-            activeOpacity={0.8}
-            onPress={() => this.getItem(item)}
-            style={{width: '50%'}}
-        >
-          <View style={styles.card}>
-            <View style={{alignItems: 'flex-end'}}>
-              <View
-                  style={{
-                    width: 30,
-                    height: 30,
-                    borderRadius: 20,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    backgroundColor: 'rgba(0,0,0,0.2) ',
-                  }}>
-                <AntDesign name="hearto" size={24} color="black" />
-              </View>
-            </View>
-
+      <TouchableOpacity
+        activeOpacity={0.8}
+        onPress={() => this.getSelectedItem(item)}
+        style={{ width: '50%' }}
+      >
+        <View style={styles.card}>
+          <View style={{ alignItems: 'flex-end' }}>
             <View
-                style={{
-                  height: 200,
-                  alignItems: 'center',
-                }}>
-              <Image
-                  source={{ uri: 'https://skstore.kz/api/getfile/' + item.file_id }}
-                  style={{flex: 1, resizeMode: 'contain', width: 100, height: 200,}}
-              />
-            </View>
-
-            <View style={{height: 60}}>
-              <Text style={{fontWeight: 'bold', fontSize: 12, marginTop: 10}}>
-                {item.title}
-              </Text>
-            </View>
-            <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  marginTop: 5,
-                }}>
-              <Text style={{fontSize: 19, fontWeight: 'bold'}}>
-                {item.price}
-              </Text>
-              <View
-                  style={{
-                    height: 25,
-                    width: 25,
-                    backgroundColor: 'green',
-                    borderRadius: 5,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                <Text
-                    style={{fontSize: 22, color: 'white', fontWeight: 'bold'}}>
-                  +
-                </Text>
-              </View>
+              style={{
+                width: 30,
+                height: 30,
+                borderRadius: 20,
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: 'rgba(0,0,0,0.2) ',
+              }}
+            >
+              <AntDesign name="hearto" size={24} color="black" />
             </View>
           </View>
-        </TouchableOpacity>
+
+          <View
+            style={{
+              height: 200,
+              alignItems: 'center',
+            }}
+          >
+            <Image
+              source={{ uri: 'https://skstore.kz/api/getfile/' + item.file_id }}
+              style={{ flex: 1, resizeMode: 'contain', width: 100, height: 200 }}
+            />
+          </View>
+
+          <View style={{ height: 60 }}>
+            <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 10 }}>{item.title}</Text>
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginTop: 5,
+            }}
+          >
+            <Text style={{ fontSize: 19, fontWeight: 'bold' }}>{item.price}</Text>
+            <View
+              style={{
+                height: 25,
+                width: 25,
+                backgroundColor: 'green',
+                borderRadius: 5,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <Text style={{ fontSize: 22, color: 'white', fontWeight: 'bold' }}>+</Text>
+            </View>
+          </View>
+        </View>
+      </TouchableOpacity>
     );
   };
 
@@ -346,96 +256,156 @@ class HomeScreen extends React.Component {
   };
 
   ItemSeparatorView = () => {
-    return (
-      <View/>
-    );
+    return <View />;
   };
 
   getMoreGoods = () => {
+    console.log('getMoreGoods')
     this._getGoodsList();
   };
 
+  searchRequest = (text) => {
+    console.log(text);
+  };
+
   render() {
-    // {console.log(this.state.list)}
+    {
+      console.log('render');
+    }
     return (
-        <Container>
-      <SafeAreaView style={{ flex: 1 }}>
-        <FlatList
-          numColumns={2}
-          data={this.state.list}
-          extraData={this.state.list}
-          keyExtractor={(item, index) => index.toString()}
-          ItemSeparatorComponent={this.ItemSeparatorView}
-          renderItem={this.ItemView}
-          ListFooterComponent={this.renderFooter}
-          // onScroll={(e) => { console.log('test') }}
-          onEndReachedThreshold={0.9}
-          onEndReached={() => {
-            this.getMoreGoods();
-          }}
-        />
-      </SafeAreaView>
-          <Modal
-              animationType={"slide"}
-              visible={this.state.modal}
-              transparent={true}
-          >
-            <View style={{
+      <Container style={{ backgroundColor: '#f6f6f6' }}>
+        <Header style={styles.headerTop}>
+          <Left></Left>
+          <Body style={{ flex: 3 }}>
+            <Title style={{ color: '#1a192a' }}>Все товары</Title>
+          </Body>
+          <Right></Right>
+        </Header>
+        <Header style={styles.headerTop}>
+          <View style={styles.topButtonView}>
+            {this.state.topCategoryCheckedId == 1 ? (
+              <Button style={styles.topButton} onPress={() => this.changeCategory(1)}>
+                <Text style={{ textAlign: 'center', color: '#535353' }}>Все</Text>
+              </Button>
+            ) : (
+              <Button style={styles.topButtonNonActive} onPress={() => this.changeCategory(1)}>
+                <Text style={{ textAlign: 'center', color: '#646464' }}>Все</Text>
+              </Button>
+            )}
+            {this.state.topCategoryCheckedId == 2 ? (
+              <Button style={styles.topButton} onPress={() => this.changeCategory(2)}>
+                <Text style={{ textAlign: 'center', color: '#535353' }}>Мои</Text>
+              </Button>
+            ) : (
+              <Button style={styles.topButtonNonActive} onPress={() => this.changeCategory(2)}>
+                <Text style={{ textAlign: 'center', color: '#646464' }}>Мои</Text>
+              </Button>
+            )}
+            {this.state.topCategoryCheckedId == 3 ? (
+              <Button style={styles.topButton} onPress={() => this.changeCategory(3)}>
+                <Text style={{ textAlign: 'center', color: '#535353' }}>Заказы</Text>
+              </Button>
+            ) : (
+              <Button style={styles.topButtonNonActive} onPress={() => this.changeCategory(3)}>
+                <Text style={{ textAlign: 'center', color: '#646464' }}>Заказы</Text>
+              </Button>
+            )}
+          </View>
+        </Header>
+        <View>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Поиск"
+            onChangeText={(text) => this.searchRequest({ text })}
+          />
+        </View>
+          <SafeAreaView style={{ flex: 1 }}>
+            <FlatList
+              style={{ paddingLeft: 10, padding: 10 }}
+              numColumns={2}
+              data={this.state.list}
+              extraData={this.state.list}
+              keyExtractor={(item, index) => index.toString()}
+              ItemSeparatorComponent={this.ItemSeparatorView}
+              renderItem={this.ItemView}
+              ListFooterComponent={this.renderFooter}
+              onEndReachedThreshold={0}
+              onEndReached={() => this.getMoreGoods()}
+            />
+          </SafeAreaView>
+        <Modal animationType={'slide'} visible={this.state.modal} transparent={true}>
+          <View
+            style={{
               backgroundColor: 'rgba(30, 30, 45, 0.8)',
               flex: 1,
               flexDirection: 'column',
               justifyContent: 'center',
-              alignItems: 'center'}}>
-              <View style={{
+              alignItems: 'center',
+            }}
+          >
+            <View
+              style={{
                 flex: 1,
                 marginTop: 90,
-              }}>
-                <View style={styles.container}>
-                  <View style={{height: 30, width: '100%', alignItems: 'center', backgroundColor: '#dfdfdf'}}>
-                    <Feather onPress={()=>this.setState({ modal: false})} name="chevrons-down" size={24} color="black" />
-                  </View>
-                  {console.log(this.state.currentGood)}
+              }}
+            >
+              <View style={styles.container}>
+                <View
+                  style={{
+                    height: 30,
+                    width: '100%',
+                    alignItems: 'center',
+                    backgroundColor: '#dfdfdf',
+                  }}
+                >
+                  <Feather
+                    onPress={() => this.setState({ modal: false })}
+                    name="chevrons-down"
+                    size={24}
+                    color="black"
+                  />
+                </View>
 
-                  <View>
-                    <Image
-                        source={{ uri: 'https://skstore.kz/api/getfile/' + this.state.currentGood.file_id }}
-                        style={{resizeMode: 'contain', width: 400, height: 400,}}
-                    />
-                    <View style={{paddingLeft: 20, paddingRight: 20}}>
-                      <Text style={styles.modalPrice}>{this.state.currentGood.price} тг</Text>
-                      <Text style={styles.modalItemDetail}>{this.state.currentGood.goodtitle}</Text>
-                      <Text style={styles.modalItemDetail}>{this.state.currentGood.brand}</Text>
-                      <Text style={styles.modalItemDetailTitle}>{this.state.currentGood.Postavshik}</Text>
-                      <Text style={styles.modalItemDetails}>{this.state.currentGood.cat}</Text>
-                      <Text style={styles.modalItemDetails}>{this.state.currentGood.trutitle}</Text>
-                    </View>
+                <View>
+                  <Image
+                    source={{
+                      uri: 'https://skstore.kz/api/getfile/' + this.state.currentGood.file_id,
+                    }}
+                    style={{ resizeMode: 'contain', width: 400, height: 400 }}
+                  />
+                  <View style={{ paddingLeft: 20, paddingRight: 20 }}>
+                    <Text style={styles.modalPrice}>{this.state.currentGood.price} тг</Text>
+                    <Text style={styles.modalItemDetail}>{this.state.currentGood.goodtitle}</Text>
+                    <Text style={styles.modalItemDetail}>{this.state.currentGood.brand}</Text>
+                    <Text style={styles.modalItemDetailTitle}>
+                      {this.state.currentGood.Postavshik}
+                    </Text>
+                    <Text style={styles.modalItemDetails}>{this.state.currentGood.cat}</Text>
+                    <Text style={styles.modalItemDetails}>{this.state.currentGood.trutitle}</Text>
                   </View>
                 </View>
               </View>
             </View>
-          </Modal>
-        </Container>
+          </View>
+        </Modal>
+      </Container>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  modalPrice:
-      {
-        fontSize: 20,
-      },
-  modalItemDetail:
-      {
-        fontSize: 12,
-      },
-  modalItemDetailTitle:
-      {
-        fontSize: 16,
-      },
-  modalItemDetails:
-      {
-        fontSize: 12,
-      },
+  modalPrice: {
+    fontSize: 20,
+  },
+  modalItemDetail: {
+    fontSize: 12,
+  },
+  modalItemDetailTitle: {
+    fontSize: 16,
+  },
+  modalItemDetails: {
+    fontSize: 12,
+  },
   topButtonView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -772,7 +742,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     justifyContent: 'space-between',
   },
-  categoryText: {fontSize: 16, color: 'grey', fontWeight: 'bold'},
+  categoryText: { fontSize: 16, color: 'grey', fontWeight: 'bold' },
   categoryTextSelected: {
     color: 'green',
     paddingBottom: 5,

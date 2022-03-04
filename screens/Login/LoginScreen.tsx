@@ -1,37 +1,28 @@
 import { useNavigation, StackActions } from '@react-navigation/native';
-import {Button, Form, Input, Item, Toast} from 'native-base';
+import { Button, Form, Input, Item, Toast } from 'native-base';
 import * as React from 'react';
-import {useEffect, useState} from 'react';
-import {Alert, AsyncStorage, FlatList, Platform, StyleSheet, Text, TouchableOpacity, View, KeyboardAvoidingView, } from 'react-native';
+import { useEffect, useState } from 'react';
+import {
+  Alert,
+  AsyncStorage,
+  FlatList,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  KeyboardAvoidingView,
+} from 'react-native';
 
 import { AuthScreenWrapper } from '../../components/AuthScreenWrapper';
-import { IdInput } from '../../components/IdInput';
-import { authService } from '../../services/auth.service';
 import { inputStyle } from '../../styles/input.style';
-import {AntDesign, Entypo} from "@expo/vector-icons";
-import * as Permissions from "expo-permissions";
-import * as Notifications from "expo-notifications";
-import {useRef} from "react";
-import Constants from "expo-constants";
+import { AntDesign, Entypo } from '@expo/vector-icons';
+import * as Notifications from 'expo-notifications';
+import { useRef } from 'react';
+import Constants from 'expo-constants';
+//авторизация через соцсети
 import * as Google from 'expo-google-app-auth';
 import * as Facebook from 'expo-facebook';
-
-const styles = StyleSheet.create({
-  secondaryButton: {
-    textDecorationLine: 'underline',
-    fontWeight: 'bold',
-    color: '#a2a3b7',
-    marginRight: 5,
-    marginLeft: 5,
-  },
-  btnSubmit: {
-    backgroundColor: '#ffae45',
-    marginTop: 2,
-    paddingTop: 15,
-    paddingBottom: 15,
-    borderRadius: 3,
-  },
-});
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -41,7 +32,7 @@ Notifications.setNotificationHandler({
   }),
 });
 
-export const LoginScreen = ({route}) => {
+export const LoginScreen = ({ route }) => {
   const navigation = useNavigation();
   const [passView, setpassView] = useState(true);
   const [showIINS, setShowIINS] = useState(false);
@@ -60,16 +51,16 @@ export const LoginScreen = ({route}) => {
   const responseListener = useRef();
 
   useEffect(() => {
-    setFromScreenName(route)
-    registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+    setFromScreenName(route);
+    registerForPushNotificationsAsync().then((token) => setExpoPushToken(token));
 
     // This listener is fired whenever a notification is received while the app is foregrounded
-    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+    notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
       setNotification(notification);
     });
 
     // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+    responseListener.current = Notifications.addNotificationResponseReceivedListener((response) => {
       console.log(response);
     });
 
@@ -109,14 +100,13 @@ export const LoginScreen = ({route}) => {
     let data = {
       method: 'POST',
       body: {
-        social_name : 'facebook',
-        params:
-            {
-              id : id,
-              name : name,
-            }
-      }
-    }
+        social_name: 'facebook',
+        params: {
+          id: id,
+          name: name,
+        },
+      },
+    };
     AsyncStorage.clear();
 
     // fetch('http://bezrieltora.kz/api/users/login', data)
@@ -180,7 +170,7 @@ export const LoginScreen = ({route}) => {
         return;
       }
       token = (await Notifications.getExpoPushTokenAsync()).data;
-      setExpoPushToken(token)
+      setExpoPushToken(token);
       console.log('token');
       console.log(token);
     } else {
@@ -200,45 +190,78 @@ export const LoginScreen = ({route}) => {
   }
 
   const handleSubmit = async (onSaveLogin = false) => {
-    navigation.dispatch(StackActions.replace('MainITSMScreen'));
+    const response = await fetch(`https://skstore.kz/mobile/login`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: JSON.stringify({
+        username: 'test',
+        password: 'qwer123',
+        device_id: '123123',
+      }),
+    }).then((responseJson2) => console.log('responseJson2'));
+
+    const responseJson = await response;
+    console.log('responseJson');
+    console.log(responseJson);
+    // fetch(`http://skstore.kz/mobile/login`, {
+    //   method: 'POST',
+    //   headers: {
+    //     Accept: 'application/json',
+    //     'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+    //   },
+    //   body: {
+    //     'username': 'test',
+    //     'password': 'qwer123',
+    //     'device_id': '123123',
+    //   },
+    // }).then(responce => console.log(responce));
   };
 
   const setAccessTokenFunc = async (key, value, userId, expoPushToken) => {
-    // AsyncStorage.clear();
+    AsyncStorage.clear();
 
     try {
       // await AsyncStorage.setItem(key, value);
-      const items = [{"accessToken": value}, {"userId": userId}, {"exponentPushToken": expoPushToken}];
-      await AsyncStorage.setItem("accessToken", JSON.stringify(items));
-    } catch(e) {
+      const items = [
+        { accessToken: value },
+        { userId: userId },
+        { exponentPushToken: expoPushToken },
+      ];
+      await AsyncStorage.setItem('accessToken', JSON.stringify(items));
+    } catch (e) {
       console.log('error');
     }
     // console.log('Done')
-  }
+  };
 
   const AlertShow = async () => {
     Alert.alert(
-        "Сохранение данных",
-        "Желаете ли Вы сохранить введенные данные на текущем устройстве?",
-        [
-          {
-            text: "Нет",
-            onPress: () => {
-              handleSubmit(false);
-            },
-            style: "cancel"
+      'Сохранение данных',
+      'Желаете ли Вы сохранить введенные данные на текущем устройстве?',
+      [
+        {
+          text: 'Нет',
+          onPress: () => {
+            handleSubmit(false);
           },
-          { text: "Да", onPress: () => {
-              handleSubmit(true);
-            }
-          }
-        ],
-        { cancelable: false }
+          style: 'cancel',
+        },
+        {
+          text: 'Да',
+          onPress: () => {
+            handleSubmit(true);
+          },
+        },
+      ],
+      { cancelable: false }
     );
-  }
+  };
 
   const AlertSaveLogin = async () => {
-    if(login.trim() == ''){
+    if (login.trim() == '') {
       Toast.show({
         text: 'Поле логин не может быть пустым!',
         type: 'danger',
@@ -246,7 +269,7 @@ export const LoginScreen = ({route}) => {
       return false;
     }
 
-    if(password.trim() == ''){
+    if (password.trim() == '') {
       Toast.show({
         text: 'Поле Пароль не может быть пустым!',
         type: 'danger',
@@ -258,7 +281,7 @@ export const LoginScreen = ({route}) => {
     let getLogin = null;
     let b = true;
 
-    if(getLogin !== null) {
+    if (getLogin !== null) {
       let lst = JSON.parse(getLogin);
       if (lst.length > 0) {
         lst.map((e) => {
@@ -268,109 +291,130 @@ export const LoginScreen = ({route}) => {
         });
       }
 
-      if(b){
+      if (b) {
         AlertShow();
-      }else{
+      } else {
         handleSubmit(true);
       }
-    }else{
+    } else {
       AlertShow();
     }
-  }
+  };
 
   const ShowHidePass = () => {
     setpassView(!passView);
-  }
+  };
 
   const getUserLogin = async () => {
     const getLogin = await AsyncStorage.getItem('login_save');
     let logineds = JSON.parse(getLogin);
 
-    if(getLogin !== null) {
+    if (getLogin !== null) {
       setLogin(logineds.iin);
       setPassword(logineds.pass);
       setListLogins(logineds);
     }
-  }
+  };
 
   useEffect(() => {
     getUserLogin();
   }, []);
 
   return (
-      <AuthScreenWrapper>
-        <Form style={{ zIndex: 2001, marginTop: 200}}>
-          <Item regular style={inputStyle.inputItem}>
-            {/*<IdInput onChangeText={(text) => setLogin(text)} value={login} />*/}
-            <Input
-                placeholder="Логин"
-                onChangeText={(text) => setLogin(text)}
-                value={login}
-                style={{color: '#595758'}}
-            />
-          </Item>
-          <Item regular style={inputStyle.inputItem}>
-            <Input
-                placeholder="Пароль"
-                onChangeText={setPassword}
-                value={password}
-                secureTextEntry={passView}
-                style={{color: '#595758'}}
-            />
-            <TouchableOpacity style={{ marginRight: 10}} onPress={ShowHidePass}>
-              {
-                passView ? (
-                    <Entypo name="eye-with-line" size={24} color="black" />
-                ) : (
-                    <Entypo name="eye" size={24} color="black" />
-                )
-              }
-            </TouchableOpacity>
-          </Item>
-        </Form>
-        <View style={{marginTop: 10}}>
-          <TouchableOpacity
-              style={[!passwordRecoveryIsVisible && { marginTop: 1, zIndex: 100 }] && styles.btnSubmit}
-              onPress={AlertSaveLogin}
-          >
-            <Text style={{ color: '#fff', textAlign: "center" }}>ВОЙТИ</Text>
+    <AuthScreenWrapper>
+      <Form style={{ zIndex: 2001, marginTop: 200 }}>
+        <Item regular style={inputStyle.inputItem}>
+          {/*<IdInput onChangeText={(text) => setLogin(text)} value={login} />*/}
+          <Input
+            placeholder="Логин"
+            onChangeText={(text) => setLogin(text)}
+            value={login}
+            style={{ color: '#595758' }}
+          />
+        </Item>
+        <Item regular style={inputStyle.inputItem}>
+          <Input
+            placeholder="Пароль"
+            onChangeText={setPassword}
+            value={password}
+            secureTextEntry={passView}
+            style={{ color: '#595758' }}
+          />
+          <TouchableOpacity style={{ marginRight: 10 }} onPress={ShowHidePass}>
+            {passView ? (
+              <Entypo name="eye-with-line" size={24} color="black" />
+            ) : (
+              <Entypo name="eye" size={24} color="black" />
+            )}
           </TouchableOpacity>
-          <View style={{flexDirection: 'row',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        marginTop: 10,
-          }}>
-            <AntDesign
-                name="facebook-square"
-                size={34}
-                color='#a2a3b7'
-                onPress={signInWithFB}
-                style={{marginLeft: 5, marginRight: 5}}
-            />
-            <AntDesign
-                name="google"
-                size={34}
-                color='#a2a3b7'
-                onPress={signInWithGoogleAsync}
-                style={{marginLeft: 5, marginRight: 5,}}
-            />
-          </View>
-          <View style={{flexDirection: 'row',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-          }}>
-            <Button
-                transparent>
-              <Text style={styles.secondaryButton} onPress={() => navigation.navigate('RestorePassword')}>Восстановить пароль</Text>
-            </Button>
-            <Button
-                transparent
-                style={{width: 100,}}
-            >
-              <Text onPress={() => navigation.navigate('Registration')} style={styles.secondaryButton}>Регистрация</Text>
-            </Button>
-          </View>
+        </Item>
+      </Form>
+      <View style={{ marginTop: 10 }}>
+        <TouchableOpacity
+          style={[!passwordRecoveryIsVisible && { marginTop: 1, zIndex: 100 }] && styles.btnSubmit}
+          onPress={AlertSaveLogin}
+        >
+          <Text style={{ color: '#fff', textAlign: 'center' }}>ВОЙТИ</Text>
+        </TouchableOpacity>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginTop: 10,
+          }}
+        >
+          <AntDesign
+            name="facebook-square"
+            size={34}
+            color="#a2a3b7"
+            onPress={signInWithFB}
+            style={{ marginLeft: 5, marginRight: 5 }}
+          />
+          <AntDesign
+            name="google"
+            size={34}
+            color="#a2a3b7"
+            onPress={signInWithGoogleAsync}
+            style={{ marginLeft: 5, marginRight: 5 }}
+          />
         </View>
-      </AuthScreenWrapper>
+        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+          <Button transparent>
+            <Text
+              style={styles.secondaryButton}
+              onPress={() => navigation.navigate('RestorePassword')}
+            >
+              Восстановить пароль
+            </Text>
+          </Button>
+          <Button transparent style={{ width: 100 }}>
+            <Text
+              onPress={() => navigation.navigate('Registration')}
+              style={styles.secondaryButton}
+            >
+              Регистрация
+            </Text>
+          </Button>
+        </View>
+      </View>
+    </AuthScreenWrapper>
   );
 };
+
+const styles = StyleSheet.create({
+  secondaryButton: {
+    textDecorationLine: 'underline',
+    fontWeight: 'bold',
+    color: '#a2a3b7',
+    marginRight: 5,
+    marginLeft: 5,
+  },
+  btnSubmit: {
+    backgroundColor: '#ffae45',
+    marginTop: 2,
+    paddingTop: 15,
+    paddingBottom: 15,
+    borderRadius: 3,
+  },
+});
