@@ -6,10 +6,9 @@ import DiaryScreen from "../screens/Diary/DiaryScreen";
 const Stack = createStackNavigator();
 
 export const DiaryStack = () => {
-    return (
-        <Stack.Navigator initialRouteName="DiaryScreen" headerMode="none">
-            <Stack.Screen name="DiaryScreen" component={DiaryScreen} />
-        </Stack.Navigator>
-    );
+  return (
+    <Stack.Navigator initialRouteName="DiaryScreen" headerMode="none">
+      <Stack.Screen name="DiaryScreen" component={DiaryScreen} />
+    </Stack.Navigator>
+  );
 };
-

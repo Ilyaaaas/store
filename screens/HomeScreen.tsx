@@ -1,32 +1,15 @@
 import {
-  SimpleLineIcons,
   Feather,
   AntDesign,
-  Ionicons,
-  MaterialIcons,
-  FontAwesome,
-  Entypo,
 } from '@expo/vector-icons';
 import {
   Container,
-  Content,
   Header,
   Left,
   Body,
   Title,
   Right,
-  Icon,
-  FooterTab,
-  Footer,
-  List,
-  ListItem,
-  ActionSheet,
-  Toast,
-  Root,
   Button,
-  Tab,
-  TabHeading,
-  Tabs,
   Spinner,
 } from 'native-base';
 import ImageCarousel from 'react-native-image-carousel';
@@ -38,32 +21,16 @@ import {
   Image,
   TouchableOpacity,
   AsyncStorage,
-  Linking,
-  RefreshControl,
   Modal,
-  ScrollView,
   TextInput,
   Dimensions,
-  AppState,
-  Platform,
   SafeAreaView,
   FlatList,
 } from 'react-native';
 import { API, getToken } from './constants';
-import DropDownPicker from 'react-native-dropdown-picker';
-import DatePicker from 'react-native-datepicker';
-
-import Carousel, { Pagination } from 'react-native-x2-carousel';
-import { black } from 'react-native-paper/lib/typescript/styles/colors';
 
 let ScreenHeight = Dimensions.get('window').height;
 let ScreenWidth = Dimensions.get('window').width;
-
-const logo = {
-  uri: 'https://reactnative.dev/img/tiny_logo.png',
-  width: 64,
-  height: 64,
-};
 
 class HomeScreen extends React.Component {
   constructor(props) {
@@ -95,6 +62,7 @@ class HomeScreen extends React.Component {
       offset: 1,
       isListEnd: false,
       pageNum: 1,
+      searchText: '',
     };
   }
 
@@ -120,11 +88,15 @@ class HomeScreen extends React.Component {
     return null;
   };
 
-  _getGoodsList = async (text = '') => {
+  _getGoodsList = async () => {
     console.log('_getGoodsList');
+    console.log(this.state.searchText);
     const pageNum = this.state.pageNum;
+    console.log(
+      `https://skstore.kz/api/goods?search=${this.state.searchText}&page=${pageNum}&count=12&price_from=0&price_to=8000000&tru=&kato=710000000&brand=&cat=&sort=created_at+desc&filter=&otp=0`
+    );
     const response = await fetch(
-      `https://skstore.kz/api/goods?search=${text}&page=${pageNum}&count=12&price_from=0&price_to=8000000&tru=&kato=710000000&brand=&cat=&sort=created_at+desc&filter=&otp=0`,
+      `https://skstore.kz/api/goods?search=${this.state.searchText}&page=${pageNum}&count=12&price_from=0&price_to=8000000&tru=&kato=710000000&brand=&cat=&sort=created_at+desc&filter=&otp=0`,
       {
         method: 'GET',
         headers: {
@@ -135,6 +107,7 @@ class HomeScreen extends React.Component {
       }
     );
     const responseJson = await response.json();
+    console.log(responseJson);
     if (this.state.list.length == 0) {
       this.setState({
         list: responseJson[0],
@@ -260,18 +233,24 @@ class HomeScreen extends React.Component {
   };
 
   getMoreGoods = () => {
-    console.log('getMoreGoods')
+    console.log('getMoreGoods');
     this._getGoodsList();
   };
 
-  searchRequest = (text) => {
-    console.log(text);
+  searchRequest = (text: { text: any }) => {
+    console.log('text');
+    console.log(text.text);
+    this.setState({
+      searchText: text.text,
+      list: [],
+      pageNum: 1,
+    });
+    console.log('searchRequest');
+
+    this._refreshPage();
   };
 
   render() {
-    {
-      console.log('render');
-    }
     return (
       <Container style={{ backgroundColor: '#f6f6f6' }}>
         <Header style={styles.headerTop}>
@@ -319,20 +298,20 @@ class HomeScreen extends React.Component {
             onChangeText={(text) => this.searchRequest({ text })}
           />
         </View>
-          <SafeAreaView style={{ flex: 1 }}>
-            <FlatList
-              style={{ paddingLeft: 10, padding: 10 }}
-              numColumns={2}
-              data={this.state.list}
-              extraData={this.state.list}
-              keyExtractor={(item, index) => index.toString()}
-              ItemSeparatorComponent={this.ItemSeparatorView}
-              renderItem={this.ItemView}
-              ListFooterComponent={this.renderFooter}
-              onEndReachedThreshold={0}
-              onEndReached={() => this.getMoreGoods()}
-            />
-          </SafeAreaView>
+        <SafeAreaView style={{ flex: 1 }}>
+          <FlatList
+            style={{ paddingLeft: 10, padding: 10 }}
+            numColumns={2}
+            data={this.state.list}
+            extraData={this.state.list}
+            keyExtractor={(item, index) => index.toString()}
+            ItemSeparatorComponent={this.ItemSeparatorView}
+            renderItem={this.ItemView}
+            ListFooterComponent={this.renderFooter}
+            onEndReachedThreshold={0}
+            onEndReached={() => this.getMoreGoods()}
+          />
+        </SafeAreaView>
         <Modal animationType={'slide'} visible={this.state.modal} transparent={true}>
           <View
             style={{
@@ -716,18 +695,6 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
-  },
-  modalPrice: {
-    fontSize: 20,
-  },
-  modalItemDetail: {
-    fontSize: 12,
-  },
-  modalItemDetailTitle: {
-    fontSize: 16,
-  },
-  modalItemDetails: {
-    fontSize: 12,
   },
   boxStyle: {
     height: 200,

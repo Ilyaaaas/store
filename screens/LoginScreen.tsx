@@ -146,7 +146,8 @@ export class Login extends React.Component {
                         marginTop: '10%',
                         marginLeft: 30,
                         marginRight: 30,
-                      }}>
+                      }}
+                    >
                       <Item
                         regular
                         style={{

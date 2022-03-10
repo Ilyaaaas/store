@@ -190,34 +190,24 @@ export const LoginScreen = ({ route }) => {
   }
 
   const handleSubmit = async (onSaveLogin = false) => {
-    const response = await fetch(`https://skstore.kz/mobile/login`, {
+    fetch(`http://skstore.kz/mobile/login`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
       },
       body: JSON.stringify({
         username: 'test',
         password: 'qwer123',
         device_id: '123123',
       }),
-    }).then((responseJson2) => console.log('responseJson2'));
+    }).then((responce) => console.log(responce));
 
-    const responseJson = await response;
-    console.log('responseJson');
-    console.log(responseJson);
-    // fetch(`http://skstore.kz/mobile/login`, {
-    //   method: 'POST',
-    //   headers: {
-    //     Accept: 'application/json',
-    //     'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-    //   },
-    //   body: {
-    //     'username': 'test',
-    //     'password': 'qwer123',
-    //     'device_id': '123123',
-    //   },
-    // }).then(responce => console.log(responce));
+    //curl -X 'POST' 'https://skstore.kz/mobile/login' -H 'accept: application/json' -H 'Content-Type: application/json' -d '{"username": "d.myrzabekWAFTEST", "password": "RootPass123@", "device_id": 12345}'
+
+    // const responseJson = await response;
+    // console.log('responseJson');
+    // console.log(responseJson);
   };
 
   const setAccessTokenFunc = async (key, value, userId, expoPushToken) => {
