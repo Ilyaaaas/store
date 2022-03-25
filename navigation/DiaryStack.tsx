@@ -1,7 +1,7 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
 
-import DiaryScreen from "../screens/Diary/DiaryScreen";
+import DiaryScreen from '../screens/Diary/DiaryScreen';
 
 const Stack = createStackNavigator();
 

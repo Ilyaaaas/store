@@ -11,7 +11,6 @@ import {
   Text,
   TouchableOpacity,
   View,
-  KeyboardAvoidingView,
 } from 'react-native';
 
 import { AuthScreenWrapper } from '../../components/AuthScreenWrapper';
@@ -108,33 +107,6 @@ export const LoginScreen = ({ route }) => {
       },
     };
     AsyncStorage.clear();
-
-    // fetch('http://bezrieltora.kz/api/users/login', data)
-    //     .then(response => response.json())
-    //     // .then(json => {console.log(json.result)})
-    //     .then(
-    //         navigation.dispatch(StackActions.replace(fromScreenName.params.fromScreen));
-    //       json => {
-    //           if(json.result.token === undefined)
-    //           {
-    //             // alert('Введен неправильный пароль или логин');
-    //             Toast.show({
-    //               text: 'Ошибка: Неправильный логин или пароль',
-    //               buttonText: 'Ok',
-    //               type: 'danger',
-    //               duration: 3000,
-    //             });
-    //           }
-    //             else
-    //           {
-    //             console.log('fromScreenName');
-    //             console.log(fromScreenName.params.fromScreen);
-    //             setAccessTokenFunc('@accessToken', json.result.token, json.result.user.id, json.result.user.name, expoPushToken);
-    //             navigation.dispatch(StackActions.replace(fromScreenName.params.fromScreen));
-    //           }
-    //         }
-    //     )
-    // navigation.dispatch(StackActions.replace(fromScreenName.params.fromScreen));
   };
 
   async function signInWithGoogleAsync() {
@@ -166,7 +138,7 @@ export const LoginScreen = ({ route }) => {
         finalStatus = status;
       }
       if (finalStatus !== 'granted') {
-        // alert('Failed to get push token for push notification!');
+        alert('Failed to get push token for push notification!');
         return;
       }
       token = (await Notifications.getExpoPushTokenAsync()).data;
@@ -174,7 +146,7 @@ export const LoginScreen = ({ route }) => {
       console.log('token');
       console.log(token);
     } else {
-      // alert('Must use physical device for Push Notifications');
+      alert('Must use physical device for Push Notifications');
     }
 
     if (Platform.OS === 'android') {
@@ -190,41 +162,26 @@ export const LoginScreen = ({ route }) => {
   }
 
   const handleSubmit = async (onSaveLogin = false) => {
-    fetch(`http://skstore.kz/mobile/login`, {
-      method: 'POST',
+    const response = await fetch('https://skstore.kz/mobile/login', {
+      body: `{"username": "d.myrzabekWAFTEST", "password": "RootPass123@", "device_id": 12345}`,
       headers: {
+        'Content-Type': 'application/json',
         Accept: 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
       },
-      body: JSON.stringify({
-        username: 'test',
-        password: 'qwer123',
-        device_id: '123123',
-      }),
-    }).then((responce) => console.log(responce));
+      method: 'POST',
+    });
+    const responseJson = await response.json();
 
-    //curl -X 'POST' 'https://skstore.kz/mobile/login' -H 'accept: application/json' -H 'Content-Type: application/json' -d '{"username": "d.myrzabekWAFTEST", "password": "RootPass123@", "device_id": 12345}'
-
-    // const responseJson = await response;
-    // console.log('responseJson');
-    // console.log(responseJson);
-  };
-
-  const setAccessTokenFunc = async (key, value, userId, expoPushToken) => {
-    AsyncStorage.clear();
-
-    try {
-      // await AsyncStorage.setItem(key, value);
-      const items = [
-        { accessToken: value },
-        { userId: userId },
-        { exponentPushToken: expoPushToken },
-      ];
-      await AsyncStorage.setItem('accessToken', JSON.stringify(items));
-    } catch (e) {
-      console.log('error');
+    if (responseJson.access_token === undefined) {
+      alert('Введен неправильный пароль или логин');
+    } else {
+      console.log(responseJson.access_token.slice(1, -1));
+      console.log(responseJson.access_token);
+      // setAccessTokenFunc('@accessToken', responseJson.access_token, responseJson.id);
+      AsyncStorage.clear();
+      AsyncStorage.setItem('accessToken', JSON.stringify(responseJson.access_token));
+      navigation.dispatch(StackActions.replace('MainITSMScreen'));
     }
-    // console.log('Done')
   };
 
   const AlertShow = async () => {

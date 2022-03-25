@@ -9,9 +9,9 @@ import { DrawerNavigator } from './DrawerNavigator';
 import { DiaryStack } from './DiaryStack';
 import { OfferStack } from './OfferStack';
 import OfferScreen from '../screens/Offer/OfferScreen';
-import MainITSMScreen from "../screens/MainITSMScreen";
+import MainITSMScreen from '../screens/MainITSMScreen';
 import { AboutStack } from './AboutStack';
-import ContactsScreen from "../screens/ContactsScreen";
+import ContactsScreen from '../screens/ContactsScreen';
 
 const Stack = createStackNavigator();
 export const StackNavigator = () => {
@@ -32,6 +32,3 @@ export const StackNavigator = () => {
     </NavigationContainer>
   );
 };
-
-
-
