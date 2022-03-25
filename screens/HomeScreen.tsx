@@ -1,18 +1,5 @@
-import {
-  Feather,
-  AntDesign,
-} from '@expo/vector-icons';
-import {
-  Container,
-  Header,
-  Left,
-  Body,
-  Title,
-  Right,
-  Button,
-  Spinner,
-} from 'native-base';
-import ImageCarousel from 'react-native-image-carousel';
+import { Feather, AntDesign } from '@expo/vector-icons';
+import { Container, Header, Left, Body, Title, Right, Button, Spinner } from 'native-base';
 import React, { useEffect } from 'react';
 import {
   StyleSheet,
