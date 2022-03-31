@@ -93,7 +93,6 @@ class Notifications extends React.Component {
 
   _getToken = async () => {
     await AsyncStorage.getItem('accessToken').then((req) =>
-      // console.log('test'+req.slice(1, -1))
       this.setState({
         token: req.slice(1, -1),
       })

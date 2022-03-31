@@ -4,14 +4,14 @@ import axios from 'axios';
 import { Button, Form, Input, Item, Toast, Text as NBText } from 'native-base';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import {StyleSheet, Text, TouchableOpacity} from 'react-native';
-import { Entypo } from "@expo/vector-icons";
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { Entypo } from '@expo/vector-icons';
 
 import { useTypedSelector } from '../../helpers/hooks/typed-selector.hook';
 import { authService } from '../../services/auth.service';
 import { inputStyle } from '../../styles/input.style';
 
-import {API} from '../constants';
+import { API } from '../constants';
 
 const styles = StyleSheet.create({
   inputDesc: {
@@ -38,7 +38,7 @@ export const PasswordForm = () => {
   const handleSubmit = async () => {
     if (!confirmPassword) {
       const prov1 = await provPassword(password);
-      if(prov1) {
+      if (prov1) {
         setIsConfirm(true);
       }
     } else {
@@ -82,17 +82,17 @@ export const PasswordForm = () => {
   };
 
   const provPassword = async (pass) => {
-    const API_URL = `${API}backend/prov_password/${pass}`
+    const API_URL = `${API}backend/prov_password/${pass}`;
     try {
       const response = await fetch(API_URL, {
         method: 'GET',
         headers: {
-          Accept: 'application/json'
+          Accept: 'application/json',
         },
       });
 
       const res = await response.text();
-      if(res !== ''){
+      if (res !== '') {
         Toast.show({
           text: res,
           type: 'danger',
@@ -107,48 +107,40 @@ export const PasswordForm = () => {
       return false;
     }
     return true;
-  }
+  };
 
   useEffect(() => {
     Toast.hide();
   }, [password]);
 
   const ShowHidePass = () => {
-    if (passView){
+    if (passView) {
       setpassView(false);
-    }else{
+    } else {
       setpassView(true);
     }
-  }
+  };
 
   return (
     <>
-      <Text style={styles.inputDesc}>
-        {isConfirm ? 'Повторите' : 'Введите новый'} пароль:
-      </Text>
+      <Text style={styles.inputDesc}>{isConfirm ? 'Повторите' : 'Введите новый'} пароль:</Text>
       <Form>
         <Item regular style={inputStyle.inputItem}>
           {isConfirm ? (
             <Input
-                secureTextEntry={passView}
+              secureTextEntry={passView}
               onChangeText={setConfirmPassword}
               value={confirmPassword}
             />
           ) : (
-            <Input
-                secureTextEntry={passView}
-              onChangeText={setPassword}
-              value={password}
-            />
+            <Input secureTextEntry={passView} onChangeText={setPassword} value={password} />
           )}
-          <TouchableOpacity style={{ marginRight: 10}} onPress={ShowHidePass}>
-            {
-              passView ? (
-                  <Entypo name="eye-with-line" size={24} color="black" />
-              ) : (
-                  <Entypo name="eye" size={24} color="black" />
-              )
-            }
+          <TouchableOpacity style={{ marginRight: 10 }} onPress={ShowHidePass}>
+            {passView ? (
+              <Entypo name="eye-with-line" size={24} color="black" />
+            ) : (
+              <Entypo name="eye" size={24} color="black" />
+            )}
           </TouchableOpacity>
         </Item>
       </Form>

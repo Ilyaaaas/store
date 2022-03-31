@@ -23,9 +23,7 @@ const TIMER_COUNT = 4 * 60;
 const getTimerText = (timer: number) => {
   const minutes = Math.floor(timer / 60);
   const seconds = timer - minutes * 60;
-  return `${minutes >= 10 ? minutes : `0${minutes}`}:${
-    seconds >= 10 ? seconds : `0${seconds}`
-  }`;
+  return `${minutes >= 10 ? minutes : `0${minutes}`}:${seconds >= 10 ? seconds : `0${seconds}`}`;
 };
 export const ConfirmCodeForm = () => {
   const dispatch = useAppDispatch();
@@ -58,9 +56,7 @@ export const ConfirmCodeForm = () => {
     );
   };
 
-  const isFailedAcceptingCode = useTypedSelector(
-    (state) => state.auth.isFailedAcceptingCode
-  );
+  const isFailedAcceptingCode = useTypedSelector((state) => state.auth.isFailedAcceptingCode);
   useEffect(() => {
     if (isFailedAcceptingCode) {
       Toast.show({ text: 'Код авторизации не совпадает', type: 'danger' });
@@ -68,9 +64,7 @@ export const ConfirmCodeForm = () => {
     }
   }, [isFailedAcceptingCode]);
 
-  const message = useTypedSelector(
-    (state) => state.auth.restorePassword.message
-  );
+  const message = useTypedSelector((state) => state.auth.restorePassword.message);
 
   return (
     <>
@@ -89,19 +83,16 @@ export const ConfirmCodeForm = () => {
         </Item>
       </Form>
       {timer ? (
-        <Text style={styles.timerText}>
-          Выслать код повторно через {getTimerText(timer)}
-        </Text>
+        <Text style={styles.timerText}>Выслать код повторно через {getTimerText(timer)}</Text>
       ) : (
-        <SecondaryButton onPress={handleResendCode}>
-          Выслать код повторно
-        </SecondaryButton>
+        <SecondaryButton onPress={handleResendCode}>Выслать код повторно</SecondaryButton>
       )}
       <Button
         disabled={code.length !== 4}
         block
         style={styles.submitBtn}
-        onPress={handleAcceptCode}>
+        onPress={handleAcceptCode}
+      >
         <Text>Продолжить</Text>
       </Button>
     </>

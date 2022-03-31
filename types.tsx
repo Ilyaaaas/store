@@ -34,5 +34,3 @@ export type TabFourParamList = {
 export type RequestDetailScreenList = {
   RequestDetailScreen: undefined;
 };
-
-

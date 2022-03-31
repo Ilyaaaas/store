@@ -9,7 +9,7 @@ import {
   ScrollView,
   Linking,
 } from 'react-native';
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { authScreenStyles } from '../../components/AuthScreenWrapper';
 import { useTypedSelector } from '../../helpers/hooks/typed-selector.hook';
@@ -35,9 +35,7 @@ enum Mode {
 
 export const RegistrationScreen = () => {
   const [mode, setMode] = useState(Mode.REGISTRATION);
-  const registrationPhone = useTypedSelector(
-    (state) => state.auth.registration.phone
-  );
+  const registrationPhone = useTypedSelector((state) => state.auth.registration.phone);
   const confirmCode = useTypedSelector((state) => state.auth.confirmCode);
 
   useEffect(() => {
@@ -48,15 +46,15 @@ export const RegistrationScreen = () => {
 
   useEffect(() => {
     if (confirmCode) {
-        setMode(Mode.PASSWORD);
+      setMode(Mode.PASSWORD);
     }
   }, [confirmCode]);
-
 
   return (
     <ImageBackground
       source={require('../../assets/design/home/back2.png')}
-      style={authScreenStyles.image}>
+      style={authScreenStyles.image}
+    >
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View
           style={{
@@ -64,14 +62,13 @@ export const RegistrationScreen = () => {
             flexDirection: 'column',
             justifyContent: 'space-around',
             paddingHorizontal: 20,
-          }}>
+          }}
+        >
           <View></View>
           <View style={{ marginTop: 150 }}>
             <H2 style={styles.header}>Регистрация</H2>
             {mode === Mode.REGISTRATION && <RegistrationForm />}
-            {mode === Mode.CONFIRM_CODE && (
-              <ConfirmCodeForm phone={registrationPhone} />
-            )}
+            {mode === Mode.CONFIRM_CODE && <ConfirmCodeForm phone={registrationPhone} />}
             {mode === Mode.PASSWORD && <PasswordForm />}
           </View>
           <View>
@@ -79,14 +76,16 @@ export const RegistrationScreen = () => {
               style={authScreenStyles.textPhone}
               onPress={() => {
                 Linking.openURL('tel:87777777777');
-              }}>
+              }}
+            >
               Телефон технической поддержки:{'\n'}8-(777)-777-77-77
             </Text>
             <Text
               style={authScreenStyles.textPhone}
               onPress={() => {
                 Linking.openURL('mailto:support@smart24.kz');
-              }}>
+              }}
+            >
               {'\n'}
               support@smart24.kz
             </Text>

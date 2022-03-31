@@ -2,8 +2,8 @@ import { Ionicons } from '@expo/vector-icons';
 // import AppLoading from 'expo-app-loading';
 import * as Font from 'expo-font';
 import { Root, Text } from 'native-base';
-import React, {useEffect, useRef, useState} from 'react';
-import {screensEnabled, ScreenContainer} from 'react-native-screens';
+import React, { useEffect, useRef, useState } from 'react';
+import { screensEnabled, ScreenContainer } from 'react-native-screens';
 import { Provider } from 'react-redux';
 import { StackNavigator } from './navigation/StackNavigator';
 
@@ -14,44 +14,44 @@ import * as Permissions from 'expo-permissions';
 screensEnabled();
 
 export default () => {
-    const [isReady, setIsReady] = useState<boolean>(false);
+  const [isReady, setIsReady] = useState<boolean>(false);
 
-    const askPermissions = async () => {
-        const {status: existingStatus} = await Permissions.getAsync(Permissions.NOTIFICATIONS);
-        let finalStatus = existingStatus;
+  const askPermissions = async () => {
+    const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+    let finalStatus = existingStatus;
 
-        if (existingStatus !== "granted") {
-            const {status} = await Permissions.askAsync(Permissions.NOTIFICATIONS);
-            finalStatus = status;
-        }
-
-        if (finalStatus !== "granted") {
-            return false;
-        }
-        return true;
+    if (existingStatus !== 'granted') {
+      const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+      finalStatus = status;
     }
 
-    useEffect(() => {
-        askPermissions();
+    if (finalStatus !== 'granted') {
+      return false;
+    }
+    return true;
+  };
 
-        Font.loadAsync({
-            Roboto: require('native-base/Fonts/Roboto.ttf'),
-            Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
-            ...Ionicons.font,
-        }).then(() => {
-            setIsReady(true);
-        });
-    }, []);
+  useEffect(() => {
+    askPermissions();
 
-    // if (!isReady) {
-    //     return <AppLoading />;
-    // }
+    Font.loadAsync({
+      Roboto: require('native-base/Fonts/Roboto.ttf'),
+      Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
+      ...Ionicons.font,
+    }).then(() => {
+      setIsReady(true);
+    });
+  }, []);
 
-    return (
-        <Provider store={store}>
-            <Root>
-                <StackNavigator />
-            </Root>
-        </Provider>
-    );
+  // if (!isReady) {
+  //     return <AppLoading />;
+  // }
+
+  return (
+    <Provider store={store}>
+      <Root>
+        <StackNavigator />
+      </Root>
+    </Provider>
+  );
 };

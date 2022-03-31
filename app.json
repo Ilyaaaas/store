@@ -33,11 +33,9 @@
     },
     "android": {
       "useNextNotificationsApi": true,
-      "googleServicesFile": "./google-services.json",
       "package": "com.skstore.kz",
       "versionCode": 1,
       "permissions": []
     }
   }
 }
-

@@ -25,8 +25,8 @@ const stackConfig = {
 const CreateITSMRequestStack = {
   CreateITSMRequest: {
     screen: CreateITSMRequest,
-  }
-}
+  },
+};
 
 const InfoStack = {
   InfoScreen: {
@@ -43,9 +43,7 @@ const DrawerRoutes = {
     screen: HomeScreen,
     navigationOptions: () => ({
       title: `Заявки`,
-      drawerIcon: ({ tintColor }) => (
-        <Icon name="home" style={{ color: tintColor }} />
-      ),
+      drawerIcon: ({ tintColor }) => <Icon name="home" style={{ color: tintColor }} />,
     }),
   },
   DoctorListStack: {
@@ -56,9 +54,7 @@ const DrawerRoutes = {
     }),
     navigationOptions: () => ({
       title: `Наши врачи`,
-      drawerIcon: ({ tintColor }) => (
-        <Icon name="doctor" style={{ color: tintColor }} />
-      ),
+      drawerIcon: ({ tintColor }) => <Icon name="doctor" style={{ color: tintColor }} />,
     }),
   },
   CreateRequest: {
@@ -69,9 +65,7 @@ const DrawerRoutes = {
     }),
     navigationOptions: () => ({
       title: `Мои записи`,
-      drawerIcon: ({ tintColor }) => (
-        <Icon name="calendar" style={{ color: tintColor }} />
-      ),
+      drawerIcon: ({ tintColor }) => <Icon name="calendar" style={{ color: tintColor }} />,
     }),
   },
 
@@ -83,9 +77,7 @@ const DrawerRoutes = {
     }),
     navigationOptions: () => ({
       title: `Рекомендации`,
-      drawerIcon: ({ tintColor }) => (
-        <Icon name="list-box" style={{ color: tintColor }} />
-      ),
+      drawerIcon: ({ tintColor }) => <Icon name="list-box" style={{ color: tintColor }} />,
     }),
   },
   ContactsStack: {
@@ -93,9 +85,7 @@ const DrawerRoutes = {
     screen: ContactsScreen,
     navigationOptions: () => ({
       title: `Контакты`,
-      drawerIcon: ({ tintColor }) => (
-        <Icon name="call" style={{ color: tintColor }} />
-      ),
+      drawerIcon: ({ tintColor }) => <Icon name="call" style={{ color: tintColor }} />,
     }),
   },
 };

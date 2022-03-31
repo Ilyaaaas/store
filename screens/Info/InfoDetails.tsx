@@ -14,12 +14,7 @@ import {
   Spinner,
 } from 'native-base';
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  ScrollView,
-  AsyncStorage,
-} from 'react-native';
+import { StyleSheet, View, ScrollView, AsyncStorage } from 'react-native';
 
 import { API, getToken } from '../constants';
 
@@ -33,7 +28,7 @@ class InfoDetails extends React.Component {
 
   _getToken = async () => {
     try {
-      getToken().then(itoken => {
+      getToken().then((itoken) => {
         this.setState({ token: itoken });
         this._getRecommendationText();
       });
@@ -64,9 +59,7 @@ class InfoDetails extends React.Component {
         }
       }
     } catch (error) {
-      console.log(
-        'Error when call API (_getRecommendationText): ' + error.message
-      );
+      console.log('Error when call API (_getRecommendationText): ' + error.message);
     }
     this.setState({ loading: false });
   };
@@ -105,13 +98,10 @@ class InfoDetails extends React.Component {
                 </Text>
               </View>
               <View style={{ marginTop: 20 }}>
-                <Text
-                  style={{ fontSize: 14, fontWeight: 'bold', marginTop: 10 }}>
+                <Text style={{ fontSize: 14, fontWeight: 'bold', marginTop: 10 }}>
                   Рекомендации
                 </Text>
-                <Text style={{ fontSize: 12 }}>
-                  {this._getOnlyText(this.state.recom_text)}
-                </Text>
+                <Text style={{ fontSize: 12 }}>{this._getOnlyText(this.state.recom_text)}</Text>
               </View>
             </ScrollView>
           )}

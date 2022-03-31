@@ -116,7 +116,6 @@ export class Login extends React.Component {
     }
   };
 
-
   componentDidMount() {
     console.log('HELLO');
   }
@@ -127,14 +126,16 @@ export class Login extends React.Component {
         <Container>
           <ImageBackground
             source={require('../assets/design/home/back.png')}
-            style={{ width: '100%', height: '100%' }}>
+            style={{ width: '100%', height: '100%' }}
+          >
             <Header style={{ elevation: 0 }} noShadow transparent />
             <Content
               contentContainerStyle={{
                 flex: 1,
                 flexDirection: 'column',
                 justifyContent: 'center',
-              }}>
+              }}
+            >
               {/* Login Form */}
               {this.state.loading ? (
                 <Spinner color="red" />
@@ -155,7 +156,8 @@ export class Login extends React.Component {
                           borderRadius: 8,
                           backgroundColor: 'white',
                           borderColor: 'white',
-                        }}>
+                        }}
+                      >
                         <Input
                           value={this.state.username}
                           onChangeText={(username) => this.setState({ username })}
@@ -169,7 +171,8 @@ export class Login extends React.Component {
                           borderRadius: 8,
                           backgroundColor: 'white',
                           borderColor: 'white',
-                        }}>
+                        }}
+                      >
                         <Input
                           value={this.state.password}
                           onChangeText={(password) => this.setState({ password })}
@@ -189,13 +192,15 @@ export class Login extends React.Component {
                       opacity: 0.5,
                       borderRadius: 16,
                     }}
-                    onPress={this.onLogin}>
+                    onPress={this.onLogin}
+                  >
                     <Text style={{ color: '#056372' }}>Войти</Text>
                   </Button>
                   <Button
                     transparent
                     block
-                    onPress={() => this.props.navigation.navigate('Registration')}>
+                    onPress={() => this.props.navigation.navigate('Registration')}
+                  >
                     <Text style={{ textDecorationLine: 'underline', fontWeight: '400' }}>
                       Регистрация
                     </Text>

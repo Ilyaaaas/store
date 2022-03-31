@@ -1,5 +1,5 @@
-import {AsyncStorage} from "react-native";
-import moment from "moment";
+import { AsyncStorage } from 'react-native';
+import moment from 'moment';
 
 export const API = 'https://skstore.kz/mobile/'; //Test
 
@@ -32,30 +32,31 @@ export const setLoginPage = () => {
 export const timeInterval = 10;
 export const timer = {
   timeStart: moment(),
-  timeEnd: moment().add(timeInterval, 'minutes')
+  timeEnd: moment().add(timeInterval, 'minutes'),
 };
 
-export async function provToken(){
-  if(moment() >= timer.timeEnd){
+export async function provToken() {
+  if (moment() >= timer.timeEnd) {
     setLoginPage();
   }
   try {
     const value = await AsyncStorage.getItem('token');
     if (value !== null) return true;
     return false;
-  }catch (e) {
+  } catch (e) {
     return false;
   }
 }
 
 export async function getToken() {
   console.log('getToken constant');
-    await AsyncStorage.getItem('accessToken').then(req => JSON.parse(req))
-        // .then(json => console.log('accessToken2 '+json[0].accessToken))
-        .then(json => {
-          return json[0].accessToken;
-        })
-        .catch(error => console.log(error));
-    console.log('getToken constant');
+  await AsyncStorage.getItem('accessToken')
+    .then((req) => JSON.parse(req))
+    // .then(json => console.log('accessToken2 '+json[0].accessToken))
+    .then((json) => {
+      return json[0].accessToken;
+    })
+    .catch((error) => console.log(error));
+  console.log('getToken constant');
   return null;
 }

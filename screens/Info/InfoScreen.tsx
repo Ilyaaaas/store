@@ -13,7 +13,8 @@ import {
   Title,
   ListItem,
   List,
-  Spinner, ActionSheet,
+  Spinner,
+  ActionSheet,
 } from 'native-base';
 import React from 'react';
 import { StyleSheet, AsyncStorage, TouchableOpacity, Image } from 'react-native';
@@ -46,7 +47,7 @@ class InfoScreen extends React.Component {
 
   _getToken = async () => {
     try {
-      getToken().then(itoken => {
+      getToken().then((itoken) => {
         this.setState({ token: itoken });
       });
     } catch (error) {
@@ -64,35 +65,40 @@ class InfoScreen extends React.Component {
         </Header>
 
         <Content>
-          <View style={{
-            flexDirection: 'row',
-            flexWrap: 'wrap',}}>
+          <View
+            style={{
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+            }}
+          >
             <TouchableOpacity
-                style={{
-                        width: '50%',
-                        padding: 10,
-                      }}
-                onPress={() => {
-                  this.props.navigation.navigate('AboutStack');
-                }}>
+              style={{
+                width: '50%',
+                padding: 10,
+              }}
+              onPress={() => {
+                this.props.navigation.navigate('AboutStack');
+              }}
+            >
               <Image
-                  resizeMode={'contain'}
-                  style={{ width: '100%', height: 300 }}
-                  source={require('../../assets/design/home/1.png')}
+                resizeMode={'contain'}
+                style={{ width: '100%', height: 300 }}
+                source={require('../../assets/design/home/1.png')}
               />
             </TouchableOpacity>
             <TouchableOpacity
-                style={{
-                        width: '50%',
-                        padding: 10,
-                      }}
-                onPress={() => {
-                  this.props.navigation.navigate('ContactsScreen');
-                }}>
+              style={{
+                width: '50%',
+                padding: 10,
+              }}
+              onPress={() => {
+                this.props.navigation.navigate('ContactsScreen');
+              }}
+            >
               <Image
-                  resizeMode={'contain'}
-                  style={{ width: '100%', height: 300 }}
-                  source={require('../../assets/design/home/2.png')}
+                resizeMode={'contain'}
+                style={{ width: '100%', height: 300 }}
+                source={require('../../assets/design/home/2.png')}
               />
             </TouchableOpacity>
           </View>
@@ -125,4 +131,3 @@ const styles = StyleSheet.create({
     marginTop: -40,
   },
 });
-

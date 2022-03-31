@@ -10,11 +10,7 @@ import {
   Platform,
   AsyncStorage,
 } from 'react-native';
-import {
-  createStackNavigator,
-  createDrawerNavigator,
-  DrawerItems,
-} from 'react-navigation';
+import { createStackNavigator, createDrawerNavigator, DrawerItems } from 'react-navigation';
 
 import { isNotUndefined } from '../screens/helpers';
 
@@ -36,13 +32,15 @@ export default function MenuCnt(props) {
         style={{
           marginVertical: 25,
           paddingTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
-        }}>
+        }}
+      >
         <Text
           style={{
             textAlignVertical: 'center',
             textAlign: 'center',
             fontSize: 20,
-          }}>
+          }}
+        >
           {isNotUndefined(data.fname) + ' ' + isNotUndefined(data.sname)}
         </Text>
       </View>
@@ -60,7 +58,8 @@ export default function MenuCnt(props) {
                   fontSize: 16,
                   fontWeight: 'bold',
                   color: '#353535',
-                }}>
+                }}
+              >
                 Выход
               </Text>
             </Body>
@@ -70,4 +69,3 @@ export default function MenuCnt(props) {
     </SafeAreaView>
   );
 }
-

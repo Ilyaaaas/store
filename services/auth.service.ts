@@ -88,9 +88,7 @@ export interface ResendCodeResponse {
   message: string;
   success: boolean;
 }
-async function resendCode(
-  params: ResendCodeParams
-): Promise<ResendCodeResponse> {
+async function resendCode(params: ResendCodeParams): Promise<ResendCodeResponse> {
   try {
     const { data } = await axios.request<ResendCodeResponse>({
       url: 'refresh_code',
