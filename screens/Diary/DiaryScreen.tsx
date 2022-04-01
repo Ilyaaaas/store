@@ -8,9 +8,7 @@ import {
   Body,
   Title,
   Right,
-  List,
   ListItem,
-  Toast,
   Accordion,
   Input,
   Button,
@@ -25,9 +23,7 @@ import {
   Image,
   Platform,
   Alert,
-  TouchableOpacityComponent,
 } from 'react-native';
-import { StackActions } from '@react-navigation/native';
 
 class DiaryScreen extends React.Component {
   state = {
@@ -43,19 +39,10 @@ class DiaryScreen extends React.Component {
       refreshing: false,
       user: {},
       list: [],
-      sortBy: 'desc',
-      activeId: 0,
       modal: false,
-      ls: {},
-      personName: '',
-      lastName: '',
-      checkBoxIsOn: true,
       pushNotif: true,
       smshNotif: true,
       emailNotif: true,
-      shuttle: true,
-      userId: 0,
-      personInfo: [],
     };
   }
 
@@ -67,46 +54,7 @@ class DiaryScreen extends React.Component {
     );
   };
 
-  getPersonId = async (personId) => {
-    console.log('this.state.personId');
-    console.log(personId);
-    const API_URL =
-      `http://api.smart24.kz/portal/v1/person/` + personId + `?access-token=` + this.state.token;
-    try {
-      const response = await fetch(API_URL, {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/x-www-form-urlencoded',
-          token: this.state.token,
-        },
-      });
-
-      const responseJson = await response.json();
-
-      if (responseJson !== null) {
-        this.setState({ personInfo: responseJson });
-      }
-    } catch (error) {
-      console.log('Error when call API: ' + error.message);
-    }
-  };
-
-  _getUserData = () => {
-    AsyncStorage.getItem('user_data').then((value) => {
-      if (value) {
-        const obj = JSON.parse(value);
-        this.setState({ user: obj });
-        console.log('obj');
-        console.log(obj);
-      }
-    });
-  };
-
   _getList = async () => {
-    console.log('this.state.token');
-    console.log(this.state.token);
-    console.log('this.state.token');
     const API_URL = `https://skstore.kz/mobile/userdata`;
     try {
       const response = await fetch(API_URL, {
@@ -120,9 +68,6 @@ class DiaryScreen extends React.Component {
 
       const responseJson = await response.json();
 
-      console.log('responseJson');
-      console.log(responseJson[0][0]);
-      console.log('responseJson');
       if (responseJson[0][0] !== null) {
         this.setState({ list: responseJson[0][0] });
       }
@@ -134,7 +79,6 @@ class DiaryScreen extends React.Component {
   _refreshPage = async () => {
     this.setState({ refreshing: true });
     await this._getToken();
-    await this._getUserData();
     this._getList();
     this.setState({ refreshing: false });
   };
@@ -156,21 +100,11 @@ class DiaryScreen extends React.Component {
 
   _renderContent = (item) => {
     return (
-      <View key={item.id} style={{ backgroundColor: '#E0E0E0', borderRadius: 5, marginBottom: 10 }}>
+      <View key={item.id} style={styles.content}>
         {item.id == '1' ? (
           <View>
-            <View
-              style={{
-                flex: 1,
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                height: 50,
-                alignItems: 'center',
-              }}
-            >
-              <Text style={{ textAlign: 'left', marginLeft: 10, color: '#898989' }}>
-                Получать PUSH уведомления
-              </Text>
+            <View style={styles.tabContent}>
+              <Text style={styles.radioTitle}>Получать PUSH уведомления</Text>
               <Switch
                 trackColor={{ false: '#767577', true: '#81b0ff' }}
                 thumbColor={'#f4f3f4'}
@@ -180,18 +114,8 @@ class DiaryScreen extends React.Component {
                 style={{ marginRight: 10 }}
               />
             </View>
-            <View
-              style={{
-                flex: 1,
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                height: 50,
-                alignItems: 'center',
-              }}
-            >
-              <Text style={{ textAlign: 'left', marginLeft: 10, color: '#898989' }}>
-                Получать SMS уведомления
-              </Text>
+            <View style={styles.settingListItem}>
+              <Text style={styles.radioTitle}>Получать SMS уведомления</Text>
               <Switch
                 trackColor={{ false: '#767577', true: '#81b0ff' }}
                 thumbColor={'#f4f3f4'}
@@ -201,18 +125,8 @@ class DiaryScreen extends React.Component {
                 style={{ marginRight: 10 }}
               />
             </View>
-            <View
-              style={{
-                flex: 1,
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                height: 50,
-                alignItems: 'center',
-              }}
-            >
-              <Text style={{ textAlign: 'left', marginLeft: 10, color: '#898989' }}>
-                Получать уведомления по почте
-              </Text>
+            <View style={styles.settingListItem}>
+              <Text style={styles.radioTitle}>Получать уведомления по почте</Text>
               <Switch
                 trackColor={{ false: '#767577', true: '#81b0ff' }}
                 thumbColor={'#f4f3f4'}
@@ -224,18 +138,8 @@ class DiaryScreen extends React.Component {
             </View>
           </View>
         ) : item.id == '2' ? (
-          <View
-            style={{
-              flex: 1,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              height: 50,
-              alignItems: 'center',
-            }}
-          >
-            <Text style={{ textAlign: 'left', marginLeft: 10, color: '#898989' }}>
-              Требуется развозка
-            </Text>
+          <View style={styles.settingListItem}>
+            <Text style={styles.radioTitle}>Требуется развозка</Text>
             <Switch
               trackColor={{ false: '#767577', true: '#81b0ff' }}
               thumbColor={'#f4f3f4'}
@@ -247,151 +151,29 @@ class DiaryScreen extends React.Component {
           </View>
         ) : (
           <View>
-            <View
-              style={{
-                flex: 1,
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                height: 50,
-                alignItems: 'center',
-                marginRight: 10,
-                marginLeft: 10,
-              }}
-            >
-              <Text style={{ textAlign: 'left', marginLeft: 10, width: 80, color: '#898989' }}>
-                Имя
-              </Text>
+            <View style={styles.settingListItem}>
+              <Text style={styles.radioTitleFixedWidth}>Почта</Text>
+              <Input style={styles.input} placeholder={'Почта'} value={this.state.list.email} />
+            </View>
+            <View style={styles.settingListItem}>
+              <Text style={styles.radioTitleFixedWidth}>Рабочий телефон</Text>
               <Input
                 style={styles.input}
-                placeholder={'Имя'}
-                value={this.state.list.username}
+                placeholder={'Рабочий телефон'}
+                value={this.state.list.phone}
               />
             </View>
-            <View
-              style={{
-                flex: 1,
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                height: 50,
-                alignItems: 'center',
-                marginRight: 10,
-                marginLeft: 10,
-              }}
-            >
-              <Text style={{ textAlign: 'left', marginLeft: 10, width: 80, color: '#898989' }}>
-                Фамилия
-              </Text>
-              <Input
-                style={styles.input}
-                placeholder={'Фамилия'}
-                value={this.state.personInfo.lastName}
-              />
-            </View>
-            <View
-              style={{
-                flex: 1,
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                height: 50,
-                alignItems: 'center',
-                marginRight: 10,
-                marginLeft: 10,
-              }}
-            >
-              <Text style={{ textAlign: 'left', marginLeft: 10, width: 80, color: '#898989' }}>
-                Отчество
-              </Text>
-              <Input
-                style={styles.input}
-                placeholder={'Отчество'}
-                value={this.state.personInfo.middleName}
-              />
-            </View>
-            <View
-              style={{
-                flex: 1,
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                height: 50,
-                alignItems: 'center',
-                marginRight: 10,
-                marginLeft: 10,
-              }}
-            >
-              <Text style={{ textAlign: 'left', marginLeft: 10, width: 80, color: '#898989' }}>
-                Почта
-              </Text>
-              <Input
-                style={styles.input}
-                placeholder={'Почта'}
-                value={this.state.personInfo.username}
-              />
-            </View>
-            <View
-              style={{
-                flex: 1,
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                height: 50,
-                alignItems: 'center',
-                marginRight: 10,
-                marginLeft: 10,
-              }}
-            >
-              <Text style={{ textAlign: 'left', marginLeft: 10, width: 80, color: '#898989' }}>
-                Рабочий телефон
-              </Text>
-              <Input style={styles.input} placeholder={'Рабочий телефон'} value="" />
-            </View>
-            <View
-              style={{
-                flex: 1,
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                height: 50,
-                alignItems: 'center',
-                marginRight: 10,
-                marginLeft: 10,
-              }}
-            >
-              <Text style={{ textAlign: 'left', marginLeft: 10, width: 80, color: '#898989' }}>
-                Мобильный телефон
-              </Text>
+            <View style={styles.settingListItem}>
+              <Text style={styles.radioTitleFixedWidth}>Мобильный телефон</Text>
               <Input style={styles.input} placeholder={'Мобильный телефон'} />
             </View>
-            <View
-              style={{
-                flex: 1,
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                height: 50,
-                alignItems: 'center',
-                marginRight: 10,
-                marginLeft: 10,
-              }}
-            >
-              <Text style={{ textAlign: 'left', marginLeft: 10, width: 80, color: '#898989' }}>
-                Номер кабинета
-              </Text>
-              <Input style={styles.input} placeholder={'Номер кабинета'} />
+            <View style={styles.settingListItem}>
+              <Text style={styles.radioTitleFixedWidth}>Адрес</Text>
+              <Input style={styles.input} placeholder={'Адрес'} value={this.state.list.address} />
             </View>
             <View>
-              <Button
-                style={{
-                  backgroundColor: '#0abb87',
-                  borderRadius: 15,
-                  shadowColor: '#989898',
-                  height: 60,
-                  padding: 20,
-                  borderWidth: 10,
-                  borderColor: '#E0E0E0',
-                  width: '100%',
-                }}
-                onPress={() => this.saveProfileInfo()}
-              >
-                <Text style={{ width: '100%', textAlign: 'center', color: '#fff', fontSize: 16 }}>
-                  Сохранить
-                </Text>
+              <Button style={styles.saveButton} onPress={() => this.saveProfileInfo()}>
+                <Text style={styles.btnText}>Сохранить</Text>
               </Button>
             </View>
           </View>
@@ -402,72 +184,18 @@ class DiaryScreen extends React.Component {
 
   _renderHeaderIOS = (item) => {
     return (
-      <View
-        key={item.id}
-        style={{
-          borderWidth: 0.2,
-          borderColor: '#898989',
-          borderRadius: 10,
-          flex: 1,
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          height: 50,
-          alignItems: 'center',
-          shadowColor: '#898989',
-          shadowOffset: {
-            width: 0,
-            height: 2,
-          },
-          shadowRadius: 2,
-          shadowOpacity: 0.5,
-          marginBottom: 10,
-          backgroundColor: 'white',
-        }}
-      >
+      <View key={item.id} style={styles.header}>
         <View style={{ width: 60 }}>
           {item.id == '0' ? (
-            <MaterialIcons
-              name="contacts"
-              size={18}
-              style={{
-                color: '#898989',
-                paddingLeft: 20,
-              }}
-            />
+            <MaterialIcons name="contacts" size={18} style={styles.materilaIcon} />
           ) : item.id == '1' ? (
-            <Ionicons
-              name="ios-settings"
-              size={18}
-              style={{
-                color: '#898989',
-                paddingLeft: 20,
-              }}
-            />
+            <Ionicons name="ios-settings" size={18} style={styles.materilaIcon} />
           ) : (
-            <MaterialIcons
-              name="airport-shuttle"
-              size={18}
-              style={{
-                color: '#898989',
-                paddingLeft: 20,
-              }}
-            />
+            <MaterialIcons name="airport-shuttle" size={18} style={styles.materilaIcon} />
           )}
         </View>
-        <Body
-          style={{ paddingLeft: -40, width: 400, alignItems: 'left', justifyContent: 'flex-start' }}
-        >
-          <Text
-            style={{
-              color: '#898989',
-              textAlign: 'left',
-              fontSize: 14,
-              justifyContent: 'flex-start',
-              alignContent: 'flex-start',
-            }}
-          >
-            {item.title}
-          </Text>
+        <Body style={styles.mainBody}>
+          <Text style={styles.accordionText}>{item.title}</Text>
         </Body>
         <Right>
           <AntDesign name="down" size={12} color="#898989" style={{ marginRight: 10 }} />
@@ -478,80 +206,20 @@ class DiaryScreen extends React.Component {
 
   _renderHeaderAndroid = (item) => {
     return (
-      <View
-        key={item.id}
-        style={{
-          borderWidth: 0.2,
-          borderColor: '#898989',
-          borderRadius: 10,
-          flex: 1,
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          height: 50,
-          alignItems: 'center',
-          shadowColor: '#898989',
-          shadowOffset: {
-            width: 0,
-            height: 2,
-          },
-          shadowRadius: 2,
-          shadowOpacity: 0.5,
-          marginBottom: 10,
-          backgroundColor: 'white',
-        }}
-      >
+      <View key={item.id} style={styles.header}>
         <View style={{ width: 60 }}>
           {item.id == '0' ? (
-            <MaterialIcons
-              name="contacts"
-              size={18}
-              style={{
-                color: '#898989',
-                paddingLeft: 20,
-              }}
-            />
+            <MaterialIcons name="contacts" size={18} style={styles.materialIcon} />
           ) : item.id == '1' ? (
-            <Ionicons
-              name="ios-settings"
-              size={18}
-              style={{
-                color: '#898989',
-                paddingLeft: 20,
-              }}
-            />
+            <Ionicons name="ios-settings" size={18} style={styles.accordionIcon} />
           ) : (
-            <MaterialIcons
-              name="airport-shuttle"
-              size={18}
-              style={{
-                color: '#898989',
-                paddingLeft: 20,
-              }}
-            />
+            <MaterialIcons name="airport-shuttle" size={18} style={styles.accordionIcon} />
           )}
         </View>
-        <Text
-          style={{
-            color: '#898989',
-            textAlign: 'left',
-            fontSize: 14,
-            justifyContent: 'flex-start',
-            alignContent: 'flex-start',
-          }}
-        >
-          {item.title}
-        </Text>
-        <AntDesign name="down" size={12} color="#898989" style={{ marginRight: 10 }} />
+        <Text style={styles.accordionText}>{item.title}</Text>
+        <AntDesign name="down" size={12} color="#898989" style={styles.accordionIconDown} />
       </View>
     );
-  };
-
-  handleChecked = () => {
-    var checkBoxState = true;
-    if (this.state.checkBoxIsOn == true) {
-      checkBoxState = false;
-    }
-    this.setState({ checkBoxIsOn: checkBoxState });
   };
 
   logout = () => {
@@ -562,7 +230,6 @@ class DiaryScreen extends React.Component {
     const dataArray = [
       { id: 0, title: 'Контакты', content: 'username' },
       { id: 1, title: 'Настройки', content: 'Нет доступных настроек' },
-      // { id: 2, title: "Развозка", content: "Нет уведомлений" }
     ];
     return (
       <Container>
@@ -576,7 +243,7 @@ class DiaryScreen extends React.Component {
               name="exit-to-app"
               size={24}
               color="#1a192a"
-              style={{ marginRight: 10 }}
+              style={styles.topIcon}
               onPress={() => {
                 this.logout();
               }}
@@ -603,12 +270,8 @@ class DiaryScreen extends React.Component {
                 ></Image>
               )}
               <View>
-                <Text style={{ fontSize: 14, color: '#898989', textAlign: 'center' }}>
-                  {this.state.list.username}
-                </Text>
-                <Text style={{ fontSize: 8, color: '#1a192a', textAlign: 'center' }}>
-                  {this.state.list.title}
-                </Text>
+                <Text style={styles.profileTitleBig}>{this.state.list.username}</Text>
+                <Text style={styles.profileTitleSmall}>{this.state.list.title}</Text>
               </View>
             </View>
           </ListItem>
@@ -616,7 +279,7 @@ class DiaryScreen extends React.Component {
             {Platform.OS === 'ios' ? (
               <Accordion
                 expanded={[4]}
-                style={{ backgroundColor: 'white', shadowColor: 'red' }}
+                style={styles.accordionItem}
                 dataArray={dataArray}
                 renderContent={this._renderContent}
                 renderHeader={this._renderHeaderIOS}
@@ -624,7 +287,7 @@ class DiaryScreen extends React.Component {
             ) : (
               <Accordion
                 expanded={[4]}
-                style={{ backgroundColor: 'white', shadowColor: 'red' }}
+                style={styles.accordionItem}
                 dataArray={dataArray}
                 renderContent={this._renderContent}
                 renderHeader={this._renderHeaderAndroid}
@@ -638,6 +301,19 @@ class DiaryScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  profileTitleBig: {
+    fontSize: 14,
+    color: '#1a192a',
+    textAlign: 'center',
+  },
+  profileTitleSmall: {
+    fontSize: 8,
+    color: '#1a192a',
+    textAlign: 'center',
+  },
+  accordionItem: {
+    backgroundColor: 'white',
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -664,6 +340,97 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     height: 30,
     backgroundColor: 'white',
+  },
+  header: {
+    borderWidth: 0.2,
+    borderColor: '#898989',
+    borderRadius: 10,
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    height: 50,
+    alignItems: 'center',
+    shadowColor: '#898989',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowRadius: 2,
+    shadowOpacity: 0.5,
+    marginBottom: 10,
+    backgroundColor: 'white',
+  },
+  tabContent: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    height: 50,
+    alignItems: 'center',
+  },
+  content: {
+    backgroundColor: '#E0E0E0',
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  radioTitle: {
+    textAlign: 'left',
+    marginLeft: 10,
+    color: '#898989',
+  },
+  radioTitleFixedWidth: {
+    textAlign: 'left',
+    marginLeft: 10,
+    width: 80,
+    color: '#898989',
+  },
+  materilaIcon: {
+    color: '#898989',
+    paddingLeft: 20,
+  },
+  mainBody: {
+    paddingLeft: -40,
+    width: 400,
+    justifyContent: 'flex-start',
+  },
+  saveButton: {
+    backgroundColor: '#0abb87',
+    borderRadius: 15,
+    shadowColor: '#989898',
+    height: 60,
+    padding: 20,
+    borderWidth: 10,
+    borderColor: '#E0E0E0',
+    width: '100%',
+  },
+  settingListItem: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    height: 50,
+    alignItems: 'center',
+  },
+  btnText: {
+    width: '100%',
+    textAlign: 'center',
+    color: '#fff',
+    fontSize: 16,
+  },
+  topIcon: {
+    marginRight: 10,
+  },
+  accordionIcon: {
+    color: '#898989',
+    paddingLeft: 20,
+  },
+  accordionText: {
+    color: '#898989',
+    textAlign: 'left',
+    fontSize: 14,
+    justifyContent: 'flex-start',
+    alignContent: 'flex-start',
+  },
+  accordionIconDown: {
+    marginRight: 10,
   },
 });
 
