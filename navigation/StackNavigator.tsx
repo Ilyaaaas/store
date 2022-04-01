@@ -10,7 +10,6 @@ import { DiaryStack } from './DiaryStack';
 import { OfferStack } from './OfferStack';
 import OfferScreen from '../screens/Offer/OfferScreen';
 import MainITSMScreen from '../screens/MainITSMScreen';
-import { AboutStack } from './AboutStack';
 import ContactsScreen from '../screens/ContactsScreen';
 
 const Stack = createStackNavigator();
@@ -26,7 +25,6 @@ export const StackNavigator = () => {
         <Stack.Screen name="DiaryStack" component={DiaryStack} />
         <Stack.Screen name="OfferStack" component={OfferStack} />
         <Stack.Screen name="OfferScreen" component={OfferScreen} />
-        <Stack.Screen name="AboutStack" component={AboutStack} />
         <Stack.Screen name="ContactsScreen" component={ContactsScreen} />
       </Stack.Navigator>
     </NavigationContainer>

@@ -1,4 +1,4 @@
-import { FontAwesome, Entypo, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
+import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import * as React from 'react';
 import { AppState, View, Text } from 'react-native';
@@ -11,7 +11,6 @@ import { getToken, provToken } from '../screens/constants';
 import ContactsScreen from '../screens/ContactsScreen';
 import HomeScreen from '../screens/HomeScreen';
 import { CustomDrawerContent } from './CustomDrawerContent';
-import { AboutStack } from './AboutStack';
 import Notifications from '../screens/Notifications';
 
 const Drawer = createDrawerNavigator();
@@ -70,17 +69,6 @@ export const DrawerNavigator = (props) => {
           drawerLabel: 'Уведомления',
           drawerIcon: ({ color, size }) => (
             <MaterialIcons name="notifications-active" size={size} color={color} />
-          ),
-        }}
-      />
-
-      <Drawer.Screen
-        name="AboutStack"
-        component={AboutStack}
-        options={{
-          drawerLabel: 'О системе',
-          drawerIcon: ({ color, size }) => (
-            <FontAwesome name="info-circle" color={color} size={size} />
           ),
         }}
       />
