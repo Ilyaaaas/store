@@ -1,13 +1,11 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore } from "@reduxjs/toolkit";
 
-import { formReducer } from '../reducers/form-reducer';
-import { authSlice } from './auth.slice';
+import { formReducer } from "../reducers/form-reducer";
 
 export const store = configureStore({
-  reducer: {
-    form: formReducer,
-    auth: authSlice.reducer,
-  },
+    reducer: {
+        form: formReducer,
+    },
 });
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
