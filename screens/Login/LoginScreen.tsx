@@ -174,11 +174,9 @@ export const LoginScreen = ({ route }) => {
         if (responseJson.access_token === undefined) {
             alert("Введен неправильный пароль или логин");
         } else {
-            console.log(responseJson.access_token.slice(1, -1));
-            console.log(responseJson.access_token);
-            // setAccessTokenFunc('@accessToken', responseJson.access_token, responseJson.id);
+            const access_token = responseJson.access_token;
             AsyncStorage.clear();
-            AsyncStorage.setItem("accessToken", JSON.stringify(responseJson.access_token));
+            AsyncStorage.setItem("accessToken", access_token);
             navigation.dispatch(StackActions.replace("MainITSMScreen"));
         }
     };

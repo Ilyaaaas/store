@@ -91,13 +91,11 @@ class Notifications extends React.Component {
       }
   };
 
-  _getToken = async () => {
-      await AsyncStorage.getItem("accessToken").then((req) =>
-          this.setState({
-              token: req.slice(1, -1),
-          })
-      );
-  };
+    _getToken = async () => {
+        await getToken().then(req => {
+            this.setState({token: req});
+        });
+    };
 
   _refreshPage = async () => {
       this.setState({ refreshing: true });

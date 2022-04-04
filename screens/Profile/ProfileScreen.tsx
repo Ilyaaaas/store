@@ -24,6 +24,7 @@ import {
     Platform,
     Alert,
 } from "react-native";
+import { API, getToken } from "../constants";
 
 class ProfileScreen extends React.Component {
   state = {
@@ -47,15 +48,15 @@ class ProfileScreen extends React.Component {
   }
 
   _getToken = async () => {
-      await AsyncStorage.getItem("accessToken").then((req) =>
-          this.setState({
-              token: req.slice(1, -1),
-          })
+      await getToken().then(req => {
+          this.setState({token: req});
+      }
       );
   };
 
   _getList = async () => {
-      const API_URL = "https://skstore.kz/mobile/userdata";
+      const command = "userdata";
+      const API_URL = API+command;
       try {
           const response = await fetch(API_URL, {
               method: "GET",

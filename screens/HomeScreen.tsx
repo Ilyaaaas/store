@@ -53,35 +53,8 @@ class HomeScreen extends React.Component {
         };
     }
 
-  _getUrl = async (url) => {
-      console.log("_getUrl");
-      const API_URL = API + url;
-
-      try {
-          const response = await fetch(API_URL, {
-              method: "GET",
-              headers: {
-                  Accept: "application/json",
-                  "Content-Type": "application/x-www-form-urlencoded",
-                  token: this.state.token,
-              },
-          });
-
-          const responseJson = await response.json();
-          return responseJson.result;
-      } catch (error) {
-      //console.log('Error when call API: ' + error.message);
-      }
-      return null;
-  };
-
   _getGoodsList = async () => {
-      console.log("_getGoodsList");
-      console.log(this.state.searchText);
       const pageNum = this.state.pageNum;
-      console.log(
-          `https://skstore.kz/api/goods?search=${this.state.searchText}&page=${pageNum}&count=12&price_from=0&price_to=8000000&tru=&kato=710000000&brand=&cat=&sort=created_at+desc&filter=&otp=0`
-      );
       const response = await fetch(
           `https://skstore.kz/api/goods?search=${this.state.searchText}&page=${pageNum}&count=12&price_from=0&price_to=8000000&tru=&kato=710000000&brand=&cat=&sort=created_at+desc&filter=&otp=0`,
           {
@@ -94,7 +67,6 @@ class HomeScreen extends React.Component {
           }
       );
       const responseJson = await response.json();
-      console.log(responseJson);
       if (this.state.list.length == 0) {
           this.setState({
               list: responseJson[0],
@@ -108,24 +80,13 @@ class HomeScreen extends React.Component {
       }
   };
 
-  _getToken = async () => {
-      await AsyncStorage.getItem("accessToken")
-          .then((req) => JSON.parse(req))
-          .then((json) =>
-              this.setState({
-                  token: json[0].accessToken,
-                  userId: json[1].userId,
-                  // exponentPushToken: json[2].exponentPushToken.substring(18, json[2].exponentPushToken.length - 1)
-              })
-          )
-      // .then(json => {
-      //   console.log(json)
-      // })
-          .catch((error) => console.log(error));
-  };
+    _getToken = async () => {
+        await getToken().then(req => {
+            this.setState({token: req});
+        });
+    };
 
   _refreshPage = async () => {
-      console.log("refresh");
       this.setState({ refreshing: true });
       // await this._getToken();
       await this._getGoodsList();
@@ -220,19 +181,15 @@ class HomeScreen extends React.Component {
   };
 
   getMoreGoods = () => {
-      console.log("getMoreGoods");
       this._getGoodsList();
   };
 
   searchRequest = (text: { text: any }) => {
-      console.log("text");
-      console.log(text.text);
       this.setState({
           searchText: text.text,
           list: [],
           pageNum: 1,
       });
-      console.log("searchRequest");
 
       this._refreshPage();
   };
@@ -245,7 +202,14 @@ class HomeScreen extends React.Component {
                   <Body style={{ flex: 3 }}>
                       <Title style={{ color: "#1a192a" }}>Все товары</Title>
                   </Body>
-                  <Right></Right>
+                  <Right>
+                      <AntDesign
+                          name="filter"
+                          size={24}
+                          color="#1a192a"
+                          style={{marginRight: 10}}
+                      />
+                  </Right>
               </Header>
               <Header style={styles.headerTop}>
                   <View style={styles.topButtonView}>
@@ -318,20 +282,19 @@ class HomeScreen extends React.Component {
                           <View style={styles.container}>
                               <View
                                   style={{
-                                      height: 30,
                                       width: "100%",
                                       alignItems: "center",
-                                      backgroundColor: "#dfdfdf",
+                                      backgroundColor: "#e7e5e5",
+                                      paddingTop: 0,
                                   }}
                               >
-                                  <Feather
+                                  <AntDesign
                                       onPress={() => this.setState({ modal: false })}
-                                      name="chevrons-down"
-                                      size={24}
+                                      name="minus"
+                                      size={44}
                                       color="black"
                                   />
                               </View>
-
                               <View>
                                   <Image
                                       source={{
@@ -435,8 +398,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#fff",
-        margin: 20,
-        padding: 20,
     },
     headerTop: {
         backgroundColor: "#fff",
