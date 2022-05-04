@@ -13,8 +13,11 @@ import {
     Dimensions,
     SafeAreaView,
     FlatList,
+    ScrollView, Platform,
 } from "react-native";
 import { API, getToken } from "./constants";
+import SwipeUpDownModal from "react-native-swipe-modal-up-down";
+import Select from "native-base";
 
 const ScreenHeight = Dimensions.get("window").height;
 const ScreenWidth = Dimensions.get("window").width;
@@ -30,7 +33,11 @@ class HomeScreen extends React.Component {
             list: [],
             extraList: [],
             currentGood: [],
+            currentGoodId: 0,
+            currentGoodDescription: "",
+            currentGoodProperties: [],
             modal: false,
+            modalFilter: false,
             listGrade: [],
             activeDoc: null,
             otziv: "",
@@ -50,6 +57,9 @@ class HomeScreen extends React.Component {
             isListEnd: false,
             pageNum: 1,
             searchText: "",
+            fullGoodInfo: "",
+            openDropdown: false,
+            selectedVal: null,
         };
     }
 
@@ -80,11 +90,9 @@ class HomeScreen extends React.Component {
       }
   };
 
-    _getToken = async () => {
-        await getToken().then(req => {
-            this.setState({token: req});
-        });
-    };
+  like = async () => {
+      alert("like");
+  };
 
   _refreshPage = async () => {
       this.setState({ refreshing: true });
@@ -98,11 +106,34 @@ class HomeScreen extends React.Component {
   }
 
   getSelectedItem = async (item: any) => {
+      console.log(item.id);
       this.setState({
           currentGood: item,
           modal: true,
       });
+      this._getGoodInfoFromApi(item.id);
   };
+
+    _getGoodInfoFromApi = async (currentGoodId) => {
+        console.log(currentGoodId);
+        const response = await fetch(
+            `https://skstore.kz/api/good/${currentGoodId}?kato=710000000&quantity=1`,
+            {
+                method: "GET",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "token": this.state.token,
+                },
+            }
+        );
+        const responseJson = await response.json();
+        console.log(responseJson[1]);
+        this.setState({
+            currentGoodDescription: responseJson[2][0]["txt"],
+            currentGoodProperties: responseJson[1],
+        });
+    };
 
   ItemView = ({ item }) => {
       return (
@@ -117,13 +148,21 @@ class HomeScreen extends React.Component {
                           style={{
                               width: 30,
                               height: 30,
-                              borderRadius: 20,
                               justifyContent: "center",
                               alignItems: "center",
-                              backgroundColor: "rgba(0,0,0,0.2) ",
                           }}
                       >
-                          <AntDesign name="hearto" size={24} color="black" />
+                          <AntDesign
+                              onPress={() => this.like()}
+                              style={{
+                                  shadowColor: "#c4c3c3",
+                                  shadowOffset: {
+                                      width: 2,
+                                      height: 5,
+                                  },
+                                  shadowOpacity: 6,
+                                  shadowRadius: 6,
+                              }} name="heart" size={24} color="#fff" />
                       </View>
                   </View>
 
@@ -194,7 +233,13 @@ class HomeScreen extends React.Component {
       this._refreshPage();
   };
 
+  addPropose = (text: { text: any }) => {
+      this.setState({modal: false, currentGoodDescription: "", });
+  };
+
   render() {
+      console.log("this.state.currentGoodProperties");
+      console.log(this.state.currentGoodProperties);
       return (
           <Container style={{ backgroundColor: "#f6f6f6" }}>
               <Header style={styles.headerTop}>
@@ -208,6 +253,7 @@ class HomeScreen extends React.Component {
                           size={24}
                           color="#1a192a"
                           style={{marginRight: 10}}
+                          onPress={() => this.setState({modalFilter: true})}
                       />
                   </Right>
               </Header>
@@ -248,6 +294,12 @@ class HomeScreen extends React.Component {
                       placeholder="Поиск"
                       onChangeText={(text) => this.searchRequest({ text })}
                   />
+                  <View style={{
+                      zIndex: 1000,
+                  }}
+                  >
+
+                  </View>
               </View>
               <SafeAreaView style={{ flex: 1 }}>
                   <FlatList
@@ -263,60 +315,120 @@ class HomeScreen extends React.Component {
                       onEndReached={() => this.getMoreGoods()}
                   />
               </SafeAreaView>
-              <Modal animationType={"slide"} visible={this.state.modal} transparent={true}>
-                  <View
-                      style={{
-                          backgroundColor: "rgba(30, 30, 45, 0.8)",
-                          flex: 1,
-                          flexDirection: "column",
-                          justifyContent: "center",
-                          alignItems: "center",
-                      }}
-                  >
+              <SwipeUpDownModal
+                  PressToanimate={false}
+                  HeaderStyle={{paddingBottom: 20,}}
+                  ContentModalStyle={styles.Modal}
+                  HeaderContent={
                       <View
                           style={{
-                              flex: 1,
-                              marginTop: 90,
+                              width: "100%",
+                              alignItems: "center",
+                              backgroundColor: "#f6f6f6",
                           }}
                       >
-                          <View style={styles.container}>
-                              <View
-                                  style={{
-                                      width: "100%",
-                                      alignItems: "center",
-                                      backgroundColor: "#e7e5e5",
-                                      paddingTop: 0,
-                                  }}
-                              >
-                                  <AntDesign
-                                      onPress={() => this.setState({ modal: false })}
-                                      name="minus"
-                                      size={44}
-                                      color="black"
-                                  />
-                              </View>
-                              <View>
+                          <AntDesign
+                              onPress={() => this.setState({modal: false})}
+                              name="minus"
+                              size={44}
+                              color="black"
+                          />
+                      </View>
+                  }
+                  modalVisible={this.state.modal}
+                  onClose={() => this.setState({modal: false, currentGoodDescription: ""})}
+                  ContentModal={
+                      <ScrollView>
+                          <View
+                              style={{
+                                  flex: 1,
+                              }}
+                          >
+                              <View style={styles.container}>
                                   <Image
                                       source={{
                                           uri: "https://skstore.kz/api/getfile/" + this.state.currentGood.file_id,
                                       }}
-                                      style={{ resizeMode: "contain", width: 400, height: 400 }}
+                                      style={{resizeMode: "contain", width: 400, height: 400, marginTop: 70,}}
                                   />
-                                  <View style={{ paddingLeft: 20, paddingRight: 20 }}>
+                                  <View style={{paddingLeft: 20, paddingRight: 20, paddingBottom: 20,}}>
                                       <Text style={styles.modalPrice}>{this.state.currentGood.price} тг</Text>
                                       <Text style={styles.modalItemDetail}>{this.state.currentGood.goodtitle}</Text>
                                       <Text style={styles.modalItemDetail}>{this.state.currentGood.brand}</Text>
-                                      <Text style={styles.modalItemDetailTitle}>
-                                          {this.state.currentGood.Postavshik}
-                                      </Text>
                                       <Text style={styles.modalItemDetails}>{this.state.currentGood.cat}</Text>
                                       <Text style={styles.modalItemDetails}>{this.state.currentGood.trutitle}</Text>
+                                      {this.state.currentGoodDescription === "" ? (
+                                          <View>
+                                              <Spinner color="#1a192a" size={10} />
+                                          </View>
+                                      ) : (
+                                          <View>
+                                              <Text style={{fontWeight: "bold"}}>Коротко о товаре</Text>
+                                              <Text>{this.state.currentGoodDescription}</Text>
+                                              <Text style={{fontWeight: "bold"}}>Характеристики</Text>
+                                              {
+                                                  this.state.currentGoodProperties.map((item, key) =>
+                                                      <Text>{item.attr_title} - {item.title}</Text>
+                                                  )
+                                              }
+                                              <Text style={{fontWeight: "bold"}}>Поставщики</Text>
+                                              <Text>нет</Text>
+                                          </View>
+                                      )}
+                                      <Button style={{width: "100%", marginTop: 5, marginBottom: 5, justifyContent: "center", backgroundColor: "green"}}>
+                                          <Text onPress={() => this.addPropose()} style={{ textAlign: "center", color: "#fff"}}>+ Внести предложение</Text>
+                                      </Button>
                                   </View>
                               </View>
                           </View>
+                      </ScrollView>
+                  }/>
+              <SwipeUpDownModal
+                  PressToanimate={false}
+                  HeaderStyle={{paddingBottom: 20,}}
+                  ContentModalStyle={styles.Modal}
+                  HeaderContent={
+                      <View
+                          style={{
+                              width: "100%",
+                              alignItems: "center",
+                              backgroundColor: "#f6f6f6",
+                          }}
+                      >
+                          <AntDesign
+                              onPress={() => this.setState({modal: false})}
+                              name="minus"
+                              size={44}
+                              color="black"
+                          />
                       </View>
-                  </View>
-              </Modal>
+                  }
+                  modalVisible={this.state.modalFilter}
+                  onClose={() => this.setState({modalFilter: false})}
+                  ContentModal={
+                      <View
+                          style={{
+                              flex: 1,
+                          }}
+                      >
+                          <View style={styles.container}>
+                              <View style={{height: 100,}}>
+                                  <Select selectedValue={""} minWidth="200" accessibilityLabel="Choose Service" placeholder="Choose Service">
+                                      <Select.Item label="UX Research" value="ux" />
+                                      <Select.Item label="Web Development" value="web" />
+                                      <Select.Item label="Cross Platform Development" value="cross" />
+                                      <Select.Item label="UI Designing" value="ui" />
+                                      <Select.Item label="Backend Development" value="backend" />
+                                  </Select>
+                              </View>
+                              <View>
+                                  <Button style={{width: "100%", justifyContent: "center", backgroundColor: "green"}}>
+                                      <Text onPress={() => alert("test")} style={{ textAlign: "center", color: "#fff"}}>Применить</Text>
+                                  </Button>
+                              </View>
+                          </View>
+                      </View>
+                  }/>
           </Container>
       );
   }
@@ -398,6 +510,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#fff",
+        padding: 40,
     },
     headerTop: {
         backgroundColor: "#fff",

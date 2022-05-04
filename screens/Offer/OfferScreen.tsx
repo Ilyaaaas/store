@@ -30,10 +30,8 @@ import {
     Spinner,
 } from "native-base";
 import { useSelector, useDispatch } from "react-redux";
-import DropDownPicker from "react-native-dropdown-picker";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import * as DocumentPicker from "expo-document-picker";
-import { StackActions } from "@react-navigation/native";
 
 const BottomTab = createBottomTabNavigator();
 
@@ -340,3 +338,4 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
 });
+

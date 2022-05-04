@@ -162,7 +162,7 @@ export const LoginScreen = ({ route }) => {
 
     const handleSubmit = async (onSaveLogin = false) => {
         const response = await fetch("https://skstore.kz/mobile/login", {
-            body: "{\"username\": \"d.myrzabekWAFTEST\", \"password\": \"RootPass123@\", \"device_id\": 12345}",
+            body: "{\"username\": \"d.myrzabekWAFTEST\", \"password\": \"RootPass123@\", \"device_id\": \""+expoPushToken+"\"}",
             headers: {
                 "Content-Type": "application/json",
                 Accept: "application/json",
@@ -300,44 +300,13 @@ export const LoginScreen = ({ route }) => {
                 >
                     <Text style={{ color: "#fff", textAlign: "center" }}>ВОЙТИ</Text>
                 </TouchableOpacity>
-                <View
-                    style={{
-                        flexDirection: "row",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        marginTop: 10,
-                    }}
-                >
-                    <AntDesign
-                        name="facebook-square"
-                        size={34}
-                        color="#a2a3b7"
-                        onPress={signInWithFB}
-                        style={{ marginLeft: 5, marginRight: 5 }}
-                    />
-                    <AntDesign
-                        name="google"
-                        size={34}
-                        color="#a2a3b7"
-                        onPress={signInWithGoogleAsync}
-                        style={{ marginLeft: 5, marginRight: 5 }}
-                    />
-                </View>
                 <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
                     <Button transparent>
                         <Text
                             style={styles.secondaryButton}
                             onPress={() => navigation.navigate("RestorePassword")}
                         >
-              Восстановить пароль
-                        </Text>
-                    </Button>
-                    <Button transparent style={{ width: 100 }}>
-                        <Text
-                            onPress={() => navigation.navigate("Registration")}
-                            style={styles.secondaryButton}
-                        >
-              Регистрация
+                            Восстановить пароль
                         </Text>
                     </Button>
                 </View>
