@@ -1,5 +1,5 @@
 import { Feather, AntDesign } from "@expo/vector-icons";
-import { Container, Header, Left, Body, Title, Right, Button, Spinner } from "native-base";
+import { Container, Header, Left, Body, Title, Right, Button, Spinner, Content } from "native-base";
 import React, { useEffect } from "react";
 import {
     StyleSheet,
@@ -17,7 +17,8 @@ import {
 } from "react-native";
 import { API, getToken } from "./constants";
 import SwipeUpDownModal from "react-native-swipe-modal-up-down";
-import Select from "native-base";
+import { Dropdown } from "react-native-element-dropdown";
+import RangeSlider, { Slider } from "react-native-range-slider-expo";
 
 const ScreenHeight = Dimensions.get("window").height;
 const ScreenWidth = Dimensions.get("window").width;
@@ -288,19 +289,6 @@ class HomeScreen extends React.Component {
                       )}
                   </View>
               </Header>
-              <View>
-                  <TextInput
-                      style={styles.textInput}
-                      placeholder="Поиск"
-                      onChangeText={(text) => this.searchRequest({ text })}
-                  />
-                  <View style={{
-                      zIndex: 1000,
-                  }}
-                  >
-
-                  </View>
-              </View>
               <SafeAreaView style={{ flex: 1 }}>
                   <FlatList
                       style={{ paddingLeft: 10, padding: 10 }}
@@ -412,16 +400,76 @@ class HomeScreen extends React.Component {
                           }}
                       >
                           <View style={styles.container}>
-                              <View style={{height: 100,}}>
-                                  <Select selectedValue={""} minWidth="200" accessibilityLabel="Choose Service" placeholder="Choose Service">
-                                      <Select.Item label="UX Research" value="ux" />
-                                      <Select.Item label="Web Development" value="web" />
-                                      <Select.Item label="Cross Platform Development" value="cross" />
-                                      <Select.Item label="UI Designing" value="ui" />
-                                      <Select.Item label="Backend Development" value="backend" />
-                                  </Select>
+                              <View style={{height: 60, }}>
+                                  <Text>Показать</Text>
+                                  <Dropdown
+                                      data={[
+                                          {label: "только товары ОТП", value: "1"},
+                                          {label: "только без предложений", value: "2"},
+                                          {label: "только запрещённые", value: "3"},
+                                          {label: "все", value: "4"},
+                                      ]}
+                                      style={{flex:1, height: 50}}
+                                      search
+                                      maxHeight={300}
+                                      labelField="label"
+                                      valueField="value"
+                                      placeholder={"не выбрано"}
+                                      searchPlaceholder="поиск..."
+                                      onChange={item => {
+                                          console.log(item.value, item.label);
+                                      }}
+                                  />
                               </View>
-                              <View>
+                              <View style={{height: 60, }}>
+                                  <Text>Фильтр по категориям</Text>
+                                  <Dropdown
+                                      data={[
+                                          {label: "Бытовая техника", value: "1"},
+                                          {label: "Инструменты", value: "2"},
+                                          {label: "Канцелярские товары", value: "3"},
+                                          {label: "Офисная техника", value: "4"},
+                                          {label: "Строительные материалы", value: "5"},
+                                          {label: "Хозяйственные товары", value: "6"},
+                                          {label: "Электроинструменты", value: "7"},
+                                      ]}
+                                      style={{flex:1, height: 50}}
+                                      search
+                                      maxHeight={300}
+                                      labelField="label"
+                                      valueField="value"
+                                      placeholder={"не выбрано"}
+                                      searchPlaceholder="поиск..."
+                                      onChange={item => {
+                                          console.log(item.value, item.label);
+                                      }}
+                                  />
+                              </View>
+                              <View style={{height: 60, }}>
+                                  <Text>Фильтр по категориям</Text>
+                                  <Dropdown
+                                      data={[
+                                          {label: "Бытовая техника", value: "1"},
+                                          {label: "Инструменты", value: "2"},
+                                          {label: "Канцелярские товары", value: "3"},
+                                          {label: "Офисная техника", value: "4"},
+                                          {label: "Строительные материалы", value: "5"},
+                                          {label: "Хозяйственные товары", value: "6"},
+                                          {label: "Электроинструменты", value: "7"},
+                                      ]}
+                                      style={{flex:1, height: 50}}
+                                      search
+                                      maxHeight={300}
+                                      labelField="label"
+                                      valueField="value"
+                                      placeholder={"не выбрано"}
+                                      searchPlaceholder="поиск..."
+                                      onChange={item => {
+                                          console.log(item.value, item.label);
+                                      }}
+                                  />
+                              </View>
+                              <View style={{marginTop: 20, }}>
                                   <Button style={{width: "100%", justifyContent: "center", backgroundColor: "green"}}>
                                       <Text onPress={() => alert("test")} style={{ textAlign: "center", color: "#fff"}}>Применить</Text>
                                   </Button>
@@ -511,6 +559,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#fff",
         padding: 40,
+        marginTop: 20,
     },
     headerTop: {
         backgroundColor: "#fff",
@@ -665,7 +714,6 @@ const styles = StyleSheet.create({
         width: "100%",
         padding: 5,
     },
-
     contactContainer: {
         width: ScreenWidth - 20,
         borderColor: "grey",
