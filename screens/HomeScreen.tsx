@@ -61,6 +61,8 @@ class HomeScreen extends React.Component {
             fullGoodInfo: "",
             openDropdown: false,
             selectedVal: null,
+            fromValue: 0,
+            toValue: 5000,
         };
     }
 
@@ -445,8 +447,53 @@ class HomeScreen extends React.Component {
                                       }}
                                   />
                               </View>
+                              <View style={{marginBottom: 20,}}>
+                                  <Text>Цена</Text>
+                                  <View style={{height: 100,}}>
+                                      <RangeSlider min={0} max={5000}
+                                          fromValueOnChange={value => this.setState({fromValue: value})}
+                                          toValueOnChange={value => this.setState({toValue: value})}
+                                          initialFromValue={11}
+                                          styleSize={"small"}
+                                      />
+                                  </View>
+                                  <View style={{height: 40, marginTop: 20, flexDirection: "row"}}>
+                                      <View style={{flexDirection: "row", width: "50%"}}>
+                                          <Text>От:</Text>
+                                          <TextInput style={{height: 30, width: 50, backgroundColor: "#C9C9C9FF"}} value={this.state.fromValue}>{this.state.fromValue}</TextInput>
+                                      </View>
+                                      <View style={{flexDirection: "row", width: "50%"}}>
+                                          <Text>До: </Text>
+                                          <TextInput style={{height: 30, width: 50, backgroundColor: "#c9c9c9"}} value={this.state.toValue}>{this.state.toValue}</TextInput>
+                                      </View>
+                                  </View>
+                              </View>
                               <View style={{height: 60, }}>
-                                  <Text>Фильтр по категориям</Text>
+                                  <Text>Фильтр по тру</Text>
+                                  <Dropdown
+                                      data={[
+                                          {label: "Бытовая техника", value: "1"},
+                                          {label: "Инструменты", value: "2"},
+                                          {label: "Канцелярские товары", value: "3"},
+                                          {label: "Офисная техника", value: "4"},
+                                          {label: "Строительные материалы", value: "5"},
+                                          {label: "Хозяйственные товары", value: "6"},
+                                          {label: "Электроинструменты", value: "7"},
+                                      ]}
+                                      style={{flex:1, height: 50}}
+                                      search
+                                      maxHeight={300}
+                                      labelField="label"
+                                      valueField="value"
+                                      placeholder={"не выбрано"}
+                                      searchPlaceholder="поиск..."
+                                      onChange={item => {
+                                          console.log(item.value, item.label);
+                                      }}
+                                  />
+                              </View>
+                              <View style={{height: 60, }}>
+                                  <Text>Фильтр по брендам</Text>
                                   <Dropdown
                                       data={[
                                           {label: "Бытовая техника", value: "1"},
@@ -470,8 +517,13 @@ class HomeScreen extends React.Component {
                                   />
                               </View>
                               <View style={{marginTop: 20, }}>
+                                  <Button style={{width: "100%", justifyContent: "center", backgroundColor: "#797979"}}>
+                                      <Text onPress={() => alert("Сброс фильтров")} style={{ textAlign: "center", color: "#fff"}}>Сбросить фильтры</Text>
+                                  </Button>
+                              </View>
+                              <View style={{marginTop: 20, }}>
                                   <Button style={{width: "100%", justifyContent: "center", backgroundColor: "green"}}>
-                                      <Text onPress={() => alert("test")} style={{ textAlign: "center", color: "#fff"}}>Применить</Text>
+                                      <Text onPress={() => alert("Применить")} style={{ textAlign: "center", color: "#fff"}}>Применить</Text>
                                   </Button>
                               </View>
                           </View>
