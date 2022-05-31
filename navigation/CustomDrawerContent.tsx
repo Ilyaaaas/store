@@ -20,3 +20,4 @@ export const CustomDrawerContent = (props: DrawerContentComponentProps) => {
         </DrawerContentScrollView>
     );
 };
+

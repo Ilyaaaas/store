@@ -13,13 +13,12 @@ import {
     SafeAreaView,
     FlatList,
 } from "react-native";
-import { API, getToken } from "./constants";
-import {Swipeable} from "react-native-gesture-handler";
+import { API, getToken } from "../constants";
 
 const ScreenHeight = Dimensions.get("window").height;
 const ScreenWidth = Dimensions.get("window").width;
 
-class Notifications extends React.Component {
+class Favorites extends React.Component {
     constructor(props) {
         super(props);
 
@@ -49,52 +48,48 @@ class Notifications extends React.Component {
         };
     }
 
-  _getUrl = async (url) => {
-      const API_URL = API + url;
+    _getUrl = async (url) => {
+        const API_URL = API + url;
 
-      try {
-          const response = await fetch(API_URL, {
-              method: "GET",
-              headers: {
-                  Accept: "application/json",
-                  "Content-Type": "application/x-www-form-urlencoded",
-                  Authorization: `Bearer ${this.state.token}`,
-              },
-          });
+        try {
+            const response = await fetch(API_URL, {
+                method: "GET",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    Authorization: `Bearer ${this.state.token}`,
+                },
+            });
 
-          const responseJson = await response.json();
-          return responseJson.result;
-      } catch (error) {
-      //console.log('Error when call API: ' + error.message);
-      }
-      return null;
-  };
+            const responseJson = await response.json();
+            return responseJson.result;
+        } catch (error) {
+            //console.log('Error when call API: ' + error.message);
+        }
+        return null;
+    };
 
-  _getGoodsList = async () => {
-      const response = await fetch("https://skstore.kz/mobile/favorites", {
-          method: "GET",
-          headers: {
-              Accept: "application/json",
-              "Content-Type": "application/x-www-form-urlencoded",
-              Authorization: `Bearer ${this.state.token}`,
-          },
-      });
+    _getGoodsList = async () => {
+        const response = await fetch("https://skstore.kz/mobile/favorites", {
+            method: "GET",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/x-www-form-urlencoded",
+                Authorization: `Bearer ${this.state.token}`,
+            },
+        });
 
-      console.log(`Bearer ${this.state.token}`);
-      const responseJson = await response.json();
-      console.log("responseJson22");
-      console.log(responseJson);
-      console.log("responseJson22");
-      if (this.state.list.length == 0) {
-          this.setState({
-              list: responseJson,
-          });
-      } else {
-          this.setState({
-              list: [...this.state.list, ...responseJson[0]],
-          });
-      }
-  };
+        const responseJson = await response.json();
+        if (this.state.list.length == 0) {
+            this.setState({
+                list: responseJson,
+            });
+        } else {
+            this.setState({
+                list: [...this.state.list, ...responseJson[0]],
+            });
+        }
+    };
 
     _getToken = async () => {
         await getToken().then(req => {
@@ -102,204 +97,199 @@ class Notifications extends React.Component {
         });
     };
 
-  _refreshPage = async () => {
-      this.setState({ refreshing: true });
-      await this._getToken();
-      await this._getGoodsList();
-      this.setState({ refreshing: false, topCategoryCheckedId: 1 });
-  };
-
-  UNSAFE_componentWillMount() {
-      this._getToken();
-      this._refreshPage();
-  }
-
-  getSelectedItem = async (item: any) => {
-      this.setState({
-          currentGood: item,
-          modal: true,
-      });
-  };
-
-  ItemView = (item, onClick) => {
-      const renderRightActions = (progress: Animated.AnimatedInterpolation, dragX: Animated.AnimatedInterpolation, onClick: any) => {
-          return (
-              <View
-                  style={{
-                      margin: 0,
-                      alignContent: "center",
-                      justifyContent: "center",
-                      width: 70,
-                      backgroundColor: "#e64622",
-                  }}>
-                  <Text>Del</Text>
-              </View>
-          );
-      };
-
-
-      const renderLeftActions = (progress: Animated.AnimatedInterpolation, dragX: Animated.AnimatedInterpolation, onClick: any) => {
-          return (
-              <View
-                  style={{
-                      margin: 0,
-                      alignContent: "center",
-                      justifyContent: "center",
-                      width: 70,
-                      backgroundColor: "#31af3e",
-                  }}>
-                  <Text>Read</Text>
-              </View>
-          );
-      };
-
-      return (
-          <Swipeable
-              renderRightActions={(progress, dragX) =>
-                  renderRightActions(progress, dragX, onClick)
-              }
-              renderLeftActions={(progress, dragX) =>
-                  renderLeftActions(progress, dragX, onClick)
-              }
-          >
-              <TouchableOpacity onPress={() => console.log(item)}>
-                  <View
-                      style={{
-                          margin: 4,
-                          padding: 9,
-                          backgroundColor: "#f8f8f8",
-                          borderRadius: 10,
-                      }}>
-                      <View style={{alignSelf: "flex-end", }}>
-                          <Text style={{fontSize: 12, fontWeight: "bold", color: "#6e6e6e"}}>test</Text>
-                      </View>
-                      <View style={{marginTop: 10}}>
-                          <Text style={{fontSize: 13, color: "#6e6e6e"}}>еуые</Text>
-                      </View>
-                  </View>
-              </TouchableOpacity>
-          </Swipeable>
-      );
-  };
-
-  renderFooter = () => {
-      return (
-          <View>
-              {this.state.list.length > 0 ? <View></View> : <Spinner color="#1a192a" size={10} />}
-          </View>
-      );
-  };
-
-  ItemSeparatorView = () => {
-      return <View />;
-  };
-
-    deleteItem = () => {
-        console.log("deleteItem");
+    _refreshPage = async () => {
+        this.setState({ refreshing: true });
+        await this._getToken();
+        await this._getGoodsList();
+        this.setState({ refreshing: false, topCategoryCheckedId: 1 });
     };
 
-  getMoreGoods = () => {
-      console.log("getMoreGoods");
-      this._getGoodsList();
-  };
+    UNSAFE_componentWillMount() {
+        this._getToken();
+        this._refreshPage();
+    }
 
-  searchRequest = (text: { text: any }) => {
-      console.log("text");
-      console.log(text.text);
-      this.setState({
-          searchText: text.text,
-          list: [],
-          pageNum: 1,
-      });
-      console.log("searchRequest");
+    getSelectedItem = async (item: any) => {
+        this.setState({
+            currentGood: item,
+            modal: true,
+        });
+    };
 
-      this._refreshPage();
-  };
+    ItemView = ({ item }) => {
+        return (
+            <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => this.getSelectedItem(item)}
+                style={{ width: "100%" }}
+            >
+                <View style={styles.card}>
+                    <View style={{ alignItems: "flex-end" }}>
+                        <View
+                            style={{
+                                width: 30,
+                                height: 30,
+                                borderRadius: 20,
+                                justifyContent: "center",
+                                alignItems: "center",
+                                backgroundColor: "rgba(0,0,0,0.2) ",
+                            }}
+                        >
+                            <AntDesign name="hearto" size={24} color="black" />
+                        </View>
+                    </View>
 
-  render() {
-      return (
-          <Container style={{ backgroundColor: "#f6f6f6" }}>
-              <Header style={styles.headerTop}>
-                  <Left></Left>
-                  <Body style={{ flex: 3 }}>
-                      <Title style={{ color: "#1a192a" }}>Уведомления</Title>
-                  </Body>
-                  <Right></Right>
-              </Header>
-              <SafeAreaView style={{ flex: 1 }}>
-                  <FlatList
-                      style={{ paddingLeft: 10, padding: 10 }}
-                      numColumns={1}
-                      data={this.state.list}
-                      extraData={this.state.list}
-                      keyExtractor={(item, index) => index.toString()}
-                      ItemSeparatorComponent={this.ItemSeparatorView}
-                      renderItem={(v) =>
-                          this.ItemView(v, () => {
-                              this.deleteItem(v);
-                          })
-                      }
-                      ListFooterComponent={this.renderFooter}
-                  />
-              </SafeAreaView>
-              <Modal animationType={"slide"} visible={this.state.modal} transparent={true}>
-                  <View
-                      style={{
-                          backgroundColor: "rgba(30, 30, 45, 0.8)",
-                          flex: 1,
-                          flexDirection: "column",
-                          justifyContent: "center",
-                          alignItems: "center",
-                      }}
-                  >
-                      <View
-                          style={{
-                              flex: 1,
-                              marginTop: 90,
-                          }}
-                      >
-                          <View style={styles.container}>
-                              <View
-                                  style={{
-                                      height: 30,
-                                      width: "100%",
-                                      alignItems: "center",
-                                      backgroundColor: "#dfdfdf",
-                                  }}
-                              >
-                                  <Feather
-                                      onPress={() => this.setState({ modal: false })}
-                                      name="chevrons-down"
-                                      size={24}
-                                      color="black"
-                                  />
-                              </View>
+                    <View
+                        style={{
+                            height: 200,
+                            alignItems: "center",
+                        }}
+                    >
+                        <Image
+                            source={{ uri: "https://skstore.kz/api/getfile/" + item.file_id }}
+                            style={{ flex: 1, resizeMode: "contain", width: 100, height: 200 }}
+                        />
+                    </View>
 
-                              <View>
-                                  <Image
-                                      source={{
-                                          uri: "https://skstore.kz/api/getfile/" + this.state.currentGood.file_id,
-                                      }}
-                                      style={{ resizeMode: "contain", width: 400, height: 400 }}
-                                  />
-                                  <View style={{ paddingLeft: 20, paddingRight: 20 }}>
-                                      <Text style={styles.modalPrice}>{this.state.currentGood.price} тг</Text>
-                                      <Text style={styles.modalItemDetail}>{this.state.currentGood.goodtitle}</Text>
-                                      <Text style={styles.modalItemDetail}>{this.state.currentGood.brand}</Text>
-                                      <Text style={styles.modalItemDetailTitle}>
-                                          {this.state.currentGood.Postavshik}
-                                      </Text>
-                                      <Text style={styles.modalItemDetails}>{this.state.currentGood.cat}</Text>
-                                      <Text style={styles.modalItemDetails}>{this.state.currentGood.trutitle}</Text>
-                                  </View>
-                              </View>
-                          </View>
-                      </View>
-                  </View>
-              </Modal>
-          </Container>
-      );
-  }
+                    <View style={{ height: 60 }}>
+                        <Text style={{ fontWeight: "bold", fontSize: 12, marginTop: 10 }}>{item.title}</Text>
+                    </View>
+                    <View
+                        style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            marginTop: 5,
+                        }}
+                    >
+                        <Text style={{ fontSize: 19, fontWeight: "bold" }}>{item.price}</Text>
+                        <View
+                            style={{
+                                height: 25,
+                                width: 25,
+                                backgroundColor: "green",
+                                borderRadius: 5,
+                                justifyContent: "center",
+                                alignItems: "center",
+                            }}
+                        >
+                            <Text style={{ fontSize: 22, color: "white", fontWeight: "bold" }}>+</Text>
+                        </View>
+                    </View>
+                </View>
+            </TouchableOpacity>
+        );
+    };
+
+    renderFooter = () => {
+        return (
+            <View>
+                {this.state.list.length > 0 ? <View></View> : <Spinner color="#1a192a" size={10} />}
+            </View>
+        );
+    };
+
+    ItemSeparatorView = () => {
+        return <View />;
+    };
+
+    getMoreGoods = () => {
+        console.log("getMoreGoods");
+        this._getGoodsList();
+    };
+
+    searchRequest = (text: { text: any }) => {
+        console.log("text");
+        console.log(text.text);
+        this.setState({
+            searchText: text.text,
+            list: [],
+            pageNum: 1,
+        });
+        console.log("searchRequest");
+
+        this._refreshPage();
+    };
+
+    render() {
+        return (
+            <Container style={{ backgroundColor: "#f6f6f6" }}>
+                <Header style={styles.headerTop}>
+                    <Left></Left>
+                    <Body style={{ flex: 3 }}>
+                        <Title style={{ color: "#1a192a" }}>Избранное</Title>
+                    </Body>
+                    <Right></Right>
+                </Header>
+                <SafeAreaView style={{ flex: 1 }}>
+                    <FlatList
+                        style={{ paddingLeft: 10, padding: 10 }}
+                        numColumns={1}
+                        data={this.state.list}
+                        extraData={this.state.list}
+                        keyExtractor={(item, index) => index.toString()}
+                        ItemSeparatorComponent={this.ItemSeparatorView}
+                        renderItem={this.ItemView}
+                        ListFooterComponent={this.renderFooter}
+                    />
+                </SafeAreaView>
+                <Modal animationType={"slide"} visible={this.state.modal} transparent={true}>
+                    <View
+                        style={{
+                            backgroundColor: "rgba(30, 30, 45, 0.8)",
+                            flex: 1,
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            alignItems: "center",
+                        }}
+                    >
+                        <View
+                            style={{
+                                flex: 1,
+                                marginTop: 90,
+                            }}
+                        >
+                            <View style={styles.container}>
+                                <View
+                                    style={{
+                                        height: 30,
+                                        width: "100%",
+                                        alignItems: "center",
+                                        backgroundColor: "#dfdfdf",
+                                    }}
+                                >
+                                    <Feather
+                                        onPress={() => this.setState({ modal: false })}
+                                        name="chevrons-down"
+                                        size={24}
+                                        color="black"
+                                    />
+                                </View>
+
+                                <View>
+                                    <Image
+                                        source={{
+                                            uri: "https://skstore.kz/api/getfile/" + this.state.currentGood.file_id,
+                                        }}
+                                        style={{ resizeMode: "contain", width: 400, height: 400 }}
+                                    />
+                                    <View style={{ paddingLeft: 20, paddingRight: 20 }}>
+                                        <Text style={styles.modalPrice}>{this.state.currentGood.price} тг</Text>
+                                        <Text style={styles.modalItemDetail}>{this.state.currentGood.goodtitle}</Text>
+                                        <Text style={styles.modalItemDetail}>{this.state.currentGood.brand}</Text>
+                                        <Text style={styles.modalItemDetailTitle}>
+                                            {this.state.currentGood.Postavshik}
+                                        </Text>
+                                        <Text style={styles.modalItemDetails}>{this.state.currentGood.cat}</Text>
+                                        <Text style={styles.modalItemDetails}>{this.state.currentGood.trutitle}</Text>
+                                    </View>
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                </Modal>
+            </Container>
+        );
+    }
 }
 
 const styles = StyleSheet.create({
@@ -439,7 +429,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     btn: {
-    // backgroundColor: '#1a192a',
+        // backgroundColor: '#1a192a',
         paddingVertical: 5,
         paddingHorizontal: 10,
     },
@@ -647,6 +637,7 @@ const styles = StyleSheet.create({
         borderColor: "green",
     },
     card: {
+        height: 350,
         backgroundColor: "white",
         marginHorizontal: 2,
         borderRadius: 10,
@@ -655,4 +646,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Notifications;
+export default Favorites;

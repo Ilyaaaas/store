@@ -1,16 +1,13 @@
 import { Icon } from "native-base";
 import React from "react";
 import { createStackNavigator, createDrawerNavigator } from "react-navigation";
-// import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 
 import ContactsScreen from "../screens/ContactsScreen";
 import HomeScreen from "../screens/HomeScreen";
 import InfoDetails from "../screens/Info/InfoDetails";
-// import InfoScreen from '../screens/Info/InfoScreen';
 import InfoScreen from "../screens/Info/InfoScreenProducts";
 import LoginScreen from "../screens/LoginScreen";
 import CreateITSMRequest from "../screens/Request/CreateOffer";
-import Notifications from "../screens/Notifications";
 import { Registration } from "../screens/Registration/RegistrationForm";
 
 import MenuCnt from "./MenuCnt";
@@ -117,3 +114,4 @@ const MainNavigator = createStackNavigator(
 );
 
 export default MainNavigator;
+

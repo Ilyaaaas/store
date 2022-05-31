@@ -2,8 +2,7 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import ProfileScreen from "./Profile/ProfileScreen";
 import HomeScreen from "./HomeScreen";
-import InfoScreen from "./Info/InfoScreen";
-import InfoScreenProducts from "./Info/InfoScreenProducts";
+import Favorites from "./Favorites/Favorites";
 import Notifications from "./Notifications";
 import OfferScreen from "../screens/Offer/OfferScreen";
 import { Root } from "native-base";
@@ -30,7 +29,7 @@ class MainITSMScreen extends React.Component {
                     />
                     <BottomTab.Screen
                         name="Избранное"
-                        component={Notifications}
+                        component={Favorites}
                         options={{
                             tabBarIcon: ({ color }) => <MaterialIcons name="star" size={30} color={color} />,
                         }}
@@ -50,13 +49,12 @@ class MainITSMScreen extends React.Component {
                         }}
                     />
                     <BottomTab.Screen
-                        name="Сообщения"
+                        name="Уведомления"
                         component={Notifications}
                         options={{
                             tabBarIcon: ({ color }) => <MaterialIcons size={30} name="email" color={color} />,
                         }}
                     />
-                    {/*<BottomTab.Screen name="Еще" component={InfoScreenProducts}*/}
                     <BottomTab.Screen
                         name="Кабинет"
                         component={ProfileScreen}
