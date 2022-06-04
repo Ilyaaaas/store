@@ -1,12 +1,14 @@
 import {Feather, AntDesign, FontAwesome} from "@expo/vector-icons";
 import * as React from "react";
 import {useEffect, useState} from "react";
-import {Text, View, StyleSheet, FlatList, Button, SafeAreaView} from "react-native";
+import {Text, View, StyleSheet, FlatList, SafeAreaView} from "react-native";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import { API, getToken } from "./constants";
 
 import Constants from "expo-constants";
-import {Container, Left, Right, Title, Header, Body} from "native-base";
+import {Container, Left, Right, Title, Header, Body, Button} from "native-base";
+import {Dropdown} from "react-native-element-dropdown";
+import SwipeUpDownModal from "react-native-swipe-modal-up-down";
 
 export default function Notifications() {
     const [listData, setListData] = useState([]);
@@ -120,6 +122,11 @@ export default function Notifications() {
         console.log("a");
         console.log(a);
         setListData([...a]);
+        alert("Уведомление удалено");
+    };
+
+    const submitFilter = () => {
+        setModalFilter(false);
     };
 
     return (
@@ -135,7 +142,7 @@ export default function Notifications() {
                         size={24}
                         color="#1a192a"
                         style={{marginRight: 10}}
-                        onPress={() => this.setState({modalFilter: true})}
+                        onPress={() => setModalFilter(true)}
                     />
                 </Right>
             </Header>
@@ -152,6 +159,62 @@ export default function Notifications() {
                         keyExtractor={(item) => item.id}></FlatList>
                 </View>
             </SafeAreaView>
+            <SwipeUpDownModal
+                PressToanimate={false}
+                HeaderStyle={{paddingBottom: 20,}}
+                ContentModalStyle={styles.Modal}
+                HeaderContent={
+                    <View
+                        style={{
+                            width: "100%",
+                            alignItems: "center",
+                            backgroundColor: "#f6f6f6",
+                        }}
+                    >
+                        <AntDesign
+                            onPress={() => this.setState({modal: false})}
+                            name="minus"
+                            size={44}
+                            color="black"
+                        />
+                    </View>
+                }
+                modalVisible={modalFilter}
+                onClose={() => setModalFilter(false)}
+                ContentModal={
+                    <View
+                        style={{
+                            flex: 1,
+                        }}
+                    >
+                        <View style={styles.container}>
+                            <View style={{height: 60, paddingTop: 100, }}>
+                                <Text>Тип уведомлений</Text>
+                                <Dropdown
+                                    data={[
+                                        {label: "Все", value: "1"},
+                                        {label: "Только заказы", value: "2"},
+                                    ]}
+                                    style={{flex:1, height: 50}}
+                                    search
+                                    maxHeight={300}
+                                    labelField="label"
+                                    valueField="value"
+                                    placeholder={"не выбрано"}
+                                    searchPlaceholder="поиск..."
+                                    onChange={item => {
+                                        console.log(item.value, item.label);
+                                    }}
+                                />
+                            </View>
+                            <View style={{marginTop: 20, }}>
+                                <Button style={{width: "100%", justifyContent: "center", backgroundColor: "green"}}>
+                                    <Text onPress={() => submitFilter()} style={{ textAlign: "center", color: "#fff"}}>Применить</Text>
+                                </Button>
+                            </View>
+                        </View>
+                    </View>
+                }/>
         </Container>
     );
 }
