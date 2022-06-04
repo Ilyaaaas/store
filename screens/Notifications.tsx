@@ -1,658 +1,174 @@
-import { Feather, AntDesign } from "@expo/vector-icons";
-import { Container, Header, Left, Body, Title, Right, Spinner } from "native-base";
-import React, { useEffect } from "react";
-import {
-    StyleSheet,
-    Text,
-    View,
-    Image,
-    TouchableOpacity,
-    AsyncStorage,
-    Modal,
-    Dimensions,
-    SafeAreaView,
-    FlatList,
-} from "react-native";
+import * as React from "react";
+import {useEffect, useState} from "react";
+import { Text, View, StyleSheet, FlatList, Button } from "react-native";
+import Swipeable from "react-native-gesture-handler/Swipeable";
 import { API, getToken } from "./constants";
-import {Swipeable} from "react-native-gesture-handler";
 
-const ScreenHeight = Dimensions.get("window").height;
-const ScreenWidth = Dimensions.get("window").width;
+import Constants from "expo-constants";
 
-class Notifications extends React.Component {
-    constructor(props) {
-        super(props);
+const DATA = [
+    {
+        id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
+        title: "First Item",
+    },
+    {
+        id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
+        title: "Second Item",
+    },
+    {
+        id: "58694a0f-3da1-471f-bd96-145571e29d72",
+        title: "Third Item",
+    },
+    {
+        id: "58694a0f-3da1-471f-bd96-145571e29d71",
+        title: "Fourth Item",
+    },
+    {
+        id: "58694a0f-3da1-471f-bd96-145571e29d70",
+        title: "Fifth Item",
+    },
+];
 
-        this.state = {
-            token: "",
-            refreshing: false,
-            listWithoutFilter: [],
-            list: [],
-            extraList: [],
-            currentGood: [],
-            modal: false,
-            listGrade: [],
-            activeDoc: null,
-            filterModal: false,
-            created_at: "",
-            company_name: "",
-            currentPageLink: "0",
-            topCategoryCheckedId: 1,
-            userId: 0,
-            exponentPushToken: "",
-            date: new Date(Date.now()),
-            selectedFilerStateId: 0,
-            loading: false,
-            offset: 1,
-            pageNum: 1,
-            searchText: "",
+export default function Notifications() {
+    const [listData, setListData] = useState([]);
+    const [list, setList] = useState([]);
+    const [token, setToken] = useState();
+    const [refreshState, setRefreshState] = useState(false);
+    const [modalFilter, setModalFilter] = useState(false);
+    const row: Array<any> = [];
+    let prevOpenedRow;
+
+    useEffect(() => {
+        _getToken();
+        _getGoodsList();
+    });
+
+    /**
+     *
+     */
+    const renderItem = ({ item, index }, onClick) => {
+        console.log("item");
+        console.log(item.id);
+        console.log("index");
+        console.log(index);
+        //
+        const closeRow = (index) => {
+            console.log("closerow");
+            if (prevOpenedRow && prevOpenedRow !== row[index]) {
+                prevOpenedRow.close();
+            }
+            prevOpenedRow = row[index];
         };
-    }
 
-  _getUrl = async (url) => {
-      const API_URL = API + url;
+        const renderRightActions = (progress, dragX, onClick) => {
+            return (
+                <View
+                    style={{
+                        margin: 0,
+                        alignContent: "center",
+                        justifyContent: "center",
+                        width: 70,
+                    }}>
+                    <Button color="red" onPress={onClick} title="DELETE"></Button>
+                </View>
+            );
+        };
 
-      try {
-          const response = await fetch(API_URL, {
-              method: "GET",
-              headers: {
-                  Accept: "application/json",
-                  "Content-Type": "application/x-www-form-urlencoded",
-                  Authorization: `Bearer ${this.state.token}`,
-              },
-          });
+        return (
+            <Swipeable
+                renderRightActions={(progress, dragX) =>
+                    renderRightActions(progress, dragX, onClick)
+                }
+                onSwipeableOpen={() => closeRow(index)}
+                ref={(ref) => (row[index] = ref)}
+                rightOpenValue={-100}>
+                <View
+                    style={{
+                        margin: 4,
+                        padding: 9,
+                        backgroundColor: "#f8f8f8",
+                        borderRadius: 10,
+                    }}>
+                    <View style={{alignSelf: "flex-end", }}>
+                        <Text style={{fontSize: 12, fontWeight: "bold", color: "#6e6e6e"}}>
+                            {item.created_at}
+                        </Text>
+                    </View>
+                    <View style={{marginTop: 10}}>
+                        <Text style={{fontSize: 13, color: "#6e6e6e"}}>
+                            {item.text}
+                        </Text>
+                    </View>
+                </View>
+            </Swipeable>
+        );
+    };
 
-          const responseJson = await response.json();
-          return responseJson.result;
-      } catch (error) {
-      //console.log('Error when call API: ' + error.message);
-      }
-      return null;
-  };
-
-  _getGoodsList = async () => {
-      const response = await fetch("https://skstore.kz/mobile/favorites", {
-          method: "GET",
-          headers: {
-              Accept: "application/json",
-              "Content-Type": "application/x-www-form-urlencoded",
-              Authorization: `Bearer ${this.state.token}`,
-          },
-      });
-
-      console.log(`Bearer ${this.state.token}`);
-      const responseJson = await response.json();
-      console.log("responseJson22");
-      console.log(responseJson);
-      console.log("responseJson22");
-      if (this.state.list.length == 0) {
-          this.setState({
-              list: responseJson,
-          });
-      } else {
-          this.setState({
-              list: [...this.state.list, ...responseJson[0]],
-          });
-      }
-  };
-
-    _getToken = async () => {
+    const _getToken = async () => {
         await getToken().then(req => {
-            this.setState({token: req});
+            setToken(req);
         });
     };
 
-  _refreshPage = async () => {
-      this.setState({ refreshing: true });
-      await this._getToken();
-      await this._getGoodsList();
-      this.setState({ refreshing: false, topCategoryCheckedId: 1 });
-  };
+    const _getGoodsList = async () => {
+        const response = await fetch("https://skstore.kz/mobile/getnotif", {
+            method: "GET",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/x-www-form-urlencoded",
+                Authorization: `Bearer ${token}`,
+            },
+        });
 
-  UNSAFE_componentWillMount() {
-      this._getToken();
-      this._refreshPage();
-  }
-
-  getSelectedItem = async (item: any) => {
-      this.setState({
-          currentGood: item,
-          modal: true,
-      });
-  };
-
-  ItemView = (item, onClick) => {
-      const renderRightActions = (progress: Animated.AnimatedInterpolation, dragX: Animated.AnimatedInterpolation, onClick: any) => {
-          return (
-              <View
-                  style={{
-                      margin: 0,
-                      alignContent: "center",
-                      justifyContent: "center",
-                      width: 70,
-                      backgroundColor: "#e64622",
-                  }}>
-                  <Text>Del</Text>
-              </View>
-          );
-      };
-
-
-      const renderLeftActions = (progress: Animated.AnimatedInterpolation, dragX: Animated.AnimatedInterpolation, onClick: any) => {
-          return (
-              <View
-                  style={{
-                      margin: 0,
-                      alignContent: "center",
-                      justifyContent: "center",
-                      width: 70,
-                      backgroundColor: "#31af3e",
-                  }}>
-                  <Text>Read</Text>
-              </View>
-          );
-      };
-
-      return (
-          <Swipeable
-              renderRightActions={(progress, dragX) =>
-                  renderRightActions(progress, dragX, onClick)
-              }
-              renderLeftActions={(progress, dragX) =>
-                  renderLeftActions(progress, dragX, onClick)
-              }
-          >
-              <TouchableOpacity onPress={() => console.log(item)}>
-                  <View
-                      style={{
-                          margin: 4,
-                          padding: 9,
-                          backgroundColor: "#f8f8f8",
-                          borderRadius: 10,
-                      }}>
-                      <View style={{alignSelf: "flex-end", }}>
-                          <Text style={{fontSize: 12, fontWeight: "bold", color: "#6e6e6e"}}>test</Text>
-                      </View>
-                      <View style={{marginTop: 10}}>
-                          <Text style={{fontSize: 13, color: "#6e6e6e"}}>еуые</Text>
-                      </View>
-                  </View>
-              </TouchableOpacity>
-          </Swipeable>
-      );
-  };
-
-  renderFooter = () => {
-      return (
-          <View>
-              {this.state.list.length > 0 ? <View></View> : <Spinner color="#1a192a" size={10} />}
-          </View>
-      );
-  };
-
-  ItemSeparatorView = () => {
-      return <View />;
-  };
-
-    deleteItem = () => {
-        console.log("deleteItem");
+        const responseJson = await response.json();
+        // console.log("responseJson22");
+        // console.log(responseJson);
+        // console.log("responseJson22");
+        if (listData.length == 0) {
+            setListData(responseJson);
+        }
+        // else {
+        //     setListData([...listData, ...responseJson]);
+        // }
     };
 
-  getMoreGoods = () => {
-      console.log("getMoreGoods");
-      this._getGoodsList();
-  };
+    const deleteItem = ({ item, index }) => {
+        console.log("item, index");
+        console.log(item, index);
+        const a = listData;
+        a.splice(index, 1);
+        console.log("a");
+        console.log(a);
+        setListData([...a]);
+    };
 
-  searchRequest = (text: { text: any }) => {
-      console.log("text");
-      console.log(text.text);
-      this.setState({
-          searchText: text.text,
-          list: [],
-          pageNum: 1,
-      });
-      console.log("searchRequest");
-
-      this._refreshPage();
-  };
-
-  render() {
-      return (
-          <Container style={{ backgroundColor: "#f6f6f6" }}>
-              <Header style={styles.headerTop}>
-                  <Left></Left>
-                  <Body style={{ flex: 3 }}>
-                      <Title style={{ color: "#1a192a" }}>Уведомления</Title>
-                  </Body>
-                  <Right></Right>
-              </Header>
-              <SafeAreaView style={{ flex: 1 }}>
-                  <FlatList
-                      style={{ paddingLeft: 10, padding: 10 }}
-                      numColumns={1}
-                      data={this.state.list}
-                      extraData={this.state.list}
-                      keyExtractor={(item, index) => index.toString()}
-                      ItemSeparatorComponent={this.ItemSeparatorView}
-                      renderItem={(v) =>
-                          this.ItemView(v, () => {
-                              this.deleteItem(v);
-                          })
-                      }
-                      ListFooterComponent={this.renderFooter}
-                  />
-              </SafeAreaView>
-              <Modal animationType={"slide"} visible={this.state.modal} transparent={true}>
-                  <View
-                      style={{
-                          backgroundColor: "rgba(30, 30, 45, 0.8)",
-                          flex: 1,
-                          flexDirection: "column",
-                          justifyContent: "center",
-                          alignItems: "center",
-                      }}
-                  >
-                      <View
-                          style={{
-                              flex: 1,
-                              marginTop: 90,
-                          }}
-                      >
-                          <View style={styles.container}>
-                              <View
-                                  style={{
-                                      height: 30,
-                                      width: "100%",
-                                      alignItems: "center",
-                                      backgroundColor: "#dfdfdf",
-                                  }}
-                              >
-                                  <Feather
-                                      onPress={() => this.setState({ modal: false })}
-                                      name="chevrons-down"
-                                      size={24}
-                                      color="black"
-                                  />
-                              </View>
-
-                              <View>
-                                  <Image
-                                      source={{
-                                          uri: "https://skstore.kz/api/getfile/" + this.state.currentGood.file_id,
-                                      }}
-                                      style={{ resizeMode: "contain", width: 400, height: 400 }}
-                                  />
-                                  <View style={{ paddingLeft: 20, paddingRight: 20 }}>
-                                      <Text style={styles.modalPrice}>{this.state.currentGood.price} тг</Text>
-                                      <Text style={styles.modalItemDetail}>{this.state.currentGood.goodtitle}</Text>
-                                      <Text style={styles.modalItemDetail}>{this.state.currentGood.brand}</Text>
-                                      <Text style={styles.modalItemDetailTitle}>
-                                          {this.state.currentGood.Postavshik}
-                                      </Text>
-                                      <Text style={styles.modalItemDetails}>{this.state.currentGood.cat}</Text>
-                                      <Text style={styles.modalItemDetails}>{this.state.currentGood.trutitle}</Text>
-                                  </View>
-                              </View>
-                          </View>
-                      </View>
-                  </View>
-              </Modal>
-          </Container>
-      );
-  }
+    return (
+        <View style={styles.container}>
+            <FlatList
+                data={listData}
+                renderItem={(v) =>
+                    renderItem(v, () => {
+                        console.log("Pressed", v);
+                        deleteItem(v);
+                    })
+                }
+                keyExtractor={(item) => item.id}></FlatList>
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
-    modalPrice: {
-        fontSize: 20,
-    },
-    modalItemDetail: {
-        fontSize: 12,
-    },
-    modalItemDetailTitle: {
-        fontSize: 16,
-    },
-    modalItemDetails: {
-        fontSize: 12,
-    },
-    topButtonView: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        flex: 1,
-        backgroundColor: "rgba(52, 52, 52, 0.05)",
-        borderColor: "white",
-        borderWidth: 10,
-        borderRadius: 30,
-        overflow: "hidden",
-        shadowColor: "#cdcdcd",
-        shadowRadius: 2,
-        shadowOpacity: 20,
-        shadowOffset: { width: 0, height: 2 },
-    },
-    topButton: {
-        backgroundColor: "#FCFCFC",
-        margin: 10,
-        height: 30,
-        borderRadius: 15,
-        width: 100,
-        alignContent: "center",
-        justifyContent: "center",
-    },
-    topButtonNonActive: {
-        backgroundColor: "#F2F2F2",
-        margin: 10,
-        height: 30,
-        borderRadius: 15,
-        width: 100,
-        alignContent: "center",
-        justifyContent: "center",
-        color: "#646464",
-    },
-    description: {
-        fontSize: 15,
-        color: "#646464",
-    },
-    eventTime: {
-        fontSize: 18,
-        color: "#151515",
-    },
-    userName: {
-        fontSize: 16,
-        color: "#151515",
-    },
-    mainContent: {
-        marginRight: 60,
-    },
-    danger: {
-        color: "#ff1016",
-    },
-    info: {
-        color: "#445aff",
-    },
-    filterModal: {
-        width: 10,
-        height: 10,
-        marginTop: 20,
-        marginBottom: 20,
-    },
     container: {
         flex: 1,
-        backgroundColor: "#fff",
-        margin: 20,
-        padding: 20,
-    },
-    headerTop: {
-        backgroundColor: "#fff",
-        borderColor: "#898989",
-    },
-    textName: {
-        fontSize: 14,
-        color: "#5e6064",
-        fontWeight: "700",
-        paddingBottom: 5,
-    },
-    tabsContentLabel: {
-        fontWeight: "600",
-        color: "#434349",
-        fontSize: 12,
-    },
-    tabsContentText: {
-        fontWeight: "600",
-        color: "#5e6064",
-        fontSize: 12,
         justifyContent: "center",
-        alignItems: "center",
-        textAlign: "justify",
+        paddingTop: Constants.statusBarHeight,
+        backgroundColor: "#ecf0f1",
+        padding: 8,
     },
-    textSmallTitle: {
-        fontSize: 14,
-        color: "#434349",
+    paragraph: {
+        margin: 24,
+        fontSize: 18,
         fontWeight: "bold",
-    },
-    textSmallValue: {
-        fontSize: 12,
-        color: "#1a192a",
-        fontWeight: "300",
-    },
-    starContainer: {
-        flex: 1,
-        flexDirection: "row",
-        alignItems: "center",
-    },
-    ratingText: {
-        color: "red",
-        fontSize: 12,
-        fontWeight: "300",
-        marginLeft: 10,
-    },
-    buttonsContainer: {
-        flexDirection: "column",
-        alignContent: "center",
-        alignItems: "center",
-        width: 120,
-        justifyContent: "center",
-    },
-    button: {
-        borderRadius: 10,
-        margin: 3,
-        // borderColor: '#1a192a',
-        alignItems: "center",
-    },
-    btn: {
-    // backgroundColor: '#1a192a',
-        paddingVertical: 5,
-        paddingHorizontal: 10,
-    },
-    textStyle: {
-        paddingVertical: 5,
-    },
-    centeredView: {
-        flex: 1,
-        justifyContent: "flex-end",
-        alignItems: "center",
-    },
-    modalView: {
-        width: ScreenWidth,
-        height: ScreenHeight,
-        backgroundColor: "white",
-        alignItems: "center",
-        paddingTop: 100,
-    },
-    openButton: {
-        backgroundColor: "#F194FF",
-        borderRadius: 20,
-        padding: 10,
-        elevation: 2,
-        marginTop: 20,
-    },
-    modalText: {
-        marginBottom: 15,
         textAlign: "center",
     },
-
-    textAreaContainer: {
-        width: ScreenWidth - 20,
-        borderColor: "grey",
-        borderWidth: 1,
-        padding: 5,
-        marginBottom: 20,
-    },
-    textArea: {
-        height: 65,
-        width: "100%",
-        padding: 5,
-        textAlignVertical: "top",
-        justifyContent: "flex-start",
-        borderRadius: 15,
-        backgroundColor: "#F2F2F2",
-        marginTop: 10,
-    },
-    textArea3: {
-        padding: 10,
-        height: 150,
-        flexDirection: "row",
-        justifyContent: "space-between",
-        flex: 1,
-        backgroundColor: "rgba(52, 52, 52, 0.05)",
-        borderColor: "white",
-        borderWidth: 10,
-        borderRadius: 15,
-        overflow: "hidden",
-        shadowColor: "#cdcdcd",
-        shadowRadius: 2,
-        shadowOpacity: 20,
-        shadowOffset: { width: 0, height: 2 },
-    },
-    textArea4: {
-        padding: 10,
-        height: 65,
-        flexDirection: "row",
-        justifyContent: "space-between",
-        flex: 1,
-        backgroundColor: "rgba(52, 52, 52, 0.05)",
-        borderColor: "white",
-        borderWidth: 10,
-        borderRadius: 15,
-        overflow: "hidden",
-        shadowColor: "#cdcdcd",
-        shadowRadius: 2,
-        shadowOpacity: 20,
-        shadowOffset: { width: 0, height: 2 },
-    },
-    textArea2: {
-        height: 30,
-        width: "100%",
-        padding: 5,
-        textAlignVertical: "top",
-        justifyContent: "flex-start",
-        borderRadius: 20,
-        backgroundColor: "#F2F2F2",
-        marginTop: 10,
-    },
-    contactInput: {
-        borderWidth: 1,
-        width: "100%",
-        padding: 5,
-    },
-
-    contactContainer: {
-        width: ScreenWidth - 20,
-        borderColor: "grey",
-        borderWidth: 1,
-        padding: 5,
-        marginBottom: 20,
-    },
-    textInput: {
-        fontSize: 14,
-        backgroundColor: "#fff",
-        color: "#1a192a",
-        padding: 5,
-        height: 40,
-        borderColor: "#898989",
-        borderWidth: 0.5,
-        textTransform: "uppercase",
-    },
-    row: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: 20,
-        backgroundColor: "#fff",
-        shadowColor: "#1a192a",
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.4,
-        shadowRadius: 3,
-        elevation: 5,
-    },
-    nameContainer: {
-        flexDirection: "row",
-        width: 270,
-    },
-    nameContainer2: {
-        flexDirection: "row",
-        width: 270,
-        marginTop: 3,
-        marginBottom: 3,
-        alignItems: "center",
-    },
-    label: {
-        fontWeight: "600",
-        color: "#777",
-        fontSize: 12,
-    },
-    nameTxt: {
-        fontWeight: "600",
-        color: "#222",
-        fontSize: 14,
-    },
-    mblTxt: {
-        fontWeight: "200",
-        color: "#777",
-        fontSize: 13,
-    },
-    end: {
-        flexDirection: "row",
-        paddingTop: 5,
-        paddingBottom: 5,
-    },
-    time: {
-        fontWeight: "400",
-        color: "#666",
-        fontSize: 12,
-        justifyContent: "center",
-    },
-    icon: {
-        height: 28,
-        width: 28,
-    },
-    filterModalInput: {
-        backgroundColor: "#F2F2F2",
-        zIndex: 100,
-    },
-    ava_img_small: {
-        width: 200,
-        height: 300,
-        justifyContent: "center",
-        textAlign: "justify",
-        alignItems: "center",
-        alignSelf: "center",
-    },
-    message_img: {
-        width: 80,
-        height: 80,
-        borderRadius: 120,
-        justifyContent: "center",
-        alignContent: "center",
-        alignItems: "center",
-        alignSelf: "center",
-    },
-    boxStyle: {
-        height: 200,
-        width: "48%",
-        borderWidth: 1,
-        margin: 5,
-        backgroundColor: "red",
-    },
-    categoryContainer: {
-        flexDirection: "row",
-        marginTop: 30,
-        marginBottom: 20,
-        justifyContent: "space-between",
-    },
-    categoryText: { fontSize: 16, color: "grey", fontWeight: "bold" },
-    categoryTextSelected: {
-        color: "green",
-        paddingBottom: 5,
-        borderBottomWidth: 2,
-        borderColor: "green",
-    },
-    card: {
-        backgroundColor: "white",
-        marginHorizontal: 2,
-        borderRadius: 10,
-        marginBottom: 20,
-        padding: 15,
-    },
 });
-
-export default Notifications;

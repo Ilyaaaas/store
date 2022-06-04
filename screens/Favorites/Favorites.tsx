@@ -70,6 +70,7 @@ class Favorites extends React.Component {
     };
 
     _getGoodsList = async () => {
+        console.log("_getGoodsList");
         const response = await fetch("https://skstore.kz/mobile/favorites", {
             method: "GET",
             headers: {
@@ -80,6 +81,8 @@ class Favorites extends React.Component {
         });
 
         const responseJson = await response.json();
+        console.log(responseJson);
+        console.log(`Bearer ${this.state.token}`);
         if (this.state.list.length == 0) {
             this.setState({
                 list: responseJson,
