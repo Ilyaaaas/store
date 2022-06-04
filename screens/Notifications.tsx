@@ -1,34 +1,12 @@
 import {Feather, AntDesign, FontAwesome} from "@expo/vector-icons";
 import * as React from "react";
 import {useEffect, useState} from "react";
-import { Text, View, StyleSheet, FlatList, Button } from "react-native";
+import {Text, View, StyleSheet, FlatList, Button, SafeAreaView} from "react-native";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import { API, getToken } from "./constants";
 
 import Constants from "expo-constants";
-
-const DATA = [
-    {
-        id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-        title: "First Item",
-    },
-    {
-        id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-        title: "Second Item",
-    },
-    {
-        id: "58694a0f-3da1-471f-bd96-145571e29d72",
-        title: "Third Item",
-    },
-    {
-        id: "58694a0f-3da1-471f-bd96-145571e29d71",
-        title: "Fourth Item",
-    },
-    {
-        id: "58694a0f-3da1-471f-bd96-145571e29d70",
-        title: "Fifth Item",
-    },
-];
+import {Container, Left, Right, Title, Header, Body} from "native-base";
 
 export default function Notifications() {
     const [listData, setListData] = useState([]);
@@ -145,17 +123,36 @@ export default function Notifications() {
     };
 
     return (
-        <View style={styles.container}>
-            <FlatList
-                data={listData}
-                renderItem={(v) =>
-                    renderItem(v, () => {
-                        console.log("Pressed", v);
-                        deleteItem(v);
-                    })
-                }
-                keyExtractor={(item) => item.id}></FlatList>
-        </View>
+        <Container style={{ backgroundColor: "#f6f6f6" }}>
+            <Header style={styles.headerTop}>
+                <Left></Left>
+                <Body style={{ flex: 3 }}>
+                    <Title style={{ color: "#1a192a" }}>Уведомления</Title>
+                </Body>
+                <Right>
+                    <AntDesign
+                        name="filter"
+                        size={24}
+                        color="#1a192a"
+                        style={{marginRight: 10}}
+                        onPress={() => this.setState({modalFilter: true})}
+                    />
+                </Right>
+            </Header>
+            <SafeAreaView style={{ flex: 1 }}>
+                <View style={styles.container}>
+                    <FlatList
+                        data={listData}
+                        renderItem={(v) =>
+                            renderItem(v, () => {
+                                console.log("Pressed", v);
+                                deleteItem(v);
+                            })
+                        }
+                        keyExtractor={(item) => item.id}></FlatList>
+                </View>
+            </SafeAreaView>
+        </Container>
     );
 }
 
@@ -163,7 +160,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: "center",
-        paddingTop: Constants.statusBarHeight,
         backgroundColor: "#ecf0f1",
         padding: 8,
     },
