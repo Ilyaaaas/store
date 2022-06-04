@@ -1,3 +1,4 @@
+import {Feather, AntDesign, FontAwesome} from "@expo/vector-icons";
 import * as React from "react";
 import {useEffect, useState} from "react";
 import { Text, View, StyleSheet, FlatList, Button } from "react-native";
@@ -68,8 +69,9 @@ export default function Notifications() {
                         alignContent: "center",
                         justifyContent: "center",
                         width: 70,
+                        backgroundColor: "#e64622",
                     }}>
-                    <Button color="red" onPress={onClick} title="DELETE"></Button>
+                    <FontAwesome onPress={onClick} style={{alignSelf: "center"}} name="trash" size={24} color="#fff" />
                 </View>
             );
         };
