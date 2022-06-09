@@ -60,6 +60,7 @@ class HomeScreen extends React.Component {
             searchText: "",
             fullGoodInfo: "",
             openDropdown: false,
+            myProposeState: false,
             selectedVal: null,
             fromValue: 0,
             toValue: 5000,
@@ -92,6 +93,21 @@ class HomeScreen extends React.Component {
           });
       }
   };
+
+    changeCategory = async () => {
+        const pageNum = this.state.pageNum;
+        const response = await fetch(
+            `https://skstore.kz/api/goods?search=${this.state.searchText}&page=${pageNum}&count=12&price_from=0&price_to=8000000&tru=&kato=710000000&brand=&cat=&sort=created_at+desc&filter=&otp=0`,
+            {
+                method: "GET",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    // 'token': this.state.token,
+                },
+            }
+        );
+    };
 
   like = async () => {
       alert("like");
@@ -192,18 +208,6 @@ class HomeScreen extends React.Component {
                       }}
                   >
                       <Text style={{ fontSize: 19, fontWeight: "bold" }}>{item.price}</Text>
-                      <View
-                          style={{
-                              height: 25,
-                              width: 25,
-                              backgroundColor: "green",
-                              borderRadius: 5,
-                              justifyContent: "center",
-                              alignItems: "center",
-                          }}
-                      >
-                          <Text style={{ fontSize: 22, color: "white", fontWeight: "bold" }}>+</Text>
-                      </View>
                   </View>
               </View>
           </TouchableOpacity>
@@ -237,7 +241,7 @@ class HomeScreen extends React.Component {
   };
 
   addPropose = (text: { text: any }) => {
-      this.setState({modal: false, currentGoodDescription: "", });
+      this.setState({modal: false, currentGoodDescription: "", myProposeState: true });
   };
 
   render() {
@@ -278,15 +282,6 @@ class HomeScreen extends React.Component {
                       ) : (
                           <Button style={styles.topButtonNonActive} onPress={() => this.changeCategory(2)}>
                               <Text style={{ textAlign: "center", color: "#646464" }}>Мои</Text>
-                          </Button>
-                      )}
-                      {this.state.topCategoryCheckedId == 3 ? (
-                          <Button style={styles.topButton} onPress={() => this.changeCategory(3)}>
-                              <Text style={{ textAlign: "center", color: "#535353" }}>Заказы</Text>
-                          </Button>
-                      ) : (
-                          <Button style={styles.topButtonNonActive} onPress={() => this.changeCategory(3)}>
-                              <Text style={{ textAlign: "center", color: "#646464" }}>Заказы</Text>
                           </Button>
                       )}
                   </View>
@@ -365,8 +360,67 @@ class HomeScreen extends React.Component {
                                               <Text>нет</Text>
                                           </View>
                                       )}
-                                      <Button style={{width: "100%", marginTop: 5, marginBottom: 5, justifyContent: "center", backgroundColor: "green"}}>
-                                          <Text onPress={() => this.addPropose()} style={{ textAlign: "center", color: "#fff"}}>+ Внести предложение</Text>
+                                      <Button onPress={() => this.addPropose()} style={{width: "100%", marginTop: 5, marginBottom: 5, justifyContent: "center", backgroundColor: "green"}}>
+                                          <Text style={{ textAlign: "center", color: "#fff"}}>+ Внести предложение</Text>
+                                      </Button>
+                                  </View>
+                              </View>
+                          </View>
+                      </ScrollView>
+                  }/>
+              <SwipeUpDownModal
+                  PressToanimate={false}
+                  HeaderStyle={{paddingBottom: 20,}}
+                  ContentModalStyle={styles.Modal}
+                  HeaderContent={
+                      <View
+                          style={{
+                              width: "100%",
+                              alignItems: "center",
+                              backgroundColor: "#f6f6f6",
+                          }}
+                      >
+                          <AntDesign
+                              onPress={() => this.setState({myProposeState: false})}
+                              name="minus"
+                              size={44}
+                              color="black"
+                          />
+                      </View>
+                  }
+                  modalVisible={this.state.myProposeState}
+                  onClose={() => this.setState({myProposeState: false, currentGoodDescription: ""})}
+                  ContentModal={
+                      <ScrollView>
+                          <View
+                              style={{
+                                  flex: 1,
+                              }}
+                          >
+                              <View style={styles.container}>
+                                  <View style={{ zIndex: -10, marginTop: 20 }}>
+                                      <Text>Цена (тг)</Text>
+                                      <TextInput
+                                          placeholder="Цена"
+                                          keyboardType = 'numeric'
+                                          // onChangeText={set_address}
+                                          // value={address}
+                                          style={{ backgroundColor: "#F2F2F2", borderRadius: 10, padding: 10 }}
+                                      />
+                                  </View>
+                                  <View style={{ zIndex: -10, marginTop: 20 }}>
+                                      <Text>Вес (кг)</Text>
+                                      <TextInput
+                                          placeholder="Вес"
+                                          keyboardType = 'numeric'
+                                          // onChangeText={set_address}
+                                          // value={address}
+                                          style={{ backgroundColor: "#F2F2F2", borderRadius: 10, padding: 10 }}
+                                      />
+                                  </View>
+                                  <View style={{paddingLeft: 20, paddingRight: 20, paddingBottom: 20, marginTop: 20, }}>
+                                      <Button onPress={() => this.setState({myProposeState: false})} style={{width: "100%", marginTop: 5, marginBottom: 5, justifyContent: "center", backgroundColor: "green"}}>
+                                          <Text style={{ textAlign: "center", color: "#fff"}}>Отправить</Text>
                                       </Button>
                                   </View>
                               </View>
@@ -566,7 +620,7 @@ const styles = StyleSheet.create({
         margin: 10,
         height: 30,
         borderRadius: 15,
-        width: 100,
+        width: 150,
         alignContent: "center",
         justifyContent: "center",
     },
@@ -575,7 +629,7 @@ const styles = StyleSheet.create({
         margin: 10,
         height: 30,
         borderRadius: 15,
-        width: 100,
+        width: 150,
         alignContent: "center",
         justifyContent: "center",
         color: "#646464",
