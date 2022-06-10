@@ -103,26 +103,37 @@ class HomeScreen extends React.Component {
   };
 
     changeCategory = async (categId) => {
-        this.setState({ refreshing: false, topCategoryCheckedId: categId });
-        const pageNum = this.state.pageNum;
-        const response = await fetch(
-            "https://skstore.kz/mobile/providergoods",
-            {
-                method: "GET",
-                headers: {
-                    "Authorization": "Bearer "+this.state.token,
-                },
-            }
-        );
-        const responseJson = await response.json();
-        console.log(responseJson, "responseJson");
-        console.log(this.state.token, "this.state.token");
-        this.setState({
-            list: ""
-        });
-        this.setState({
-            list: responseJson
-        });
+        if (categId == 2)
+        {
+            this.setState({ refreshing: false, topCategoryCheckedId: categId });
+            const pageNum = this.state.pageNum;
+            const response = await fetch(
+                "https://skstore.kz/mobile/providergoods",
+                {
+                    method: "GET",
+                    headers: {
+                        "Authorization": "Bearer "+this.state.token,
+                    },
+                }
+            );
+            const responseJson = await response.json();
+            console.log(responseJson, "responseJson");
+            console.log(this.state.token, "this.state.token");
+            this.setState({
+                list: ""
+            });
+            this.setState({
+                list: responseJson
+            });
+        }
+        else if(categId == 1)
+        {
+            this.setState({ refreshing: false, topCategoryCheckedId: categId });
+            this.setState({
+                list: ""
+            });
+            this._refreshPage();
+        }
     };
 
   like = async () => {
