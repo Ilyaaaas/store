@@ -64,8 +64,15 @@ class HomeScreen extends React.Component {
             selectedVal: null,
             fromValue: 0,
             toValue: 5000,
+            categ: "goods",
         };
     }
+
+    _getToken = async () => {
+        await getToken().then(req => {
+            this.setState({token: req});
+        });
+    };
 
   _getGoodsList = async () => {
       const pageNum = this.state.pageNum;
@@ -81,6 +88,7 @@ class HomeScreen extends React.Component {
           }
       );
       const responseJson = await response.json();
+      console.log(responseJson, "responseJson222");
       if (this.state.list.length == 0) {
           this.setState({
               list: responseJson[0],
@@ -94,19 +102,27 @@ class HomeScreen extends React.Component {
       }
   };
 
-    changeCategory = async () => {
+    changeCategory = async (categId) => {
+        this.setState({ refreshing: false, topCategoryCheckedId: categId });
         const pageNum = this.state.pageNum;
         const response = await fetch(
-            `https://skstore.kz/api/goods?search=${this.state.searchText}&page=${pageNum}&count=12&price_from=0&price_to=8000000&tru=&kato=710000000&brand=&cat=&sort=created_at+desc&filter=&otp=0`,
+            "https://skstore.kz/mobile/providergoods",
             {
                 method: "GET",
                 headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    // 'token': this.state.token,
+                    "Authorization": "Bearer "+this.state.token,
                 },
             }
         );
+        const responseJson = await response.json();
+        console.log(responseJson, "responseJson");
+        console.log(this.state.token, "this.state.token");
+        this.setState({
+            list: ""
+        });
+        this.setState({
+            list: responseJson
+        });
     };
 
   like = async () => {
@@ -122,6 +138,7 @@ class HomeScreen extends React.Component {
 
   UNSAFE_componentWillMount() {
       this._refreshPage();
+      this._getToken();
   }
 
   getSelectedItem = async (item: any) => {
@@ -192,8 +209,8 @@ class HomeScreen extends React.Component {
                       }}
                   >
                       <Image
-                          source={{ uri: "https://skstore.kz/api/getfile/" + item.file_id }}
-                          style={{ flex: 1, resizeMode: "contain", width: 100, height: 200 }}
+                          source={{ uri: "https://skstore.kz/api/getfile/"+item.file_id}}
+                          style={{ flex: 1, resizeMode: "stretch", width: 200, height: 300 }}
                       />
                   </View>
 
@@ -215,11 +232,19 @@ class HomeScreen extends React.Component {
   };
 
   renderFooter = () => {
-      return (
-          <View>
-              <Spinner color="#1a192a" size={10} />
-          </View>
-      );
+      if(this.state.topCategoryCheckedId == 1) {
+          return (
+              <View>
+                  <Spinner color="#1a192a" size={10}/>
+              </View>
+          );
+      }
+      else
+      {
+          return (
+              <View></View>
+          );
+      }
   };
 
   ItemSeparatorView = () => {
@@ -227,7 +252,10 @@ class HomeScreen extends React.Component {
   };
 
   getMoreGoods = () => {
-      this._getGoodsList();
+      if(this.state.topCategoryCheckedId == 1)
+      {
+          this._getGoodsList();
+      }
   };
 
   searchRequest = (text: { text: any }) => {
