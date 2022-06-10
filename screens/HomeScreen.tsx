@@ -208,10 +208,17 @@ class HomeScreen extends React.Component {
                           alignItems: "center",
                       }}
                   >
-                      <Image
-                          source={{ uri: "https://skstore.kz/api/getfile/"+item.file_id}}
-                          style={{ flex: 1, resizeMode: "stretch", width: 200, height: 300 }}
-                      />
+                      {item.file_id !== null ?
+                          <Image
+                              source={{uri: "https://skstore.kz/api/getfile/" + item.file_id}}
+                              style={{flex: 1, resizeMode: "contain", width: 100, height: 200}}
+                          />
+                          :
+                          <Image
+                              source={{uri: "https://skstore.kz/mobile/getfile/" + item.file_id}}
+                              style={{flex: 1, resizeMode: "contain", width: 100, height: 200}}
+                          />
+                      }
                   </View>
 
                   <View style={{ height: 60 }}>
