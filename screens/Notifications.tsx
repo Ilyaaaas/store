@@ -1,7 +1,7 @@
 import {Feather, AntDesign, FontAwesome} from "@expo/vector-icons";
 import * as React from "react";
 import {useEffect, useState} from "react";
-import {Text, View, StyleSheet, FlatList, SafeAreaView} from "react-native";
+import {Text, View, StyleSheet, FlatList, SafeAreaView, Picker} from "react-native";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import { API, getToken } from "./constants";
 
@@ -16,6 +16,7 @@ export default function Notifications() {
     const [token, setToken] = useState();
     const [refreshState, setRefreshState] = useState(false);
     const [modalFilter, setModalFilter] = useState(false);
+    const [selectedValue, setSelectedValue] = useState(false);
     const row: Array<any> = [];
     let prevOpenedRow;
 
@@ -188,26 +189,20 @@ export default function Notifications() {
                         }}
                     >
                         <View style={styles.container}>
-                            <View style={{height: 60, paddingTop: 100, }}>
+                            <View style={{height: 60, marginTop: 10, marginBottom: 20, backgroundColor: "red", }}>
                                 <Text>Тип уведомлений</Text>
-                                <Dropdown
-                                    data={[
-                                        {label: "Все", value: "1"},
-                                        {label: "Только заказы", value: "2"},
-                                    ]}
-                                    style={{flex:1, height: 50}}
-                                    search
-                                    maxHeight={300}
-                                    labelField="label"
-                                    valueField="value"
-                                    placeholder={"не выбрано"}
-                                    searchPlaceholder="поиск..."
-                                    onChange={item => {
-                                        console.log(item.value, item.label);
-                                    }}
-                                />
+                                <View style={{paddingBottom: 20, paddingTop: 20, }}>
+                                    <Picker
+                                        selectedValue={selectedValue}
+                                        style={{ width: "100%", justifyContent: "center", paddingBottom: 20, }}
+                                        onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
+                                    >
+                                        <Picker.Item label="Все" value="0" />
+                                        <Picker.Item label="Заказы" value="1" />
+                                    </Picker>
+                                </View>
                             </View>
-                            <View style={{marginTop: 20, }}>
+                            <View>
                                 <Button style={{width: "100%", justifyContent: "center", backgroundColor: "green"}}>
                                     <Text onPress={() => submitFilter()} style={{ textAlign: "center", color: "#fff"}}>Применить</Text>
                                 </Button>
@@ -225,6 +220,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         backgroundColor: "#ecf0f1",
         padding: 8,
+        flexDirection: "column"
     },
     paragraph: {
         margin: 24,

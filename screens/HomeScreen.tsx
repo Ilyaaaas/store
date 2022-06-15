@@ -36,6 +36,7 @@ class HomeScreen extends React.Component {
             currentGood: [],
             currentGoodId: 0,
             currentGoodDescription: "",
+            currentGoodDescriptionProvid: "",
             currentGoodProperties: [],
             modal: false,
             modalFilter: false,
@@ -74,33 +75,33 @@ class HomeScreen extends React.Component {
         });
     };
 
-  _getGoodsList = async () => {
-      const pageNum = this.state.pageNum;
-      const response = await fetch(
-          `https://skstore.kz/api/goods?search=${this.state.searchText}&page=${pageNum}&count=12&price_from=0&price_to=8000000&tru=&kato=710000000&brand=&cat=&sort=created_at+desc&filter=&otp=0`,
-          {
-              method: "GET",
-              headers: {
-                  Accept: "application/json",
-                  "Content-Type": "application/x-www-form-urlencoded",
-                  // 'token': this.state.token,
-              },
-          }
-      );
-      const responseJson = await response.json();
-      console.log(responseJson, "responseJson222");
-      if (this.state.list.length == 0) {
-          this.setState({
-              list: responseJson[0],
-              pageNum: pageNum + 1,
-          });
-      } else {
-          this.setState({
-              list: [...this.state.list, ...responseJson[0]],
-              pageNum: pageNum + 1,
-          });
-      }
-  };
+    _getGoodsList = async () => {
+        const pageNum = this.state.pageNum;
+        const response = await fetch(
+            `https://skstore.kz/api/goods?page=${pageNum}&count=12&price_from=0&price_to=8000000&tru=&kato=710000000&brand=&cat=&sort=created_at+desc&filter=&otp=0`,
+            {
+                method: "GET",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    Authorization: `Bearer ${this.state.token}`,
+                },
+            }
+        );
+        const responseJson = await response.json();
+        console.log(responseJson, "responseJson222");
+        if (this.state.list.length == 0) {
+            this.setState({
+                list: responseJson[0],
+                pageNum: pageNum + 1,
+            });
+        } else {
+            this.setState({
+                list: [...this.state.list, ...responseJson[0]],
+                pageNum: pageNum + 1,
+            });
+        }
+    };
 
     changeCategory = async (categId) => {
         if (categId == 2)
@@ -136,502 +137,581 @@ class HomeScreen extends React.Component {
         }
     };
 
-  like = async () => {
-      alert("like");
-  };
-
-  _refreshPage = async () => {
-      this.setState({ refreshing: true });
-      // await this._getToken();
-      await this._getGoodsList();
-      this.setState({ refreshing: false, topCategoryCheckedId: 1 });
-  };
-
-  UNSAFE_componentWillMount() {
-      this._refreshPage();
-      this._getToken();
-  }
-
-  getSelectedItem = async (item: any) => {
-      console.log(item.id);
-      this.setState({
-          currentGood: item,
-          modal: true,
-      });
-      this._getGoodInfoFromApi(item.id);
-  };
-
-    _getGoodInfoFromApi = async (currentGoodId) => {
-        console.log(currentGoodId);
-        const response = await fetch(
-            `https://skstore.kz/api/good/${currentGoodId}?kato=710000000&quantity=1`,
-            {
-                method: "GET",
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    "token": this.state.token,
-                },
-            }
-        );
-        const responseJson = await response.json();
-        console.log(responseJson[1]);
-        this.setState({
-            currentGoodDescription: responseJson[2][0]["txt"],
-            currentGoodProperties: responseJson[1],
-        });
+    like = async () => {
+        alert("like");
     };
 
-  ItemView = ({ item }) => {
-      return (
-          <TouchableOpacity
-              activeOpacity={0.8}
-              onPress={() => this.getSelectedItem(item)}
-              style={{ width: "50%" }}
-          >
-              <View style={styles.card}>
-                  <View style={{ alignItems: "flex-end" }}>
-                      <View
-                          style={{
-                              width: 30,
-                              height: 30,
-                              justifyContent: "center",
-                              alignItems: "center",
-                          }}
-                      >
+    _refreshPage = async () => {
+        this.setState({ refreshing: true });
+        // await this._getToken();
+        await this._getGoodsList();
+        this.setState({ refreshing: false, topCategoryCheckedId: 1 });
+    };
+
+    UNSAFE_componentWillMount() {
+        this._refreshPage();
+        this._getToken();
+    }
+
+    getSelectedItem = async (item: any) => {
+        console.log(item, "currentGoodDescriptionProvidItem");
+        this.setState({
+            currentGood: item,
+            modal: true,
+        });
+        this.getOneGood(item.id);
+    };
+
+    getOneGood = async (currentGoodId) => {
+        console.log(`https://skstore.kz/api/good/${currentGoodId}`, "currentAPIiiiiiiii");
+        console.log("Bearer "+this.state.token, "ещлут");
+        if(this.state.topCategoryCheckedId != 2) {
+            const response = await fetch(
+                `https://skstore.kz/mobile/good/${currentGoodId}`,
+                {
+                    method: "GET",
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "Authorization": "Bearer " + this.state.token,
+                    },
+                }
+            );
+            const responseJson = await response.json();
+            console.log(responseJson["prvgood"], "responseJson[1]");
+            this.setState({
+                currentGoodDescription: responseJson[2][0]["txt"],
+                currentGoodProperties: responseJson[1],
+            });
+        }
+        else
+        {
+            const response = await fetch(
+                `https://skstore.kz/mobile/providergoods/${currentGoodId}`,
+                {
+                    method: "GET",
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "Authorization": "Bearer " + this.state.token,
+                    },
+                }
+            );
+            const responseJson = await response.json();
+            console.log(responseJson["prvgood"], "prvgood");
+            this.setState({
+                currentGoodDescriptionProvid: responseJson["prvgood"],
+            });
+        }
+    };
+
+    ItemView = ({ item }) => {
+        return (
+            <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => this.getSelectedItem(item)}
+                style={{ width: "50%" }}
+            >
+                <View style={styles.card}>
+                    <View style={{ alignItems: "flex-end" }}>
+                        <View
+                            style={{
+                                width: 30,
+                                height: 30,
+                                justifyContent: "center",
+                                alignItems: "center",
+                            }}
+                        >
+                            <AntDesign
+                                onPress={() => this.like()}
+                                style={{
+                                    shadowColor: "#c4c3c3",
+                                    shadowOffset: {
+                                        width: 2,
+                                        height: 5,
+                                    },
+                                    shadowOpacity: 6,
+                                    shadowRadius: 6,
+                                }} name="heart" size={24} color="#fff" />
+                        </View>
+                    </View>
+
+                    <View
+                        style={{
+                            height: 200,
+                            alignItems: "center",
+                        }}
+                    >
+                        {item.file_id !== null ?
+                            <Image
+                                source={{uri: "https://skstore.kz/api/getfile/" + item.file_id}}
+                                style={{flex: 1, resizeMode: "contain", width: 100, height: 200}}
+                            />
+                            :
+                            <Image
+                                source={{uri: "https://skstore.kz/mobile/getfile/" + item.file_id}}
+                                style={{flex: 1, resizeMode: "contain", width: 100, height: 200}}
+                            />
+                        }
+                    </View>
+
+                    <View style={{ height: 60 }}>
+                        <Text style={{ fontWeight: "bold", fontSize: 12, marginTop: 10 }}>{item.title}</Text>
+                    </View>
+                    <View
+                        style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            marginTop: 5,
+                        }}
+                    >
+                        <Text style={{ fontSize: 19, fontWeight: "bold" }}>{item.price} ₸</Text>
+                    </View>
+                </View>
+            </TouchableOpacity>
+        );
+    };
+
+      renderFooter = () => {
+          if(this.state.topCategoryCheckedId == 1) {
+              return (
+                  <View>
+                      <Spinner color="#1a192a" size={10}/>
+                  </View>
+              );
+          }
+          else
+          {
+              return (
+                  <View></View>
+              );
+          }
+      };
+
+      ItemSeparatorView = () => {
+          return <View />;
+      };
+
+      getMoreGoods = () => {
+          if(this.state.topCategoryCheckedId == 1)
+          {
+              this._getGoodsList();
+          }
+      };
+
+      addPropose = (text: { text: any }) => {
+          this.setState({modal: false, currentGoodDescription: "", myProposeState: true });
+      };
+
+      render() {
+          console.log("this.state.currentGoodProperties");
+          // console.log(this.state.currentGoodProperties);
+          console.log(this.state.currentGoodDescriptionProvid);
+          return (
+              <Container style={{ backgroundColor: "#f6f6f6" }}>
+                  <Header style={styles.headerTop}>
+                      <Left></Left>
+                      <Body style={{ flex: 3 }}>
+                          <Title style={{ color: "#1a192a" }}>Все товары</Title>
+                      </Body>
+                      <Right>
                           <AntDesign
-                              onPress={() => this.like()}
-                              style={{
-                                  shadowColor: "#c4c3c3",
-                                  shadowOffset: {
-                                      width: 2,
-                                      height: 5,
-                                  },
-                                  shadowOpacity: 6,
-                                  shadowRadius: 6,
-                              }} name="heart" size={24} color="#fff" />
+                              name="filter"
+                              size={24}
+                              color="#1a192a"
+                              style={{marginRight: 10}}
+                              onPress={() => this.setState({modalFilter: true})}
+                          />
+                      </Right>
+                  </Header>
+                  <Header style={styles.headerTop}>
+                      <View style={styles.topButtonView}>
+                          {this.state.topCategoryCheckedId == 1 ? (
+                              <Button style={styles.topButton} onPress={() => this.changeCategory(1)}>
+                                  <Text style={{ textAlign: "center", color: "#535353" }}>Все</Text>
+                              </Button>
+                          ) : (
+                              <Button style={styles.topButtonNonActive} onPress={() => this.changeCategory(1)}>
+                                  <Text style={{ textAlign: "center", color: "#646464" }}>Все</Text>
+                              </Button>
+                          )}
+                          {this.state.topCategoryCheckedId == 2 ? (
+                              <Button style={styles.topButton} onPress={() => this.changeCategory(2)}>
+                                  <Text style={{ textAlign: "center", color: "#535353" }}>Мои</Text>
+                              </Button>
+                          ) : (
+                              <Button style={styles.topButtonNonActive} onPress={() => this.changeCategory(2)}>
+                                  <Text style={{ textAlign: "center", color: "#646464" }}>Мои</Text>
+                              </Button>
+                          )}
                       </View>
-                  </View>
-
-                  <View
-                      style={{
-                          height: 200,
-                          alignItems: "center",
-                      }}
-                  >
-                      {item.file_id !== null ?
-                          <Image
-                              source={{uri: "https://skstore.kz/api/getfile/" + item.file_id}}
-                              style={{flex: 1, resizeMode: "contain", width: 100, height: 200}}
-                          />
-                          :
-                          <Image
-                              source={{uri: "https://skstore.kz/mobile/getfile/" + item.file_id}}
-                              style={{flex: 1, resizeMode: "contain", width: 100, height: 200}}
-                          />
-                      }
-                  </View>
-
-                  <View style={{ height: 60 }}>
-                      <Text style={{ fontWeight: "bold", fontSize: 12, marginTop: 10 }}>{item.title}</Text>
-                  </View>
-                  <View
-                      style={{
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                          marginTop: 5,
-                      }}
-                  >
-                      <Text style={{ fontSize: 19, fontWeight: "bold" }}>{item.price}</Text>
-                  </View>
-              </View>
-          </TouchableOpacity>
-      );
-  };
-
-  renderFooter = () => {
-      if(this.state.topCategoryCheckedId == 1) {
-          return (
-              <View>
-                  <Spinner color="#1a192a" size={10}/>
-              </View>
-          );
-      }
-      else
-      {
-          return (
-              <View></View>
-          );
-      }
-  };
-
-  ItemSeparatorView = () => {
-      return <View />;
-  };
-
-  getMoreGoods = () => {
-      if(this.state.topCategoryCheckedId == 1)
-      {
-          this._getGoodsList();
-      }
-  };
-
-  searchRequest = (text: { text: any }) => {
-      this.setState({
-          searchText: text.text,
-          list: [],
-          pageNum: 1,
-      });
-
-      this._refreshPage();
-  };
-
-  addPropose = (text: { text: any }) => {
-      this.setState({modal: false, currentGoodDescription: "", myProposeState: true });
-  };
-
-  render() {
-      console.log("this.state.currentGoodProperties");
-      console.log(this.state.currentGoodProperties);
-      return (
-          <Container style={{ backgroundColor: "#f6f6f6" }}>
-              <Header style={styles.headerTop}>
-                  <Left></Left>
-                  <Body style={{ flex: 3 }}>
-                      <Title style={{ color: "#1a192a" }}>Все товары</Title>
-                  </Body>
-                  <Right>
-                      <AntDesign
-                          name="filter"
-                          size={24}
-                          color="#1a192a"
-                          style={{marginRight: 10}}
-                          onPress={() => this.setState({modalFilter: true})}
+                  </Header>
+                  <SafeAreaView style={{ flex: 1 }}>
+                      {/*<Text style={{backgroundColor: "red", alignContent: "center"}}>qq{this.state.topCategoryCheckedId}</Text>*/}
+                      <FlatList
+                          style={{ paddingLeft: 10, padding: 10 }}
+                          numColumns={2}
+                          data={this.state.list}
+                          extraData={this.state.list}
+                          keyExtractor={(item, index) => index.toString()}
+                          ItemSeparatorComponent={this.ItemSeparatorView}
+                          renderItem={this.ItemView}
+                          ListFooterComponent={this.renderFooter}
+                          onEndReachedThreshold={0}
+                          onEndReached={() => this.getMoreGoods()}
                       />
-                  </Right>
-              </Header>
-              <Header style={styles.headerTop}>
-                  <View style={styles.topButtonView}>
-                      {this.state.topCategoryCheckedId == 1 ? (
-                          <Button style={styles.topButton} onPress={() => this.changeCategory(1)}>
-                              <Text style={{ textAlign: "center", color: "#535353" }}>Все</Text>
-                          </Button>
-                      ) : (
-                          <Button style={styles.topButtonNonActive} onPress={() => this.changeCategory(1)}>
-                              <Text style={{ textAlign: "center", color: "#646464" }}>Все</Text>
-                          </Button>
-                      )}
-                      {this.state.topCategoryCheckedId == 2 ? (
-                          <Button style={styles.topButton} onPress={() => this.changeCategory(2)}>
-                              <Text style={{ textAlign: "center", color: "#535353" }}>Мои</Text>
-                          </Button>
-                      ) : (
-                          <Button style={styles.topButtonNonActive} onPress={() => this.changeCategory(2)}>
-                              <Text style={{ textAlign: "center", color: "#646464" }}>Мои</Text>
-                          </Button>
-                      )}
-                  </View>
-              </Header>
-              <SafeAreaView style={{ flex: 1 }}>
-                  <FlatList
-                      style={{ paddingLeft: 10, padding: 10 }}
-                      numColumns={2}
-                      data={this.state.list}
-                      extraData={this.state.list}
-                      keyExtractor={(item, index) => index.toString()}
-                      ItemSeparatorComponent={this.ItemSeparatorView}
-                      renderItem={this.ItemView}
-                      ListFooterComponent={this.renderFooter}
-                      onEndReachedThreshold={0}
-                      onEndReached={() => this.getMoreGoods()}
-                  />
-              </SafeAreaView>
-              <SwipeUpDownModal
-                  PressToanimate={false}
-                  HeaderStyle={{paddingBottom: 20,}}
-                  ContentModalStyle={styles.Modal}
-                  HeaderContent={
-                      <View
-                          style={{
-                              width: "100%",
-                              alignItems: "center",
-                              backgroundColor: "#f6f6f6",
-                          }}
-                      >
-                          <AntDesign
-                              onPress={() => this.setState({modal: false})}
-                              name="minus"
-                              size={44}
-                              color="black"
-                          />
-                      </View>
-                  }
-                  modalVisible={this.state.modal}
-                  onClose={() => this.setState({modal: false, currentGoodDescription: ""})}
-                  ContentModal={
-                      <ScrollView>
+                  </SafeAreaView>
+                  <SwipeUpDownModal
+                      PressToanimate={false}
+                      HeaderStyle={{paddingBottom: 20,}}
+                      ContentModalStyle={styles.Modal}
+                      HeaderContent={
+                          <View
+                              style={{
+                                  width: "100%",
+                                  alignItems: "center",
+                                  backgroundColor: "#f6f6f6",
+                              }}
+                          >
+                              <AntDesign
+                                  onPress={() => this.setState({modal: false})}
+                                  name="minus"
+                                  size={44}
+                                  color="black"
+                              />
+                          </View>
+                      }
+                      modalVisible={this.state.modal}
+                      onClose={() => this.setState({modal: false, currentGoodDescription: ""})}
+                      ContentModal={
+                          <ScrollView>
+                              <View
+                                  style={{
+                                      flex: 1,
+                                  }}
+                              >
+                                  {this.state.topCategoryCheckedId == 2 ?
+                                      <View style={styles.container}>
+                                          {this.state.currentGood.file_id != null ?
+                                              <Image
+                                                  source={{
+                                                      uri: "https://skstore.kz/mobile/getfile/" + this.state.currentGood.file_id,
+                                                  }}
+                                                  style={{
+                                                      resizeMode: "contain",
+                                                      width: "100%",
+                                                      height: 400,
+                                                      marginTop: 70,
+                                                  }}
+                                              />
+                                              :
+                                              <Image
+                                                  source={{
+                                                      uri: "https://skstore.kz/mobile/getfile/null",
+                                                  }}
+                                                  style={{
+                                                      resizeMode: "contain",
+                                                      width: "100%",
+                                                      height: 400,
+                                                      marginTop: 70,
+                                                  }}/>
+                                          }
+                                          <View style={{paddingLeft: 20, paddingRight: 20, paddingBottom: 20,}}>
+                                              <Text>Внесите предлагаемую цену в тенге</Text>
+                                              <TextInput
+                                                  keyboardType = 'numeric'
+                                                  style={{backgroundColor: "#eeeeee", height: 40, borderRadius: 10, color: "#969595", padding: 10,}}>
+                                                  {this.state.currentGood.price}
+                                              </TextInput>
+                                              <Text style={styles.modalItemDetail}>{this.state.currentGood.brand}</Text>
+                                              <Text style={styles.modalItemDetails}>{this.state.currentGood.cat}</Text>
+                                              <Text style={styles.modalItemDetails}>{this.state.currentGood.trutitle}</Text>
+                                              {this.state.currentGoodDescriptionProvid === "" ? (
+                                                  <View>
+                                                      <Spinner color="#1a192a" size={10} />
+                                                  </View>
+                                              ) : (
+                                                  <View>
+                                                      <Text style={{fontWeight: "bold", }}>{this.state.currentGoodId}Коротко о товаре</Text>
+                                                      <Text>{this.state.currentGoodDescription}</Text>
+                                                      <Text>{this.state.currentGoodDescription}</Text>
+                                                      <Text style={{fontWeight: "bold"}}>Характеристики</Text>
+                                                      {
+                                                          this.state.currentGoodDescriptionProvid.map((item, key) =>
+                                                              <Text>{item.attr_title} - {item.title}</Text>
+                                                          )
+                                                      }
+                                                      <Text style={{fontWeight: "bold"}}>Поставщики</Text>
+                                                      <Text>нет</Text>
+                                                  </View>
+                                              )}
+                                              <Button onPress={() => this.setState({modal: false})} style={{width: "100%", marginTop: 5, marginBottom: 5, justifyContent: "center", backgroundColor: "green"}}>
+                                                  <Text style={{ textAlign: "center", color: "#fff"}}>
+                                                      Сохранить
+                                                  </Text>
+                                              </Button>
+                                          </View>
+                                      </View>
+                                      :
+                                      <View style={styles.container}>
+                                          <Image
+                                              source={{
+                                                  uri: "https://skstore.kz/api/getfile/" + this.state.currentGood.file_id,
+                                              }}
+                                              style={{resizeMode: "contain", width: "100%", height: 400, marginTop: 70,}}
+                                          />
+                                          <View style={{paddingLeft: 20, paddingRight: 20, paddingBottom: 20,}}>
+                                              <Text style={styles.modalPrice}>{this.state.currentGood.price} тг</Text>
+                                              <Text style={styles.modalItemDetail}>{this.state.currentGood.goodtitle}</Text>
+                                              <Text style={styles.modalItemDetail}>{this.state.currentGood.brand}</Text>
+                                              <Text style={styles.modalItemDetails}>{this.state.currentGood.cat}</Text>
+                                              <Text style={styles.modalItemDetails}>{this.state.currentGood.trutitle}</Text>
+                                              {this.state.currentGoodDescription === "" ? (
+                                                  <View>
+                                                      <Spinner color="#1a192a" size={10} />
+                                                  </View>
+                                              ) : (
+                                                  <View>
+                                                      <Text style={{fontWeight: "bold"}}>{this.state.currentGoodId}Коротко о товаре</Text>
+                                                      <Text>{this.state.currentGoodDescription}</Text>
+                                                      <Text style={{fontWeight: "bold"}}>Характеристики</Text>
+                                                      {
+                                                          this.state.currentGoodProperties.map((item, key) =>
+                                                              <Text>{item.attr_title} - {item.title}</Text>
+                                                          )
+                                                      }
+                                                      <Text style={{fontWeight: "bold"}}>Поставщики</Text>
+                                                      <Text>нет</Text>
+                                                  </View>
+                                              )}
+                                              {/*<Button onPress={() => this.addPropose()} style={{width: "100%", marginTop: 5, marginBottom: 5, justifyContent: "center", backgroundColor: "green"}}>*/}
+                                              <Button onPress={() => this.setState({modal: false})} style={{width: "100%", marginTop: 5, marginBottom: 5, justifyContent: "center", backgroundColor: "green"}}>
+                                                  <Text style={{ textAlign: "center", color: "#fff"}}>Внести предложение</Text>
+                                              </Button>
+                                          </View>
+                                      </View>
+                                  }
+                              </View>
+                          </ScrollView>
+                      }/>
+                  <SwipeUpDownModal
+                      PressToanimate={false}
+                      HeaderStyle={{paddingBottom: 20,}}
+                      ContentModalStyle={styles.Modal}
+                      HeaderContent={
+                          <View
+                              style={{
+                                  width: "100%",
+                                  alignItems: "center",
+                                  backgroundColor: "#f6f6f6",
+                              }}
+                          >
+                              <AntDesign
+                                  onPress={() => this.setState({myProposeState: false})}
+                                  name="minus"
+                                  size={44}
+                                  color="black"
+                              />
+                          </View>
+                      }
+                      modalVisible={this.state.myProposeState}
+                      onClose={() => this.setState({myProposeState: false, currentGoodDescription: ""})}
+                      ContentModal={
+                          <ScrollView>
+                              <View
+                                  style={{
+                                      flex: 1,
+                                  }}
+                              >
+                                  <View style={styles.container}>
+                                      <View style={{ zIndex: -10, marginTop: 20 }}>
+                                          <Text>Цена (тг)</Text>
+                                          <TextInput
+                                              placeholder="Цена"
+                                              keyboardType = 'numeric'
+                                              // onChangeText={set_address}
+                                              // value={address}
+                                              style={{ backgroundColor: "#F2F2F2", borderRadius: 10, padding: 10 }}
+                                          />
+                                      </View>
+                                      <View style={{ zIndex: -10, marginTop: 20 }}>
+                                          <Text>Вес (кг)</Text>
+                                          <TextInput
+                                              placeholder="Вес"
+                                              keyboardType = 'numeric'
+                                              // onChangeText={set_address}
+                                              // value={address}
+                                              style={{ backgroundColor: "#F2F2F2", borderRadius: 10, padding: 10 }}
+                                          />
+                                      </View>
+                                      <View style={{paddingLeft: 20, paddingRight: 20, paddingBottom: 20, marginTop: 20, }}>
+                                          <Button onPress={() => this.setState({myProposeState: false})} style={{width: "100%", marginTop: 5, marginBottom: 5, justifyContent: "center", backgroundColor: "green"}}>
+                                              <Text style={{ textAlign: "center", color: "#fff"}}>Отправить</Text>
+                                          </Button>
+                                      </View>
+                                  </View>
+                              </View>
+                          </ScrollView>
+                      }/>
+                  <SwipeUpDownModal
+                      PressToanimate={false}
+                      HeaderStyle={{paddingBottom: 20,}}
+                      ContentModalStyle={styles.Modal}
+                      HeaderContent={
+                          <View
+                              style={{
+                                  width: "100%",
+                                  alignItems: "center",
+                                  backgroundColor: "#f6f6f6",
+                              }}
+                          >
+                              <AntDesign
+                                  onPress={() => this.setState({modal: false})}
+                                  name="minus"
+                                  size={44}
+                                  color="black"
+                              />
+                          </View>
+                      }
+                      modalVisible={this.state.modalFilter}
+                      onClose={() => this.setState({modalFilter: false})}
+                      ContentModal={
                           <View
                               style={{
                                   flex: 1,
                               }}
                           >
                               <View style={styles.container}>
-                                  <Image
-                                      source={{
-                                          uri: "https://skstore.kz/api/getfile/" + this.state.currentGood.file_id,
-                                      }}
-                                      style={{resizeMode: "contain", width: 400, height: 400, marginTop: 70,}}
-                                  />
-                                  <View style={{paddingLeft: 20, paddingRight: 20, paddingBottom: 20,}}>
-                                      <Text style={styles.modalPrice}>{this.state.currentGood.price} тг</Text>
-                                      <Text style={styles.modalItemDetail}>{this.state.currentGood.goodtitle}</Text>
-                                      <Text style={styles.modalItemDetail}>{this.state.currentGood.brand}</Text>
-                                      <Text style={styles.modalItemDetails}>{this.state.currentGood.cat}</Text>
-                                      <Text style={styles.modalItemDetails}>{this.state.currentGood.trutitle}</Text>
-                                      {this.state.currentGoodDescription === "" ? (
-                                          <View>
-                                              <Spinner color="#1a192a" size={10} />
+                                  <View style={{height: 60, }}>
+                                      <Text>Показать</Text>
+                                      <Dropdown
+                                          data={[
+                                              {label: "только товары ОТП", value: "1"},
+                                              {label: "только без предложений", value: "2"},
+                                              {label: "только запрещённые", value: "3"},
+                                              {label: "все", value: "4"},
+                                          ]}
+                                          style={{flex:1, height: 50}}
+                                          search
+                                          maxHeight={300}
+                                          labelField="label"
+                                          valueField="value"
+                                          placeholder={"не выбрано"}
+                                          searchPlaceholder="поиск..."
+                                          onChange={item => {
+                                              console.log(item.value, item.label);
+                                          }}
+                                      />
+                                  </View>
+                                  <View style={{height: 60, }}>
+                                      <Text>Фильтр по категориям</Text>
+                                      <Dropdown
+                                          data={[
+                                              {label: "Бытовая техника", value: "1"},
+                                              {label: "Инструменты", value: "2"},
+                                              {label: "Канцелярские товары", value: "3"},
+                                              {label: "Офисная техника", value: "4"},
+                                              {label: "Строительные материалы", value: "5"},
+                                              {label: "Хозяйственные товары", value: "6"},
+                                              {label: "Электроинструменты", value: "7"},
+                                          ]}
+                                          style={{flex:1, height: 50}}
+                                          search
+                                          maxHeight={300}
+                                          labelField="label"
+                                          valueField="value"
+                                          placeholder={"не выбрано"}
+                                          searchPlaceholder="поиск..."
+                                          onChange={item => {
+                                              console.log(item.value, item.label);
+                                          }}
+                                      />
+                                  </View>
+                                  <View style={{marginBottom: 20,}}>
+                                      <Text>Цена</Text>
+                                      <View style={{height: 100,}}>
+                                          <RangeSlider min={0} max={5000}
+                                              fromValueOnChange={value => this.setState({fromValue: value})}
+                                              toValueOnChange={value => this.setState({toValue: value})}
+                                              initialFromValue={11}
+                                              styleSize={"small"}
+                                          />
+                                      </View>
+                                      <View style={{height: 40, marginTop: 20, flexDirection: "row"}}>
+                                          <View style={{flexDirection: "row", width: "50%"}}>
+                                              <Text>От:</Text>
+                                              <TextInput style={{height: 30, width: 50, backgroundColor: "#C9C9C9FF"}} value={this.state.fromValue}>{this.state.fromValue}</TextInput>
                                           </View>
-                                      ) : (
-                                          <View>
-                                              <Text style={{fontWeight: "bold"}}>Коротко о товаре</Text>
-                                              <Text>{this.state.currentGoodDescription}</Text>
-                                              <Text style={{fontWeight: "bold"}}>Характеристики</Text>
-                                              {
-                                                  this.state.currentGoodProperties.map((item, key) =>
-                                                      <Text>{item.attr_title} - {item.title}</Text>
-                                                  )
-                                              }
-                                              <Text style={{fontWeight: "bold"}}>Поставщики</Text>
-                                              <Text>нет</Text>
+                                          <View style={{flexDirection: "row", width: "50%"}}>
+                                              <Text>До: </Text>
+                                              <TextInput style={{height: 30, width: 50, backgroundColor: "#c9c9c9"}} value={this.state.toValue}>{this.state.toValue}</TextInput>
                                           </View>
-                                      )}
-                                      <Button onPress={() => this.addPropose()} style={{width: "100%", marginTop: 5, marginBottom: 5, justifyContent: "center", backgroundColor: "green"}}>
-                                          <Text style={{ textAlign: "center", color: "#fff"}}>+ Внести предложение</Text>
+                                      </View>
+                                  </View>
+                                  <View style={{height: 60, }}>
+                                      <Text>Фильтр по тру</Text>
+                                      <Dropdown
+                                          data={[
+                                              {label: "Бытовая техника", value: "1"},
+                                              {label: "Инструменты", value: "2"},
+                                              {label: "Канцелярские товары", value: "3"},
+                                              {label: "Офисная техника", value: "4"},
+                                              {label: "Строительные материалы", value: "5"},
+                                              {label: "Хозяйственные товары", value: "6"},
+                                              {label: "Электроинструменты", value: "7"},
+                                          ]}
+                                          style={{flex:1, height: 50}}
+                                          search
+                                          maxHeight={300}
+                                          labelField="label"
+                                          valueField="value"
+                                          placeholder={"не выбрано"}
+                                          searchPlaceholder="поиск..."
+                                          onChange={item => {
+                                              console.log(item.value, item.label);
+                                          }}
+                                      />
+                                  </View>
+                                  <View style={{height: 60, }}>
+                                      <Text>Фильтр по брендам</Text>
+                                      <Dropdown
+                                          data={[
+                                              {label: "Бытовая техника", value: "1"},
+                                              {label: "Инструменты", value: "2"},
+                                              {label: "Канцелярские товары", value: "3"},
+                                              {label: "Офисная техника", value: "4"},
+                                              {label: "Строительные материалы", value: "5"},
+                                              {label: "Хозяйственные товары", value: "6"},
+                                              {label: "Электроинструменты", value: "7"},
+                                          ]}
+                                          style={{flex:1, height: 50}}
+                                          search
+                                          maxHeight={300}
+                                          labelField="label"
+                                          valueField="value"
+                                          placeholder={"не выбрано"}
+                                          searchPlaceholder="поиск..."
+                                          onChange={item => {
+                                              console.log(item.value, item.label);
+                                          }}
+                                      />
+                                  </View>
+                                  <View style={{marginTop: 20, }}>
+                                      <Button style={{width: "100%", justifyContent: "center", backgroundColor: "#797979"}}>
+                                          <Text onPress={() => alert("Сброс фильтров")} style={{ textAlign: "center", color: "#fff"}}>Сбросить фильтры</Text>
+                                      </Button>
+                                  </View>
+                                  <View style={{marginTop: 20, }}>
+                                      <Button style={{width: "100%", justifyContent: "center", backgroundColor: "green"}}>
+                                          <Text onPress={() => alert("Применить")} style={{ textAlign: "center", color: "#fff"}}>Применить</Text>
                                       </Button>
                                   </View>
                               </View>
                           </View>
-                      </ScrollView>
-                  }/>
-              <SwipeUpDownModal
-                  PressToanimate={false}
-                  HeaderStyle={{paddingBottom: 20,}}
-                  ContentModalStyle={styles.Modal}
-                  HeaderContent={
-                      <View
-                          style={{
-                              width: "100%",
-                              alignItems: "center",
-                              backgroundColor: "#f6f6f6",
-                          }}
-                      >
-                          <AntDesign
-                              onPress={() => this.setState({myProposeState: false})}
-                              name="minus"
-                              size={44}
-                              color="black"
-                          />
-                      </View>
-                  }
-                  modalVisible={this.state.myProposeState}
-                  onClose={() => this.setState({myProposeState: false, currentGoodDescription: ""})}
-                  ContentModal={
-                      <ScrollView>
-                          <View
-                              style={{
-                                  flex: 1,
-                              }}
-                          >
-                              <View style={styles.container}>
-                                  <View style={{ zIndex: -10, marginTop: 20 }}>
-                                      <Text>Цена (тг)</Text>
-                                      <TextInput
-                                          placeholder="Цена"
-                                          keyboardType = 'numeric'
-                                          // onChangeText={set_address}
-                                          // value={address}
-                                          style={{ backgroundColor: "#F2F2F2", borderRadius: 10, padding: 10 }}
-                                      />
-                                  </View>
-                                  <View style={{ zIndex: -10, marginTop: 20 }}>
-                                      <Text>Вес (кг)</Text>
-                                      <TextInput
-                                          placeholder="Вес"
-                                          keyboardType = 'numeric'
-                                          // onChangeText={set_address}
-                                          // value={address}
-                                          style={{ backgroundColor: "#F2F2F2", borderRadius: 10, padding: 10 }}
-                                      />
-                                  </View>
-                                  <View style={{paddingLeft: 20, paddingRight: 20, paddingBottom: 20, marginTop: 20, }}>
-                                      <Button onPress={() => this.setState({myProposeState: false})} style={{width: "100%", marginTop: 5, marginBottom: 5, justifyContent: "center", backgroundColor: "green"}}>
-                                          <Text style={{ textAlign: "center", color: "#fff"}}>Отправить</Text>
-                                      </Button>
-                                  </View>
-                              </View>
-                          </View>
-                      </ScrollView>
-                  }/>
-              <SwipeUpDownModal
-                  PressToanimate={false}
-                  HeaderStyle={{paddingBottom: 20,}}
-                  ContentModalStyle={styles.Modal}
-                  HeaderContent={
-                      <View
-                          style={{
-                              width: "100%",
-                              alignItems: "center",
-                              backgroundColor: "#f6f6f6",
-                          }}
-                      >
-                          <AntDesign
-                              onPress={() => this.setState({modal: false})}
-                              name="minus"
-                              size={44}
-                              color="black"
-                          />
-                      </View>
-                  }
-                  modalVisible={this.state.modalFilter}
-                  onClose={() => this.setState({modalFilter: false})}
-                  ContentModal={
-                      <View
-                          style={{
-                              flex: 1,
-                          }}
-                      >
-                          <View style={styles.container}>
-                              <View style={{height: 60, }}>
-                                  <Text>Показать</Text>
-                                  <Dropdown
-                                      data={[
-                                          {label: "только товары ОТП", value: "1"},
-                                          {label: "только без предложений", value: "2"},
-                                          {label: "только запрещённые", value: "3"},
-                                          {label: "все", value: "4"},
-                                      ]}
-                                      style={{flex:1, height: 50}}
-                                      search
-                                      maxHeight={300}
-                                      labelField="label"
-                                      valueField="value"
-                                      placeholder={"не выбрано"}
-                                      searchPlaceholder="поиск..."
-                                      onChange={item => {
-                                          console.log(item.value, item.label);
-                                      }}
-                                  />
-                              </View>
-                              <View style={{height: 60, }}>
-                                  <Text>Фильтр по категориям</Text>
-                                  <Dropdown
-                                      data={[
-                                          {label: "Бытовая техника", value: "1"},
-                                          {label: "Инструменты", value: "2"},
-                                          {label: "Канцелярские товары", value: "3"},
-                                          {label: "Офисная техника", value: "4"},
-                                          {label: "Строительные материалы", value: "5"},
-                                          {label: "Хозяйственные товары", value: "6"},
-                                          {label: "Электроинструменты", value: "7"},
-                                      ]}
-                                      style={{flex:1, height: 50}}
-                                      search
-                                      maxHeight={300}
-                                      labelField="label"
-                                      valueField="value"
-                                      placeholder={"не выбрано"}
-                                      searchPlaceholder="поиск..."
-                                      onChange={item => {
-                                          console.log(item.value, item.label);
-                                      }}
-                                  />
-                              </View>
-                              <View style={{marginBottom: 20,}}>
-                                  <Text>Цена</Text>
-                                  <View style={{height: 100,}}>
-                                      <RangeSlider min={0} max={5000}
-                                          fromValueOnChange={value => this.setState({fromValue: value})}
-                                          toValueOnChange={value => this.setState({toValue: value})}
-                                          initialFromValue={11}
-                                          styleSize={"small"}
-                                      />
-                                  </View>
-                                  <View style={{height: 40, marginTop: 20, flexDirection: "row"}}>
-                                      <View style={{flexDirection: "row", width: "50%"}}>
-                                          <Text>От:</Text>
-                                          <TextInput style={{height: 30, width: 50, backgroundColor: "#C9C9C9FF"}} value={this.state.fromValue}>{this.state.fromValue}</TextInput>
-                                      </View>
-                                      <View style={{flexDirection: "row", width: "50%"}}>
-                                          <Text>До: </Text>
-                                          <TextInput style={{height: 30, width: 50, backgroundColor: "#c9c9c9"}} value={this.state.toValue}>{this.state.toValue}</TextInput>
-                                      </View>
-                                  </View>
-                              </View>
-                              <View style={{height: 60, }}>
-                                  <Text>Фильтр по тру</Text>
-                                  <Dropdown
-                                      data={[
-                                          {label: "Бытовая техника", value: "1"},
-                                          {label: "Инструменты", value: "2"},
-                                          {label: "Канцелярские товары", value: "3"},
-                                          {label: "Офисная техника", value: "4"},
-                                          {label: "Строительные материалы", value: "5"},
-                                          {label: "Хозяйственные товары", value: "6"},
-                                          {label: "Электроинструменты", value: "7"},
-                                      ]}
-                                      style={{flex:1, height: 50}}
-                                      search
-                                      maxHeight={300}
-                                      labelField="label"
-                                      valueField="value"
-                                      placeholder={"не выбрано"}
-                                      searchPlaceholder="поиск..."
-                                      onChange={item => {
-                                          console.log(item.value, item.label);
-                                      }}
-                                  />
-                              </View>
-                              <View style={{height: 60, }}>
-                                  <Text>Фильтр по брендам</Text>
-                                  <Dropdown
-                                      data={[
-                                          {label: "Бытовая техника", value: "1"},
-                                          {label: "Инструменты", value: "2"},
-                                          {label: "Канцелярские товары", value: "3"},
-                                          {label: "Офисная техника", value: "4"},
-                                          {label: "Строительные материалы", value: "5"},
-                                          {label: "Хозяйственные товары", value: "6"},
-                                          {label: "Электроинструменты", value: "7"},
-                                      ]}
-                                      style={{flex:1, height: 50}}
-                                      search
-                                      maxHeight={300}
-                                      labelField="label"
-                                      valueField="value"
-                                      placeholder={"не выбрано"}
-                                      searchPlaceholder="поиск..."
-                                      onChange={item => {
-                                          console.log(item.value, item.label);
-                                      }}
-                                  />
-                              </View>
-                              <View style={{marginTop: 20, }}>
-                                  <Button style={{width: "100%", justifyContent: "center", backgroundColor: "#797979"}}>
-                                      <Text onPress={() => alert("Сброс фильтров")} style={{ textAlign: "center", color: "#fff"}}>Сбросить фильтры</Text>
-                                  </Button>
-                              </View>
-                              <View style={{marginTop: 20, }}>
-                                  <Button style={{width: "100%", justifyContent: "center", backgroundColor: "green"}}>
-                                      <Text onPress={() => alert("Применить")} style={{ textAlign: "center", color: "#fff"}}>Применить</Text>
-                                  </Button>
-                              </View>
-                          </View>
-                      </View>
-                  }/>
-          </Container>
-      );
-  }
+                      }/>
+              </Container>
+          );
+      }
 }
 
 const styles = StyleSheet.create({

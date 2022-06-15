@@ -5163,7 +5163,7 @@ lodash.truncate@^4.4.2:
   resolved "https://registry.npmjs.org/lodash.truncate/-/lodash.truncate-4.4.2.tgz"
   integrity sha1-WjUNoLERO4N+z//VgSy+WNbq4ZM=
 
-lodash@*, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19:
+lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19:
   version "4.17.20"
   resolved "https://registry.npmjs.org/lodash/-/lodash-4.17.20.tgz"
   integrity sha512-PlhdFcillOINfeV7Ni6oF1TAEayyZBoZ8bcshTHqOYJYlrqzRK5hagpagky5o4HfCzzd1TRkXPMFq6cKk9rGmA==
@@ -6421,12 +6421,10 @@ react-native-easy-grid@0.2.2:
   dependencies:
     lodash "^4.17.15"
 
-react-native-element-dropdown@^1.8.10:
-  version "1.8.10"
-  resolved "https://registry.npmjs.org/react-native-element-dropdown/-/react-native-element-dropdown-1.8.10.tgz"
-  integrity sha512-KKveon08Mx8to0f1CIkWGnZwmTVLdlrHQUTVGxf2v07NOLCmmAw90U3NY7IBg81ca71WnGav6NQ+1b158i7fSQ==
-  dependencies:
-    lodash "*"
+react-native-element-dropdown@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-element-dropdown/-/react-native-element-dropdown-2.0.0.tgz#d0c0fbd61b742f9fa47e76b08cf47017378580a2"
+  integrity sha512-EA9qi/47Jzeb+Zcu0aYrvzrTK4D9LDdA3doUHIoSrMWbfoEvwvzlQQehTEHhtLL1hAaxp/4GubMk9Zbdx2/WRg==
 
 react-native-gesture-handler@~1.10.2:
   version "1.10.3"
