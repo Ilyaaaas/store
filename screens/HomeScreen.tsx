@@ -13,7 +13,7 @@ import {
     Dimensions,
     SafeAreaView,
     FlatList,
-    ScrollView, Platform,
+    ScrollView, Platform, Picker,
 } from "react-native";
 import { API, getToken } from "./constants";
 import SwipeUpDownModal from "react-native-swipe-modal-up-down";
@@ -37,6 +37,7 @@ class HomeScreen extends React.Component {
             currentGoodId: 0,
             currentGoodDescription: "",
             currentGoodDescriptionProvid: "",
+            currentGoodBrands: [],
             currentGoodProperties: [],
             modal: false,
             modalFilter: false,
@@ -66,6 +67,7 @@ class HomeScreen extends React.Component {
             fromValue: 0,
             toValue: 5000,
             categ: "goods",
+            selectedBrand: null,
         };
     }
 
@@ -201,6 +203,8 @@ class HomeScreen extends React.Component {
             console.log(responseJson["prvgood"], "prvgood");
             this.setState({
                 currentGoodDescriptionProvid: responseJson["prvgood"],
+                currentGoodBrands: responseJson["brands"],
+                currentGoodOtp: responseJson["otplist"],
             });
         }
     };
@@ -305,7 +309,6 @@ class HomeScreen extends React.Component {
 
       render() {
           console.log("this.state.currentGoodProperties");
-          // console.log(this.state.currentGoodProperties);
           console.log(this.state.currentGoodDescriptionProvid);
           return (
               <Container style={{ backgroundColor: "#f6f6f6" }}>
@@ -417,15 +420,54 @@ class HomeScreen extends React.Component {
                                                   }}/>
                                           }
                                           <View style={{paddingLeft: 20, paddingRight: 20, paddingBottom: 20,}}>
+                                              <Text style={{fontWeight: "bold", fontSize: 20, }}>{this.state.currentGood.title}</Text>
                                               <Text>Внесите предлагаемую цену в тенге</Text>
                                               <TextInput
                                                   keyboardType = 'numeric'
                                                   style={{backgroundColor: "#eeeeee", height: 40, borderRadius: 10, color: "#969595", padding: 10,}}>
                                                   {this.state.currentGood.price}
                                               </TextInput>
-                                              <Text style={styles.modalItemDetail}>{this.state.currentGood.brand}</Text>
-                                              <Text style={styles.modalItemDetails}>{this.state.currentGood.cat}</Text>
-                                              <Text style={styles.modalItemDetails}>{this.state.currentGood.trutitle}</Text>
+                                              <View style={{marginTop: 10}}>
+                                                  <Text style={{fontWeight: "bold"}}>Бренд</Text>
+                                                  <Text style={styles.modalItemDetail}>{this.state.currentGood.brand}</Text>
+                                              </View>
+                                              <View style={{marginTop: 10}}>
+                                                  <Text style={{fontWeight: "bold"}}>Код</Text>
+                                                  <Text style={styles.modalItemDetails}>{this.state.currentGood.CODE}</Text>
+                                              </View>
+                                              <View style={{height: 60, }}>
+                                                  <Text>Бренд</Text>
+                                                  <Dropdown
+                                                      data={this.state.currentGoodOtp}
+                                                      style={{flex:1, height: 50}}
+                                                      search
+                                                      maxHeight={300}
+                                                      labelField="product_name"
+                                                      valueField="id"
+                                                      placeholder={"не выбрано"}
+                                                      searchPlaceholder="поиск..."
+                                                      onChange={item => {
+                                                          console.log(item.value, item.label);
+                                                      }}
+                                                  />
+                                              </View>
+                                              <View style={{height: 60, }}>
+                                                  <Text>ОТП</Text>
+                                                  {console.log(this.state.currentGoodBrands, "this.state.currentGoodBrands")}
+                                                  <Dropdown
+                                                      data={this.state.currentGoodBrands}
+                                                      style={{flex:1, height: 50}}
+                                                      search
+                                                      maxHeight={300}
+                                                      labelField="title"
+                                                      valueField="id"
+                                                      placeholder={"не выбрано"}
+                                                      searchPlaceholder="поиск..."
+                                                      onChange={item => {
+                                                          console.log(item.value, item.label);
+                                                      }}
+                                                  />
+                                              </View>
                                               {this.state.currentGoodDescriptionProvid === "" ? (
                                                   <View>
                                                       <Spinner color="#1a192a" size={10} />
@@ -441,8 +483,9 @@ class HomeScreen extends React.Component {
                                                               <Text>{item.attr_title} - {item.title}</Text>
                                                           )
                                                       }
-                                                      <Text style={{fontWeight: "bold"}}>Поставщики</Text>
-                                                      <Text>нет</Text>
+                                                      <View style={{height: 60, marginBottom: 40, }}>
+                                                          <Text>Тип уведомлений</Text>
+                                                      </View>
                                                   </View>
                                               )}
                                               <Button onPress={() => this.setState({modal: false})} style={{width: "100%", marginTop: 5, marginBottom: 5, justifyContent: "center", backgroundColor: "green"}}>

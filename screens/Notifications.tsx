@@ -189,7 +189,7 @@ export default function Notifications() {
                         }}
                     >
                         <View style={styles.container}>
-                            <View style={{height: 60, marginTop: 10, marginBottom: 20, backgroundColor: "red", }}>
+                            <View style={{height: 60, marginTop: 10, marginBottom: 20, }}>
                                 <Text>Тип уведомлений</Text>
                                 <View style={{paddingBottom: 20, paddingTop: 20, }}>
                                     <Picker
