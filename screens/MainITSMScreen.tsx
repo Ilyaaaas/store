@@ -21,31 +21,10 @@ class MainITSMScreen extends React.Component {
                     }}
                 >
                     <BottomTab.Screen
-                        name="Лоты"
+                        name="Главная"
                         component={HomeScreen}
                         options={{
                             tabBarIcon: ({ color }) => <MaterialIcons name="home" size={30} color={color} />,
-                        }}
-                    />
-                    <BottomTab.Screen
-                        name="Избранное"
-                        component={Favorites}
-                        options={{
-                            tabBarIcon: ({ color }) => <MaterialIcons name="star" size={30} color={color} />,
-                        }}
-                    />
-                    <BottomTab.Screen
-                        name=" "
-                        component={OfferScreen}
-                        options={{
-                            tabBarIcon: ({ color }) => (
-                                <MaterialCommunityIcons
-                                    name="plus-box"
-                                    size={30}
-                                    color="#1a192a"
-                                    onPress={() => this.props.navigation.navigate("OfferScreen")}
-                                />
-                            ),
                         }}
                     />
                     <BottomTab.Screen
@@ -53,6 +32,27 @@ class MainITSMScreen extends React.Component {
                         component={Notifications}
                         options={{
                             tabBarIcon: ({ color }) => <MaterialIcons size={30} name="email" color={color} />,
+                        }}
+                    />
+                    {/*<BottomTab.Screen*/}
+                    {/*    name=" "*/}
+                    {/*    component={OfferScreen}*/}
+                    {/*    options={{*/}
+                    {/*        tabBarIcon: ({ color }) => (*/}
+                    {/*            <MaterialCommunityIcons*/}
+                    {/*                name="plus-box"*/}
+                    {/*                size={30}*/}
+                    {/*                color="#1a192a"*/}
+                    {/*                onPress={() => this.props.navigation.navigate("OfferScreen")}*/}
+                    {/*            />*/}
+                    {/*        ),*/}
+                    {/*    }}*/}
+                    {/*/>*/}
+                    <BottomTab.Screen
+                        name="Заказы"
+                        component={Favorites}
+                        options={{
+                            tabBarIcon: ({ color }) => <MaterialIcons name="star" size={30} color={color} />,
                         }}
                     />
                     <BottomTab.Screen

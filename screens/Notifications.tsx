@@ -157,7 +157,9 @@ export default function Notifications() {
                                 deleteItem(v);
                             })
                         }
-                        keyExtractor={(item) => item.id}></FlatList>
+                        keyExtractor={(item) => item.id}>
+
+                    </FlatList>
                 </View>
             </SafeAreaView>
             <SwipeUpDownModal

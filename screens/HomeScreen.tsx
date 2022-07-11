@@ -1,5 +1,5 @@
 import { Feather, AntDesign } from "@expo/vector-icons";
-import { Container, Header, Left, Body, Title, Right, Button, Spinner, Content } from "native-base";
+import {Container, Header, Left, Body, Title, Right, Button, Spinner, Content, CheckBox} from "native-base";
 import React, { useEffect } from "react";
 import {
     StyleSheet,
@@ -13,7 +13,7 @@ import {
     Dimensions,
     SafeAreaView,
     FlatList,
-    ScrollView, Platform, Picker,
+    ScrollView, Platform, Picker, Alert,
 } from "react-native";
 import { API, getToken } from "./constants";
 import SwipeUpDownModal from "react-native-swipe-modal-up-down";
@@ -68,6 +68,7 @@ class HomeScreen extends React.Component {
             toValue: 5000,
             categ: "goods",
             selectedBrand: null,
+            isOtpChecked: false,
         };
     }
 
@@ -108,7 +109,10 @@ class HomeScreen extends React.Component {
     changeCategory = async (categId) => {
         if (categId == 2)
         {
-            this.setState({ refreshing: false, topCategoryCheckedId: categId });
+            this.setState({ refreshing: false, topCategoryCheckedId: 2 });
+            this.setState({
+                list: ""
+            });
             const pageNum = this.state.pageNum;
             const response = await fetch(
                 "https://skstore.kz/mobile/providergoods",
@@ -123,10 +127,8 @@ class HomeScreen extends React.Component {
             console.log(responseJson, "responseJson");
             console.log(this.state.token, "this.state.token");
             this.setState({
-                list: ""
-            });
-            this.setState({
-                list: responseJson
+                list: responseJson,
+                topCategoryCheckedId: 2
             });
         }
         else if(categId == 1)
@@ -305,6 +307,7 @@ class HomeScreen extends React.Component {
 
       addPropose = (text: { text: any }) => {
           this.setState({modal: false, currentGoodDescription: "", myProposeState: true });
+          // alert("Ваше предложение отправлено");
       };
 
       render() {
@@ -421,39 +424,15 @@ class HomeScreen extends React.Component {
                                           }
                                           <View style={{paddingLeft: 20, paddingRight: 20, paddingBottom: 20,}}>
                                               <Text style={{fontWeight: "bold", fontSize: 20, }}>{this.state.currentGood.title}</Text>
-                                              <Text>Внесите предлагаемую цену в тенге</Text>
+                                              <Text>Артикул</Text>
                                               <TextInput
                                                   keyboardType = 'numeric'
                                                   style={{backgroundColor: "#eeeeee", height: 40, borderRadius: 10, color: "#969595", padding: 10,}}>
-                                                  {this.state.currentGood.price}
+                                                  {this.state.currentGood.CODE}
                                               </TextInput>
-                                              <View style={{marginTop: 10}}>
-                                                  <Text style={{fontWeight: "bold"}}>Бренд</Text>
-                                                  <Text style={styles.modalItemDetail}>{this.state.currentGood.brand}</Text>
-                                              </View>
-                                              <View style={{marginTop: 10}}>
-                                                  <Text style={{fontWeight: "bold"}}>Код</Text>
-                                                  <Text style={styles.modalItemDetails}>{this.state.currentGood.CODE}</Text>
-                                              </View>
+                                              {console.log(this.state.currentGoodBrands, "currentGoodBrands")}
                                               <View style={{height: 60, }}>
                                                   <Text>Бренд</Text>
-                                                  <Dropdown
-                                                      data={this.state.currentGoodOtp}
-                                                      style={{flex:1, height: 50}}
-                                                      search
-                                                      maxHeight={300}
-                                                      labelField="product_name"
-                                                      valueField="id"
-                                                      placeholder={"не выбрано"}
-                                                      searchPlaceholder="поиск..."
-                                                      onChange={item => {
-                                                          console.log(item.value, item.label);
-                                                      }}
-                                                  />
-                                              </View>
-                                              <View style={{height: 60, }}>
-                                                  <Text>ОТП</Text>
-                                                  {console.log(this.state.currentGoodBrands, "this.state.currentGoodBrands")}
                                                   <Dropdown
                                                       data={this.state.currentGoodBrands}
                                                       style={{flex:1, height: 50}}
@@ -468,27 +447,65 @@ class HomeScreen extends React.Component {
                                                       }}
                                                   />
                                               </View>
-                                              {this.state.currentGoodDescriptionProvid === "" ? (
+                                              <Text>Наименование товара</Text>
+                                              <TextInput
+                                                  keyboardType = 'numeric'
+                                                  style={{backgroundColor: "#eeeeee", height: 40, borderRadius: 10, color: "#969595", padding: 10,}}>
+                                                  {this.state.currentGood.title}
+                                              </TextInput>
+                                              <Text>Стоимость единицы (Без НДС)</Text>
+                                              <TextInput
+                                                  keyboardType = 'numeric'
+                                                  style={{backgroundColor: "#eeeeee", height: 40, borderRadius: 10, color: "#969595", padding: 10,}}>
+                                                  {this.state.currentGood.price}
+                                              </TextInput>
+                                              <Text>Вес (Брутто)</Text>
+                                              <TextInput
+                                                  keyboardType = 'numeric'
+                                                  style={{backgroundColor: "#eeeeee", height: 40, borderRadius: 10, color: "#969595", padding: 10,}}>
+                                                  {this.state.currentGood.brutto}
+                                              </TextInput>
+                                              <Text>Информация о гарантии</Text>
+                                              <TextInput
+                                                  keyboardType = 'numeric'
+                                                  style={{backgroundColor: "#eeeeee", height: 40, borderRadius: 10, color: "#969595", padding: 10,}}>
+                                                  {this.state.currentGood.price}
+                                              </TextInput>
+                                              <Text>Товар отечественного производства</Text>
+                                              <CheckBox checked={this.state.isOtpChecked} onPress={() => this.setState({isOtpChecked: !this.state.isOtpChecked})}>
+                                              </CheckBox>
+                                              {this.state.isOtpChecked == true ?
                                                   <View>
-                                                      <Spinner color="#1a192a" size={10} />
-                                                  </View>
-                                              ) : (
-                                                  <View>
-                                                      <Text style={{fontWeight: "bold", }}>{this.state.currentGoodId}Коротко о товаре</Text>
-                                                      <Text>{this.state.currentGoodDescription}</Text>
-                                                      <Text>{this.state.currentGoodDescription}</Text>
-                                                      <Text style={{fontWeight: "bold"}}>Характеристики</Text>
-                                                      {
-                                                          this.state.currentGoodDescriptionProvid.map((item, key) =>
-                                                              <Text>{item.attr_title} - {item.title}</Text>
-                                                          )
-                                                      }
-                                                      <View style={{height: 60, marginBottom: 40, }}>
-                                                          <Text>Тип уведомлений</Text>
+                                                      <View style={{height: 60, }}>
+                                                          <Text>Сертификат</Text>
+                                                          {console.log(this.state.currentGoodOtp, "currentGoodOtp")}
+                                                          <Dropdown
+                                                              data={this.state.currentGoodOtp}
+                                                              style={{flex:1, height: 50}}
+                                                              search
+                                                              maxHeight={300}
+                                                              labelField="product_name"
+                                                              valueField="id"
+                                                              placeholder={"не выбрано"}
+                                                              searchPlaceholder="поиск..."
+                                                              onChange={item => {
+                                                                  console.log(item.value, item.label);
+                                                              }}
+                                                          />
+                                                      </View>
+                                                      <View>
+                                                          <Text>ДМС</Text>
+                                                          <TextInput
+                                                              keyboardType = 'numeric'
+                                                              style={{backgroundColor: "#eeeeee", height: 40, borderRadius: 10, color: "#969595", padding: 10,}}>
+                                                              {this.state.currentGood.dms}
+                                                          </TextInput>
                                                       </View>
                                                   </View>
-                                              )}
-                                              <Button onPress={() => this.setState({modal: false})} style={{width: "100%", marginTop: 5, marginBottom: 5, justifyContent: "center", backgroundColor: "green"}}>
+                                                  :
+                                                  null
+                                              }
+                                              <Button onPress={() => {this.setState({modal: false}); alert("Ваши данные сохранены");}} style={{width: "100%", marginTop: 5, marginBottom: 5, justifyContent: "center", backgroundColor: "green"}}>
                                                   <Text style={{ textAlign: "center", color: "#fff"}}>
                                                       Сохранить
                                                   </Text>
@@ -501,9 +518,9 @@ class HomeScreen extends React.Component {
                                               source={{
                                                   uri: "https://skstore.kz/api/getfile/" + this.state.currentGood.file_id,
                                               }}
-                                              style={{resizeMode: "contain", width: "100%", height: 400, marginTop: 70,}}
+                                              style={{resizeMode: "contain", width: "100%", height: 400,}}
                                           />
-                                          <View style={{paddingLeft: 20, paddingRight: 20, paddingBottom: 20,}}>
+                                          <View style={{ addingLeft: 20, paddingRight: 20, paddingBottom: 20,}}>
                                               <Text style={styles.modalPrice}>{this.state.currentGood.price} тг</Text>
                                               <Text style={styles.modalItemDetail}>{this.state.currentGood.goodtitle}</Text>
                                               <Text style={styles.modalItemDetail}>{this.state.currentGood.brand}</Text>
@@ -527,8 +544,8 @@ class HomeScreen extends React.Component {
                                                       <Text>нет</Text>
                                                   </View>
                                               )}
-                                              {/*<Button onPress={() => this.addPropose()} style={{width: "100%", marginTop: 5, marginBottom: 5, justifyContent: "center", backgroundColor: "green"}}>*/}
-                                              <Button onPress={() => this.setState({modal: false})} style={{width: "100%", marginTop: 5, marginBottom: 5, justifyContent: "center", backgroundColor: "green"}}>
+                                              <Button onPress={() => {this.addPropose();}} style={{width: "100%", marginTop: 5, marginBottom: 5, justifyContent: "center", backgroundColor: "green"}}>
+                                                  {/*<Button onPress={() => this.setState({modal: false})} style={{width: "100%", marginTop: 5, marginBottom: 5, justifyContent: "center", backgroundColor: "green"}}>*/}
                                                   <Text style={{ textAlign: "center", color: "#fff"}}>Внести предложение</Text>
                                               </Button>
                                           </View>
@@ -588,7 +605,7 @@ class HomeScreen extends React.Component {
                                           />
                                       </View>
                                       <View style={{paddingLeft: 20, paddingRight: 20, paddingBottom: 20, marginTop: 20, }}>
-                                          <Button onPress={() => this.setState({myProposeState: false})} style={{width: "100%", marginTop: 5, marginBottom: 5, justifyContent: "center", backgroundColor: "green"}}>
+                                          <Button onPress={() => {this.setState({myProposeState: false}); alert("Ваше предложение отправлено");}} style={{width: "100%", marginTop: 5, marginBottom: 5, justifyContent: "center", backgroundColor: "green"}}>
                                               <Text style={{ textAlign: "center", color: "#fff"}}>Отправить</Text>
                                           </Button>
                                       </View>
@@ -834,7 +851,6 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#fff",
         padding: 40,
-        marginTop: 20,
     },
     headerTop: {
         backgroundColor: "#fff",

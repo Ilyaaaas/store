@@ -170,6 +170,7 @@ export const LoginScreen = ({ route }) => {
             method: "POST",
         });
         const responseJson = await response.json();
+        console.log(responseJson, "responseJson444");
 
         if (responseJson.access_token === undefined) {
             alert("Введен неправильный пароль или логин");
