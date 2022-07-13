@@ -7,7 +7,8 @@ import HomeScreen from "../screens/HomeScreen";
 import InfoDetails from "../screens/Info/InfoDetails";
 import InfoScreen from "../screens/Info/InfoScreenProducts";
 import LoginScreen from "../screens/LoginScreen";
-import CreateITSMRequest from "../screens/Request/CreateOffer";
+import ProfileScreen from "../screens/Request/ProfileScreen";
+import CreateITSMRequest from "../screens/Request/P";
 import { Registration } from "../screens/Registration/RegistrationForm";
 
 import MenuCnt from "./MenuCnt";

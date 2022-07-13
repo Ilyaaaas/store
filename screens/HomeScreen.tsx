@@ -328,6 +328,13 @@ class HomeScreen extends React.Component {
                               style={{marginRight: 10}}
                               onPress={() => this.setState({modalFilter: true})}
                           />
+                          <AntDesign
+                              name="star"
+                              size={24}
+                              color="#1a192a"
+                              style={{marginRight: 10}}
+                              onPress={() => this.props.navigation.navigate("FavoritesStack")}
+                          />
                       </Right>
                   </Header>
                   <Header style={styles.headerTop}>

@@ -1,4 +1,4 @@
-import { Feather, AntDesign } from "@expo/vector-icons";
+import {Feather, AntDesign, Ionicons} from "@expo/vector-icons";
 import { Container, Header, Left, Body, Title, Right, Spinner } from "native-base";
 import React, { useEffect } from "react";
 import {
@@ -217,7 +217,14 @@ class Favorites extends React.Component {
         return (
             <Container style={{ backgroundColor: "#f6f6f6" }}>
                 <Header style={styles.headerTop}>
-                    <Left></Left>
+                    <Left style={{ flex: 1 }}>
+                        <Ionicons
+                            name="md-arrow-back"
+                            style={{ color: "#1a192a", marginLeft: 10 }}
+                            onPress={() => this.props.navigation.goBack(null)}
+                            size={24}
+                        />
+                    </Left>
                     <Body style={{ flex: 3 }}>
                         <Title style={{ color: "#1a192a" }}>Избранное</Title>
                     </Body>

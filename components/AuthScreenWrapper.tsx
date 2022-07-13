@@ -58,23 +58,23 @@ export const AuthScreenWrapper = ({ children }: React.PropsWithChildren<object>)
                         </View>
                     </KeyboardAvoidingView>
                     <View>
-                        <Text
-                            style={authScreenStyles.textPhone}
-                            onPress={() => {
-                                Linking.openURL("tel:87172708090");
-                            }}
-                        >
-              Телефон технической поддержки:{"\n"}8-(777)-777-77-77
-                        </Text>
-                        <Text
-                            style={authScreenStyles.textPhone}
-                            onPress={() => {
-                                Linking.openURL("mailto:support@smart24.kz");
-                            }}
-                        >
-                            {"\n"}
-              support@smart24.kz
-                        </Text>
+                        {/*          <Text*/}
+                        {/*              style={authScreenStyles.textPhone}*/}
+                        {/*              onPress={() => {*/}
+                        {/*                  Linking.openURL("tel:87172708090");*/}
+                        {/*              }}*/}
+                        {/*          >*/}
+                        {/*Телефон технической поддержки:{"\n"}8-(777)-777-77-77*/}
+                        {/*          </Text>*/}
+                        {/*          <Text*/}
+                        {/*              style={authScreenStyles.textPhone}*/}
+                        {/*              onPress={() => {*/}
+                        {/*                  Linking.openURL("mailto:support@smart24.kz");*/}
+                        {/*              }}*/}
+                        {/*          >*/}
+                        {/*              {"\n"}*/}
+                        {/*support@smart24.kz*/}
+                        {/*          </Text>*/}
                     </View>
                 </View>
             </ImageBackground>
