@@ -10,6 +10,7 @@ import OfferScreen from "../screens/Offer/OfferScreen";
 import MainITSMScreen from "../screens/MainITSMScreen";
 import ContactsScreen from "../screens/ContactsScreen";
 import {FavoritesStack} from "./FavoritesStack";
+import TradesListScreen from "../screens/Trades/TradesListScreen";
 
 const Stack = createStackNavigator();
 export const StackNavigator = () => {
@@ -24,6 +25,7 @@ export const StackNavigator = () => {
                 <Stack.Screen name="OfferScreen" component={OfferScreen} />
                 <Stack.Screen name="ContactsScreen" component={ContactsScreen} />
                 <Stack.Screen name="FavoritesStack" component={FavoritesStack} />
+                <Stack.Screen name="TradesListScreen" component={TradesListScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     );

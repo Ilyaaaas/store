@@ -162,7 +162,7 @@ export const LoginScreen = ({ route }) => {
 
     const handleSubmit = async (onSaveLogin = false) => {
         const response = await fetch("https://skstore.kz/mobile/login", {
-            body: "{\"username\": \"d.myrzabekWAFTEST\", \"password\": \"RootPass123@\", \"device_id\": \""+expoPushToken+"\"}",
+            body: "{\"username\": \"daurenTest\", \"password\": \"RootPass123@\", \"device_id\": \""+expoPushToken+"\"}",
             headers: {
                 "Content-Type": "application/json",
                 Accept: "application/json",

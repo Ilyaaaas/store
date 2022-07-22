@@ -50,7 +50,7 @@ class MainITSMScreen extends React.Component {
                     {/*/>*/}
                     <BottomTab.Screen
                         name="Заказы"
-                        component={Favorites}
+                        component={OfferScreen}
                         options={{
                             tabBarIcon: ({ color }) => <MaterialIcons name="star" size={30} color={color} />,
                         }}
