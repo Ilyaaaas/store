@@ -125,7 +125,6 @@ export default function OfferScreen({ navigation }) {
                         block
                         style={{
                             marginVertical: 10,
-                            backgroundColor: "#222e73",
                             zIndex: -10,
                             borderRadius: 10,
                         }}
@@ -137,7 +136,6 @@ export default function OfferScreen({ navigation }) {
                         block
                         style={{
                             marginVertical: 10,
-                            backgroundColor: "#222e73",
                             zIndex: -10,
                             borderRadius: 10,
                         }}
@@ -149,7 +147,6 @@ export default function OfferScreen({ navigation }) {
                         block
                         style={{
                             marginVertical: 10,
-                            backgroundColor: "#222e73",
                             zIndex: -10,
                             borderRadius: 10,
                         }}

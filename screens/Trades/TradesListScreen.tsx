@@ -226,34 +226,77 @@ export default function TradesListScreen({ route, navigation }) {
                                         <View style={{height: 40, marginTop: 20, flexDirection: "row"}}>
                                             <View style={{flexDirection: "column"}}>
                                                 <View style={{flexDirection: "row"}}>
-                                                    <Text style={{fontWeight: "bold"}}>{modalTitle}</Text>
+                                                    <Text style={{fontWeight: "bold"}}>Информация о закупке</Text>
                                                 </View>
+                                                <View style={{flexDirection: "row"}}>
+                                                    <Text style={{fontWeight: "bold"}}>Дата начала: </Text>
+                                                    <Text>{modalTitle}</Text>
+                                                </View>
+                                                <View style={{flexDirection: "row"}}>
+                                                    <Text style={{fontWeight: "bold"}}>Время выделенное на закупку: </Text>
+                                                    <Text>{modalTitle}</Text>
+                                                </View>
+                                                <View style={{flexDirection: "row"}}>
+                                                    <Text style={{fontWeight: "bold"}}>Като</Text>
+                                                    <Text>{modalTitle}</Text>
+                                                </View>
+                                                <View style={{flexDirection: "row"}}>
+                                                    <Text style={{fontWeight: "bold"}}>МКЕИ</Text>
+                                                    <Text>{modalTitle}</Text>
+                                                </View>
+                                                <View style={{flexDirection: "row"}}>
+                                                    <Text style={{fontWeight: "bold"}}>Запланированная стоимость единицы</Text>
+                                                    <Text>{modalTitle}</Text>
+                                                </View>
+                                                <View style={{flexDirection: "row"}}>
+                                                    <Text style={{fontWeight: "bold"}}>Срок на поставку</Text>
+                                                    <Text>{modalTitle}</Text>
+                                                </View>
+                                                <View style={{flexDirection: "row"}}>
+                                                    <Text style={{fontWeight: "bold"}}>Адрес поставки</Text>
+                                                    <Text>{modalTitle}</Text>
+                                                </View>
+                                                <View style={{flexDirection: "row"}}>
+                                                    <Text style={{fontWeight: "bold"}}>Товар</Text>
+                                                    <Text>{modalTitle}</Text>
+                                                </View>
+                                                <View style={{flexDirection: "row"}}>
+                                                    <Text style={{fontWeight: "bold"}}>Дополнительная информация</Text>
+                                                    <Text>{modalTitle}</Text>
+                                                </View>
+                                                <View style={{flexDirection: "row"}}>
+                                                    <Text style={{fontWeight: "bold"}}>Цена за единицу без НДС/с НДС</Text>
+                                                    <Text>{modalTitle}</Text>
+                                                </View>
+                                                <View style={{flexDirection: "row"}}>
+                                                    <Text style={{fontWeight: "bold"}}>Сумма без НДС/с НДС</Text>
+                                                    <Text>{modalTitle}</Text>
+                                                </View>
+                                                <Button
+                                                    style={{width: "100%", justifyContent: "center"}}
+                                                    onPress={() => alert("Добавить предложение")}
+                                                >
+                                                    <Text style={{ color: "#fff" }}>Добавить предложение</Text>
+                                                </Button>
                                                 <View style={{flexDirection: "row"}}>
                                                     <DataTable style={{padding: 15, }}>
                                                         <DataTable.Header style={{backgroundColor: "#DCDCDC",}}>
-                                                            <DataTable.Title>Name</DataTable.Title>
-                                                            <DataTable.Title>Favourite Food</DataTable.Title>
-                                                            <DataTable.Title>Age</DataTable.Title>
+                                                            <DataTable.Title>Поставщик</DataTable.Title>
+                                                            <DataTable.Title>Цена</DataTable.Title>
+                                                            <DataTable.Title>Сумма</DataTable.Title>
+                                                            <DataTable.Title>Действия</DataTable.Title>
                                                         </DataTable.Header>
                                                         <DataTable.Row>
-                                                            <DataTable.Cell>Radhika</DataTable.Cell>
-                                                            <DataTable.Cell>Dosa</DataTable.Cell>
+                                                            <DataTable.Cell>11</DataTable.Cell>
+                                                            <DataTable.Cell>33</DataTable.Cell>
+                                                            <DataTable.Cell>23</DataTable.Cell>
                                                             <DataTable.Cell>23</DataTable.Cell>
                                                         </DataTable.Row>
                                                         <DataTable.Row>
-                                                            <DataTable.Cell>Krishna</DataTable.Cell>
-                                                            <DataTable.Cell>Uttapam</DataTable.Cell>
+                                                            <DataTable.Cell>22</DataTable.Cell>
+                                                            <DataTable.Cell>44</DataTable.Cell>
                                                             <DataTable.Cell>26</DataTable.Cell>
-                                                        </DataTable.Row>
-                                                        <DataTable.Row>
-                                                            <DataTable.Cell>Vanshika</DataTable.Cell>
-                                                            <DataTable.Cell>Brownie</DataTable.Cell>
-                                                            <DataTable.Cell>20</DataTable.Cell>
-                                                        </DataTable.Row>
-                                                        <DataTable.Row>
-                                                            <DataTable.Cell>Teena</DataTable.Cell>
-                                                            <DataTable.Cell>Pizza</DataTable.Cell>
-                                                            <DataTable.Cell>24</DataTable.Cell>
+                                                            <DataTable.Cell>26</DataTable.Cell>
                                                         </DataTable.Row>
                                                     </DataTable>
                                                 </View>
