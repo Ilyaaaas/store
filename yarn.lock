@@ -5792,6 +5792,13 @@ natural-compare@^1.4.0:
   resolved "https://registry.npmjs.org/natural-compare/-/natural-compare-1.4.0.tgz"
   integrity sha1-Sr6/7tdUHywnrPspvbvRXI1bpPc=
 
+ncalayer-js-client@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/ncalayer-js-client/-/ncalayer-js-client-1.2.1.tgz#760cfd04e13dc7315722da93ce484fdbd12f115a"
+  integrity sha512-7GqG3PruUiixFQ05Q3QIyRCBE64PRZ9invlw0Wr2SDRFIg1mr2LcWJOwjiQwxSB9Sm72YJDCplGU3zAy4bv0vA==
+  dependencies:
+    ws "^8.4.2"
+
 negotiator@0.6.3:
   version "0.6.3"
   resolved "https://registry.npmjs.org/negotiator/-/negotiator-0.6.3.tgz"
@@ -7997,6 +8004,11 @@ ws@^7:
   version "7.5.7"
   resolved "https://registry.npmjs.org/ws/-/ws-7.5.7.tgz"
   integrity sha512-KMvVuFzpKBuiIXW3E4u3mySRO2/mCHSyZDJQM5NQ9Q9KHWHWh0NHgfbRMLLrceUK5qAL4ytALJbpRMjixFZh8A==
+
+ws@^8.4.2:
+  version "8.8.1"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-8.8.1.tgz#5dbad0feb7ade8ecc99b830c1d77c913d4955ff0"
+  integrity sha512-bGy2JzvzkPowEJV++hF07hAD6niYSr0JzBNo/J29WsB57A2r7Wlc1UFcTR9IzrPvuNVO4B8LGqF8qcpsVOhJCA==
 
 xcode@^2.0.0:
   version "2.1.0"

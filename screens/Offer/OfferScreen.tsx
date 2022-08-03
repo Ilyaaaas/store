@@ -23,6 +23,7 @@ import {
 } from "native-base";
 import { useSelector, useDispatch } from "react-redux";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { NCALayerClient } from "ncalayer-js-client";
 
 const BottomTab = createBottomTabNavigator();
 
@@ -50,6 +51,43 @@ export default function OfferScreen({ navigation }) {
             .then((req) => JSON.parse(req))
             .then((json) => {})
             .catch((error) => console.log(error));
+    }
+
+    async function sign() {
+        connectAndSign();
+    }
+
+    async function connectAndSign() {
+        const ncalayerClient = new NCALayerClient();
+
+        try {
+            await ncalayerClient.connect();
+        } catch (error) {
+            alert(`Не удалось подключиться к NCALayer: ${error.toString()}`);
+            return;
+        }
+
+        let activeTokens;
+        try {
+            activeTokens = await ncalayerClient.getActiveTokens();
+        } catch (error) {
+            alert(error.toString());
+            return;
+        }
+
+        // getActiveTokens может вернуть несколько типов хранилищ, для простоты проверим первый.
+        // Иначе нужно просить пользователя выбрать тип носителя.
+        const storageType = activeTokens[0] || NCALayerClient.fileStorageType;
+
+        let base64EncodedSignature;
+        try {
+            base64EncodedSignature = await ncalayerClient.createCAdESFromBase64(storageType, "MTEK");
+        } catch (error) {
+            alert(error.toString());
+            return;
+        }
+
+        return base64EncodedSignature;
     }
 
     useEffect(() => {
@@ -121,6 +159,17 @@ export default function OfferScreen({ navigation }) {
                     >
                         <Text style={{ color: "#fff" }}>Открытые торги</Text>
                     </Button>
+                    {/*<Button*/}
+                    {/*    block*/}
+                    {/*    style={{*/}
+                    {/*        marginVertical: 10,*/}
+                    {/*        zIndex: -10,*/}
+                    {/*        borderRadius: 10,*/}
+                    {/*    }}*/}
+                    {/*    onPress={() => sign()}*/}
+                    {/*>*/}
+                    {/*    <Text style={{ color: "#fff" }}>Sign</Text>*/}
+                    {/*</Button>*/}
                     <Button
                         block
                         style={{
@@ -139,7 +188,7 @@ export default function OfferScreen({ navigation }) {
                             zIndex: -10,
                             borderRadius: 10,
                         }}
-                        onPress={() => navigation.navigate("TradesListScreen", {"ActivityLabel": "Мои открытые предложения", "arrayLevel": null})}
+                        onPress={() => navigation.navigate("TradesListScreen", {"ActivityLabel": "Мои открытые предложения", "arrayLevel": 2})}
                     >
                         <Text style={{ color: "#fff" }}>Мои открытые предложения</Text>
                     </Button>
@@ -150,7 +199,7 @@ export default function OfferScreen({ navigation }) {
                             zIndex: -10,
                             borderRadius: 10,
                         }}
-                        onPress={() => navigation.navigate("TradesListScreen", {"ActivityLabel": "Мои завершенные торги"})}
+                        onPress={() => navigation.navigate("TradesListScreen", {"ActivityLabel": "Мои завершенные торги", "arrayLevel": 3})}
                     >
                         <Text style={{ color:"#fff" }}>Мои завершенные торги</Text>
                     </Button>

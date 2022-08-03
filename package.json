@@ -27,6 +27,7 @@
     "expo-updates": "~0.10.15",
     "moment": "^2.29.1",
     "native-base": "^2.15.2",
+    "ncalayer-js-client": "^1.2.1",
     "react": "17.0.1",
     "react-native": "0.64.3",
     "react-native-calendar-strip": "^1.4.2",
