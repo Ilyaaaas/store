@@ -246,8 +246,9 @@ export default function TradesListScreen({ route, navigation }) {
     };
 
     const sendPropose = async () => {
+        console.log(`Bearer ${token}`, "tradeId");
         setModalPurpose(false);
-        const response = await fetch(`https://skstore.kz/mobile/cartbarg-${tradeId}/addprice`, {
+        const response = await fetch(`https://skstore.kz/mobile/bargdetails-${tradeId}/addprice`, {
             method: "POST",
             headers: {
                 Accept: "application/json",
@@ -262,8 +263,7 @@ export default function TradesListScreen({ route, navigation }) {
                 "summa_wnds": priceWithoutNDS,
                 "cart_id": priceWithoutNDS,
             }),
-        });
-        console.log(response, "response888");
+        }).then(() => {console.log(response, "response888");});
         alert("Ваше предложение отправлено");
     };
 
