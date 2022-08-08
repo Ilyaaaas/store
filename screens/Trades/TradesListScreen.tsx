@@ -23,6 +23,7 @@ export default function TradesListScreen({ route, navigation }) {
     const [priceWithNDS, setPriceWithNDS] = useState("");
     const [priceWithoutNDS, setPriceWithoutNDS] = useState("");
     const [tradeId, setTradeId] = useState("");
+    const [id, setId] = useState("");
     const [modalKato, setKato] = useState("");
     const [modalUpdatedDate, setModalUpdatedDate] = useState([]);
     const [modalScheduleTxt, setModalSchedule_txt] = useState([]);
@@ -68,6 +69,7 @@ export default function TradesListScreen({ route, navigation }) {
 
         const showNotif = async (item) => {
             setTradeId(item.bargid);
+            setId(item.id);
             setModalTitle(item.title);
             setModalUpdatedDate(item.updated_at);
             setModalSchedule_txt(item.schedule_txt);
@@ -248,22 +250,48 @@ export default function TradesListScreen({ route, navigation }) {
     const sendPropose = async () => {
         console.log(`Bearer ${token}`, "tradeId");
         setModalPurpose(false);
-        const response = await fetch(`https://skstore.kz/mobile/bargdetails-${tradeId}/addprice`, {
-            method: "POST",
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/x-www-form-urlencoded",
-                Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-                "price": priceWithNDS,
-                "delivery": priceWithoutNDS,
-                "price_wnds": priceWithoutNDS,
-                "summa": priceWithoutNDS,
-                "summa_wnds": priceWithoutNDS,
-                "cart_id": priceWithoutNDS,
-            }),
-        }).then(() => {console.log(response, "response888");});
+        if(route.params.arrayLevel == 0)
+        {
+            const response = await fetch(`https://skstore.kz/mobile/bargdetails-${id}/addprice`, {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    "price": priceWithNDS,
+                    "delivery": priceWithoutNDS,
+                    "price_wnds": priceWithoutNDS,
+                    "summa": priceWithoutNDS,
+                    "summa_wnds": priceWithoutNDS,
+                    "cart_id": priceWithoutNDS,
+                }),
+            }).then(() => {
+                console.log(response, "response888");
+            });
+        }
+        else if(route.params.arrayLevel == 1)
+        {
+            const response = await fetch(`https://skstore.kz/mobile/cartbarg-${tradeId}/addprice`, {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    "price": priceWithNDS,
+                    "delivery": priceWithoutNDS,
+                    "price_wnds": priceWithoutNDS,
+                    "summa": priceWithoutNDS,
+                    "summa_wnds": priceWithoutNDS,
+                    "cart_id": priceWithoutNDS,
+                }),
+            }).then(() => {
+                console.log(response, "response888");
+            });
+        }
         alert("Ваше предложение отправлено");
     };
 
