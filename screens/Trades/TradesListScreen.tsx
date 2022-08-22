@@ -33,12 +33,17 @@ export default function TradesListScreen({ route, navigation }) {
     const [modalPrice, setModalPrice] = useState([]);
     const [modalSummaWnds, setModalSummaWnds] = useState([]);
     const [modalBargDetail, setBargDetail] = useState([]);
+    const [isDownloaded, setIsDownloaded] = useState(false);
     const row: Array<any> = [];
     let prevOpenedRow;
 
     useEffect(() => {
         _getToken();
-        _getGoodsList();
+        console.log(isDownloaded, "isDownloadedisDownloaded");
+        if(isDownloaded === false)
+        {
+            _getGoodsList();
+        }
     });
 
     /**
@@ -243,6 +248,7 @@ export default function TradesListScreen({ route, navigation }) {
 
     const _getToken = async () => {
         await getToken().then(req => {
+            console.log(req, "reqreqtkn");
             setToken(req);
         });
     };
@@ -252,56 +258,61 @@ export default function TradesListScreen({ route, navigation }) {
         setModalPurpose(false);
         if(route.params.arrayLevel == 0)
         {
-            const response = await fetch(`https://skstore.kz/mobile/bargdetails-${id}/addprice`, {
-                method: "POST",
+            console.log("https://skstore.kz/mobile/bargdetails-26/addprice");
+            fetch("https://skstore.kz/mobile/bargdetails-26/addprice", {
                 headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/x-www-form-urlencoded",
                     Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json"
                 },
-                body: JSON.stringify({
-                    "price": priceWithNDS,
-                    "delivery": priceWithoutNDS,
-                    "price_wnds": priceWithoutNDS,
-                    "summa": priceWithoutNDS,
-                    "summa_wnds": priceWithoutNDS,
-                    "cart_id": priceWithoutNDS,
-                }),
-            }).then(() => {
-                console.log(response, "response888");
-            });
+                method: "POST",
+                body: "{\"price\":1, \"price_wnds\":1, \"delivery\":1, \"summa\":1, \"summa_wnds\":1}",
+            }).then((response) => {
+                console.log("fetch");
+                return response.json();
+            })
+                .then((responseJson) => {
+                    console.log("responseJson2");
+                    console.log(responseJson);
+                })
+                .catch((error) => console.error(error));
         }
         else if(route.params.arrayLevel == 1)
         {
-            const response = await fetch(`https://skstore.kz/mobile/cartbarg-${tradeId}/addprice`, {
-                method: "POST",
+            console.log("https://skstore.kz/mobile/bargdetails-26/addprice");
+            fetch("https://skstore.kz/mobile/bargdetails-26/addprice", {
                 headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/x-www-form-urlencoded",
                     Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json"
                 },
-                body: JSON.stringify({
-                    "price": priceWithNDS,
-                    "delivery": priceWithoutNDS,
-                    "price_wnds": priceWithoutNDS,
-                    "summa": priceWithoutNDS,
-                    "summa_wnds": priceWithoutNDS,
-                    "cart_id": priceWithoutNDS,
-                }),
-            }).then(() => {
-                console.log(response, "response888");
-            });
+                method: "POST",
+                body: "{\"price\":1, \"price_wnds\":1, \"delivery\":1, \"summa\":1, \"summa_wnds\":1}",
+            }).then((response) => {
+                console.log("fetch");
+                return response.json();
+            })
+                .then((responseJson) => {
+                    console.log("responseJson2");
+                    console.log(responseJson);
+                })
+                .catch((error) => console.error(error));
         }
         alert("Ваше предложение отправлено");
     };
 
     const _getGoodsList = async () => {
+        let tkn = "";
+        setIsDownloaded(true);
+        console.log("_getGoodsList");
+        await getToken().then(req => {
+            tkn = req;
+            setToken(req);
+        });
         const response = await fetch("https://skstore.kz/mobile/barglist", {
             method: "GET",
             headers: {
                 Accept: "application/json",
                 "Content-Type": "application/x-www-form-urlencoded",
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${tkn}`,
             },
         });
 
@@ -309,31 +320,37 @@ export default function TradesListScreen({ route, navigation }) {
         const acceptedBargsLocal = [];
         const activeBargsLocal = [];
         const otherBargsLocal = [];
-        if (listData.length == 0) {
-            if(route.params.arrayLevel == 0 || route.params.arrayLevel == 1)
-            {
-                setListData(responseJson[route.params.arrayLevel]);
-            }
-            else if (listData.length == 1)
-            {
-                setListData(acceptedBargsLocal);
-            }
-            else
-            {
-                responseJson[0].map((el) =>
-                {
-                    if(el.status === "Активен" && el.has_made === 1){
-                        acceptedBargsLocal.push(el);
-                    }
-                    if(el.status === "Активен"){
-                        otherBargsLocal.push(el);
-                    }
-                }
-                );
-                setListData(acceptedBargsLocal);
-                setListData(otherBargsLocal);
-            }
+        console.log(responseJson[0][0], "responseJson");
+        console.log(tkn, "token");
+        // if (responseJson[0][0].length == 0) {
+        if(route.params.arrayLevel == 0 || route.params.arrayLevel == 1)
+        {
+            setListData(responseJson[route.params.arrayLevel]);
         }
+        else if (listData.length == 1)
+        {
+            setListData(acceptedBargsLocal);
+        }
+        else
+        {
+            responseJson[0].map((el) =>
+            {
+                console.log(el, "cicle");
+                if(el.status === "Активен" && el.has_made === 1){
+                    console.log("push === Активен");
+                    acceptedBargsLocal.push(el);
+                }
+                if(el.status != "Активен" && el.has_made === 1){
+                    console.log("push != Активен");
+                    otherBargsLocal.push(el);
+                }
+            }
+            );
+            console.log(otherBargsLocal, "otherBargsLocal");
+            setListData(acceptedBargsLocal);
+            setListData(otherBargsLocal);
+        }
+        // }
     };
 
     const deleteItem = ({ item, index }) => {
@@ -406,85 +423,108 @@ export default function TradesListScreen({ route, navigation }) {
                             flex: 1,
                         }}
                     >
-                        <View style={styles.container}>
-                            <ScrollView style={{padding: 10, marginTop: 20}}>
-                                <Text>{modalKato}</Text>
-                                <View style={{flexDirection: "column"}}>
-                                    <View style={{flexDirection: "row", width: "100%"}}>
-                                        <Text style={{fontWeight: "bold"}}>Информация о закупке</Text>
+                        {route.params.arrayLevel == 0 || route.params.arrayLevel == 1 ?
+                            <View style={styles.container}>
+                                <ScrollView style={{padding: 10, marginTop: 20}}>
+                                    <Text>{modalKato}</Text>
+                                    <View style={{flexDirection: "column"}}>
+                                        <View style={{flexDirection: "row", width: "100%"}}>
+                                            <Text style={{fontWeight: "bold"}}>Информация о закупке</Text>
+                                        </View>
+                                        <View style={{flexDirection: "row", width: "100%"}}>
+                                            <Text style={{fontWeight: "bold"}}>Дата начала: </Text>
+                                            <Text>{modalUpdatedDate}</Text>
+                                        </View>
+                                        <View style={{flexDirection: "row", width: "100%"}}>
+                                            <Text style={{fontWeight: "bold"}}>Время выделенное на закупку: </Text>
+                                            <Text>{modalScheduleTxt}</Text>
+                                        </View>
+                                        <View style={{flexDirection: "row", width: "100%"}}>
+                                            <Text style={{fontWeight: "bold"}}>Като</Text>
+                                            <Text>{modalKato}</Text>
+                                        </View>
+                                        <View style={{flexDirection: "row", width: "100%"}}>
+                                            <Text style={{fontWeight: "bold"}}>МКЕИ</Text>
+                                            <Text>{modalMkei}</Text>
+                                        </View>
+                                        <View style={{flexDirection: "row", width: "100%"}}>
+                                            <Text style={{fontWeight: "bold"}}>Запланированная стоимость единицы</Text>
+                                            <Text>{modalSumma}</Text>
+                                        </View>
+                                        <View style={{flexDirection: "row", width: "100%"}}>
+                                            <Text style={{fontWeight: "bold"}}>Срок на поставку</Text>
+                                            <Text>{modalScheduleTxt}</Text>
+                                        </View>
+                                        <View style={{flexDirection: "row", width: "100%"}}>
+                                            <Text style={{fontWeight: "bold"}}>Адрес поставки</Text>
+                                            <Text>{modalSupply_address}</Text>
+                                        </View>
+                                        <View style={{flexDirection: "row", width: "100%"}}>
+                                            <Text style={{fontWeight: "bold"}}>Товар</Text>
+                                            <Text>{modalTitle}</Text>
+                                        </View>
+                                        <View style={{flexDirection: "row", width: "100%"}}>
+                                            <Text style={{fontWeight: "bold"}}>Дополнительная информация</Text>
+                                            <Text>{modalTitle}</Text>
+                                        </View>
+                                        <View style={{flexDirection: "row", width: "100%"}}>
+                                            <Text style={{fontWeight: "bold"}}>Цена за единицу без НДС/с НДС</Text>
+                                            <Text>{modalPrice}</Text>
+                                        </View>
+                                        <View style={{flexDirection: "row", width: "100%"}}>
+                                            <Text style={{fontWeight: "bold"}}>Сумма без НДС/с НДС</Text>
+                                            <Text>{modalSummaWnds}</Text>
+                                        </View>
+                                        <Button
+                                            style={{width: "100%", justifyContent: "center"}}
+                                            onPress={() => addPurpose()}
+                                        >
+                                            <Text style={{color: "#fff"}}>Добавить предложение</Text>
+                                        </Button>
+                                        <View style={{flexDirection: "row", width: "100%"}}>
+                                            <DataTable style={{padding: 15,}}>
+                                                <DataTable.Header style={{backgroundColor: "#DCDCDC",}}>
+                                                    <DataTable.Title>Поставщик</DataTable.Title>
+                                                    <DataTable.Title>Цена</DataTable.Title>
+                                                    <DataTable.Title>Сумма</DataTable.Title>
+                                                    <DataTable.Title>Действия</DataTable.Title>
+                                                </DataTable.Header>
+                                                {modalBargDetail.map((data) => {
+                                                    return <DataTable.Row>
+                                                        <DataTable.Cell>{data[0]?.title}</DataTable.Cell>
+                                                        <DataTable.Cell>{data[0]?.price}</DataTable.Cell>
+                                                        <DataTable.Cell>{data[0]?.summa}</DataTable.Cell>
+                                                        <DataTable.Cell><Button onPress={() => alert("удалить")}><Text
+                                                            style={{padding: 5,}}>Удалить</Text></Button></DataTable.Cell>
+                                                    </DataTable.Row>;
+                                                })
+                                                }
+                                            </DataTable>
+                                        </View>
                                     </View>
-                                    <View style={{flexDirection: "row", width: "100%"}}>
-                                        <Text style={{fontWeight: "bold"}}>Дата начала: </Text>
-                                        <Text>{modalUpdatedDate}</Text>
+                                </ScrollView>
+                            </View> :
+                            <View style={styles.container}>
+                                <ScrollView style={{padding: 10, marginTop: 20}}>
+                                    <Text>{modalKato}</Text>
+                                    <Text>{modalScheduleTxt}</Text>
+                                    <View style={{flexDirection: "row"}}>
+                                        <Button
+                                            style={{width: "50%", justifyContent: "center", backgroundColor: "#7a7a7a"}}
+                                            onPress={() => addPurpose()}
+                                        >
+                                            <Text style={{color: "#fff"}}>Отменить</Text>
+                                        </Button>
+                                        <Button
+                                            style={{width: "50%", justifyContent: "center", backgroundColor: "#185002"}}
+                                            onPress={() => addPurpose()}
+                                        >
+                                            <Text style={{color: "#fff"}}>Подтвердить</Text>
+                                        </Button>
                                     </View>
-                                    <View style={{flexDirection: "row", width: "100%"}}>
-                                        <Text style={{fontWeight: "bold"}}>Время выделенное на закупку: </Text>
-                                        <Text>{modalScheduleTxt}</Text>
-                                    </View>
-                                    <View style={{flexDirection: "row", width: "100%"}}>
-                                        <Text style={{fontWeight: "bold"}}>Като</Text>
-                                        <Text>{modalKato}</Text>
-                                    </View>
-                                    <View style={{flexDirection: "row", width: "100%"}}>
-                                        <Text style={{fontWeight: "bold"}}>МКЕИ</Text>
-                                        <Text>{modalMkei}</Text>
-                                    </View>
-                                    <View style={{flexDirection: "row", width: "100%"}}>
-                                        <Text style={{fontWeight: "bold"}}>Запланированная стоимость единицы</Text>
-                                        <Text>{modalSumma}</Text>
-                                    </View>
-                                    <View style={{flexDirection: "row", width: "100%"}}>
-                                        <Text style={{fontWeight: "bold"}}>Срок на поставку</Text>
-                                        <Text>{modalScheduleTxt}</Text>
-                                    </View>
-                                    <View style={{flexDirection: "row", width: "100%"}}>
-                                        <Text style={{fontWeight: "bold"}}>Адрес поставки</Text>
-                                        <Text>{modalSupply_address}</Text>
-                                    </View>
-                                    <View style={{flexDirection: "row", width: "100%"}}>
-                                        <Text style={{fontWeight: "bold"}}>Товар</Text>
-                                        <Text>{modalTitle}</Text>
-                                    </View>
-                                    <View style={{flexDirection: "row", width: "100%"}}>
-                                        <Text style={{fontWeight: "bold"}}>Дополнительная информация</Text>
-                                        <Text>{modalTitle}</Text>
-                                    </View>
-                                    <View style={{flexDirection: "row", width: "100%"}}>
-                                        <Text style={{fontWeight: "bold"}}>Цена за единицу без НДС/с НДС</Text>
-                                        <Text>{modalPrice}</Text>
-                                    </View>
-                                    <View style={{flexDirection: "row", width: "100%"}}>
-                                        <Text style={{fontWeight: "bold"}}>Сумма без НДС/с НДС</Text>
-                                        <Text>{modalSummaWnds}</Text>
-                                    </View>
-                                    <Button
-                                        style={{width: "100%", justifyContent: "center"}}
-                                        onPress={() => addPurpose()}
-                                    >
-                                        <Text style={{ color: "#fff" }}>Добавить предложение</Text>
-                                    </Button>
-                                    <View style={{flexDirection: "row", width: "100%"}}>
-                                        <DataTable style={{padding: 15, }}>
-                                            <DataTable.Header style={{backgroundColor: "#DCDCDC",}}>
-                                                <DataTable.Title>Поставщик</DataTable.Title>
-                                                <DataTable.Title>Цена</DataTable.Title>
-                                                <DataTable.Title>Сумма</DataTable.Title>
-                                                <DataTable.Title>Действия</DataTable.Title>
-                                            </DataTable.Header>
-                                            {modalBargDetail.map((data) => {
-                                                return <DataTable.Row>
-                                                    <DataTable.Cell>{data[0]?.title}</DataTable.Cell>
-                                                    <DataTable.Cell>{data[0]?.price}</DataTable.Cell>
-                                                    <DataTable.Cell>{data[0]?.summa}</DataTable.Cell>
-                                                    <DataTable.Cell><Button onPress={() => alert("удалить")}><Text style={{padding: 5,}}>Удалить</Text></Button></DataTable.Cell>
-                                                </DataTable.Row>;
-                                            })
-                                            }
-                                        </DataTable>
-                                    </View>
-                                </View>
-                            </ScrollView>
-                        </View>
+                                </ScrollView>
+                            </View>
+                        }
                     </View>
                 }/>
             <SwipeUpDownModal

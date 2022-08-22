@@ -22,7 +22,6 @@ import RangeSlider, { Slider } from "react-native-range-slider-expo";
 
 const ScreenHeight = Dimensions.get("window").height;
 const ScreenWidth = Dimensions.get("window").width;
-
 class HomeScreen extends React.Component {
     constructor(props) {
         super(props);
