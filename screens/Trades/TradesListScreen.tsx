@@ -365,6 +365,11 @@ export default function TradesListScreen({ route, navigation }) {
         setModalPurpose(true);
     };
 
+    const acceptPurpose = async () => {
+        alert("Подтверждено");
+        setNotifModal(false);
+    };
+
     return (
         <Container style={{ backgroundColor: "#f6f6f6" }}>
             <Header style={styles.headerTop}>
@@ -511,13 +516,13 @@ export default function TradesListScreen({ route, navigation }) {
                                     <View style={{flexDirection: "row"}}>
                                         <Button
                                             style={{width: "50%", justifyContent: "center", backgroundColor: "#7a7a7a"}}
-                                            onPress={() => addPurpose()}
+                                            onPress={() => setNotifModal(false)}
                                         >
                                             <Text style={{color: "#fff"}}>Отменить</Text>
                                         </Button>
                                         <Button
                                             style={{width: "50%", justifyContent: "center", backgroundColor: "#185002"}}
-                                            onPress={() => addPurpose()}
+                                            onPress={() => acceptPurpose()}
                                         >
                                             <Text style={{color: "#fff"}}>Подтвердить</Text>
                                         </Button>

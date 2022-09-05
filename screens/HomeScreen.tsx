@@ -19,6 +19,7 @@ import { API, getToken } from "./constants";
 import SwipeUpDownModal from "react-native-swipe-modal-up-down";
 import { Dropdown } from "react-native-element-dropdown";
 import RangeSlider, { Slider } from "react-native-range-slider-expo";
+import axios from "axios";
 
 const ScreenHeight = Dimensions.get("window").height;
 const ScreenWidth = Dimensions.get("window").width;
@@ -79,30 +80,35 @@ class HomeScreen extends React.Component {
 
     _getGoodsList = async () => {
         const pageNum = this.state.pageNum;
-        const response = await fetch(
-            `https://skstore.kz/api/goods?page=${pageNum}&count=12&price_from=0&price_to=8000000&tru=&kato=710000000&brand=&cat=&sort=created_at+desc&filter=&otp=0`,
-            {
-                method: "GET",
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    Authorization: `Bearer ${this.state.token}`,
-                },
+        // const response = await fetch(
+        //     `https://skstore.kz/mobile/goods?page=${pageNum}&count=12&price_from=0&price_to=8000000&tru=&kato=710000000&brand=&cat=&sort=created_at+desc&filter=&otp=0`,
+        //     {
+        //         method: "GET",
+        //         // headers: {
+        //         //     Accept: "application/json",
+        //         //     "Content-Type": "application/x-www-form-urlencoded",
+        //         // },
+        //     }
+        // ).then((res) => console.log(res, "res321321"));
+        const response = await axios({
+            method: "get",
+            url: `https://skstore.kz/mobile/goods?page=${pageNum}&count=12&price_from=0&price_to=8000000&tru=&kato=710000000&brand=&cat=&sort=created_at+desc&filter=&otp=0`,
+        }).then((response) => {
+            console.log(response.data[0], "axios888");
+            if (this.state.list.length == 0) {
+                this.setState({
+                    list: response.data[0],
+                    pageNum: pageNum + 1,
+                });
+            } else {
+                this.setState({
+                    list: [...this.state.list, ...response.data[0]],
+                    pageNum: pageNum + 1,
+                });
             }
-        );
-        const responseJson = await response.json();
-        console.log(responseJson, "responseJson222");
-        if (this.state.list.length == 0) {
-            this.setState({
-                list: responseJson[0],
-                pageNum: pageNum + 1,
-            });
-        } else {
-            this.setState({
-                list: [...this.state.list, ...responseJson[0]],
-                pageNum: pageNum + 1,
-            });
-        }
+        });
+        console.log(`https://skstore.kz/mobile/goods?page=${pageNum}&count=12&price_from=0&price_to=8000000&tru=&kato=710000000&brand=&cat=&sort=created_at+desc&filter=&otp=0`, "testtest");
+        const responseJson = await response;
     };
 
     changeCategory = async (categId) => {
@@ -166,7 +172,7 @@ class HomeScreen extends React.Component {
     };
 
     getOneGood = async (currentGoodId) => {
-        console.log(`https://skstore.kz/api/good/${currentGoodId}`, "currentAPIiiiiiiii");
+        console.log(`https://skstore.kz/mobile/good/${currentGoodId}`, "currentAPIiiiiiiii");
         console.log("Bearer "+this.state.token, "ещлут");
         if(this.state.topCategoryCheckedId != 2) {
             const response = await fetch(
@@ -181,7 +187,8 @@ class HomeScreen extends React.Component {
                 }
             );
             const responseJson = await response.json();
-            console.log(responseJson["prvgood"], "responseJson[1]");
+            console.log(responseJson, "responseJson[1]");
+            console.log(`https://skstore.kz/mobile/good/${currentGoodId}`, "urlurl");
             this.setState({
                 currentGoodDescription: responseJson[2][0]["txt"],
                 currentGoodProperties: responseJson[1],
@@ -211,6 +218,7 @@ class HomeScreen extends React.Component {
     };
 
     ItemView = ({ item }) => {
+        console.log("ItemViewItemView");
         return (
             <TouchableOpacity
                 activeOpacity={0.8}
@@ -249,7 +257,7 @@ class HomeScreen extends React.Component {
                     >
                         {item.file_id !== null ?
                             <Image
-                                source={{uri: "https://skstore.kz/api/getfile/" + item.file_id}}
+                                source={{uri: "https://skstore.kz/mobile/getfile/" + item.file_id}}
                                 style={{flex: 1, resizeMode: "contain", width: 100, height: 200}}
                             />
                             :
@@ -360,6 +368,7 @@ class HomeScreen extends React.Component {
                   </Header>
                   <SafeAreaView style={{ flex: 1 }}>
                       {/*<Text style={{backgroundColor: "red", alignContent: "center"}}>qq{this.state.topCategoryCheckedId}</Text>*/}
+                      {console.log(this.state.list, "4444")}
                       <FlatList
                           style={{ paddingLeft: 10, padding: 10 }}
                           numColumns={2}
@@ -522,7 +531,7 @@ class HomeScreen extends React.Component {
                                       <View style={styles.container}>
                                           <Image
                                               source={{
-                                                  uri: "https://skstore.kz/api/getfile/" + this.state.currentGood.file_id,
+                                                  uri: "https://skstore.kz/mobile/getfile/" + this.state.currentGood.file_id,
                                               }}
                                               style={{resizeMode: "contain", width: "100%", height: 400,}}
                                           />

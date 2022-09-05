@@ -149,7 +149,7 @@ class Favorites extends React.Component {
                         }}
                     >
                         <Image
-                            source={{ uri: "https://skstore.kz/api/getfile/" + item.file_id }}
+                            source={{ uri: "https://skstore.kz/mobile/getfile/" + item.file_id }}
                             style={{ flex: 1, resizeMode: "contain", width: 100, height: 200 }}
                         />
                     </View>
@@ -278,7 +278,7 @@ class Favorites extends React.Component {
                                 <View>
                                     <Image
                                         source={{
-                                            uri: "https://skstore.kz/api/getfile/" + this.state.currentGood.file_id,
+                                            uri: "https://skstore.kz/mobile/getfile/" + this.state.currentGood.file_id,
                                         }}
                                         style={{ resizeMode: "contain", width: 400, height: 400 }}
                                     />
