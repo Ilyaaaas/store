@@ -257,12 +257,12 @@ class HomeScreen extends React.Component {
                     >
                         {item.file_id !== null ?
                             <Image
-                                source={{uri: "https://skstore.kz/mobile/getfile/" + item.file_id}}
+                                source={{uri: "https://skstore.kz/api/public_files/getfile/" + item.file_id}}
                                 style={{flex: 1, resizeMode: "contain", width: 100, height: 200}}
                             />
                             :
                             <Image
-                                source={{uri: "https://skstore.kz/mobile/getfile/" + item.file_id}}
+                                source={{uri: "https://skstore.kz/api/public_files/getfile/" + item.file_id}}
                                 style={{flex: 1, resizeMode: "contain", width: 100, height: 200}}
                             />
                         }
@@ -416,7 +416,7 @@ class HomeScreen extends React.Component {
                                           {this.state.currentGood.file_id != null ?
                                               <Image
                                                   source={{
-                                                      uri: "https://skstore.kz/mobile/getfile/" + this.state.currentGood.file_id,
+                                                      uri: "https://skstore.kz/api/public_files/getfile/" + this.state.currentGood.file_id,
                                                   }}
                                                   style={{
                                                       resizeMode: "contain",
@@ -531,7 +531,7 @@ class HomeScreen extends React.Component {
                                       <View style={styles.container}>
                                           <Image
                                               source={{
-                                                  uri: "https://skstore.kz/mobile/getfile/" + this.state.currentGood.file_id,
+                                                  uri: "https://skstore.kz/api/public_files/getfile/" + this.state.currentGood.file_id,
                                               }}
                                               style={{resizeMode: "contain", width: "100%", height: 400,}}
                                           />
