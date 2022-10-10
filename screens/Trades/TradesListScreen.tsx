@@ -103,13 +103,7 @@ export default function TradesListScreen({ route, navigation }) {
         };
 
         return (
-            <Swipeable
-                renderRightActions={(progress, dragX) =>
-                    renderRightActions(progress, dragX, onClick)
-                }
-                onSwipeableOpen={() => closeRow(index)}
-                ref={(ref) => (row[index] = ref)}
-                rightOpenValue={-100}>
+            <View>
                 {route.params.arrayLevel == 1 ?
                     <TouchableOpacity onPress={() => showNotif(item)}>
                         <View
@@ -120,15 +114,21 @@ export default function TradesListScreen({ route, navigation }) {
                                 borderRadius: 10,
                             }}>
                             <View style={{alignSelf: "flex-start", justifyContent: "space-between", flexDirection: "row"}}>
-                                <Text style={{fontSize: 12, fontWeight: "bold", color: "#6e6e6e"}}>
+                                <View>
+                                    <Text style={{fontSize: 12, fontWeight: "bold", color: "#6e6e6e"}}>
                                     Закуп №{item?.bargid}
-                                </Text>
-                                <Text style={{fontSize: 12, fontWeight: "bold", color: "#6e6e6e"}}>
+                                    </Text>
+                                </View>
+                                <View>
+                                    <Text style={{fontSize: 12, fontWeight: "bold", color: "#6e6e6e"}}>
                                     Корзина №{item?.cartgroup}
-                                </Text>
-                                <Text style={{fontSize: 12, fontWeight: "bold", color: "#6e6e6e"}}>
+                                    </Text>
+                                </View>
+                                <View>
+                                    <Text style={{fontSize: 12, fontWeight: "bold", color: "#6e6e6e"}}>
                                     Статус {item?.status}
-                                </Text>
+                                    </Text>
+                                </View>
                             </View>
                             {item.carts.length == 0 ?
                                 null
@@ -152,24 +152,25 @@ export default function TradesListScreen({ route, navigation }) {
                                     backgroundColor: "#f8f8f8",
                                     borderRadius: 10,
                                 }}>
-                                <View style={{alignSelf: "flex-start", justifyContent: "space-between", flexDirection: "row"}}>
-                                    <Text style={{fontSize: 12, fontWeight: "bold", color: "#6e6e6e"}}>
-                                        Закуп №{item?.bargid}
-                                    </Text>
-                                    <Text style={{fontSize: 12, fontWeight: "bold", color: "#6e6e6e"}}>
-                                        ПП №{item?.id}
-                                    </Text>
-                                    <Text style={{fontSize: 12, fontWeight: "bold", color: "#6e6e6e"}}>
+                                <View style={{alignSelf: "flex-start", justifyContent: "space-between", flexDirection: "column"}}>
+                                    <View>
+                                        <Text style={{fontSize: 12, fontWeight: "bold", color: "#6e6e6e"}}>
+                                        Закуп №{item?.bargid}    ПП №{item?.id}
+                                        </Text>
+                                    </View>
+                                    <View>
+                                        <Text style={{fontSize: 12, color: "#6e6e6e"}}>
                                         Статус {item?.status}
-                                    </Text>
+                                        </Text>
+                                    </View>
                                 </View>
                                 <View style={{alignSelf: "flex-start", justifyContent: "space-between", flexDirection: "row"}}>
-                                    <Text style={{fontSize: 12, fontWeight: "bold", color: "#6e6e6e"}}>
+                                    <Text style={{fontSize: 12, color: "#6e6e6e"}}>
                                         Товар {item?.title}
                                     </Text>
                                 </View>
                                 <View style={{alignSelf: "flex-start", justifyContent: "space-between", flexDirection: "row"}}>
-                                    <Text style={{fontSize: 12, fontWeight: "bold", color: "#6e6e6e"}}>
+                                    <Text style={{fontSize: 12, color: "#6e6e6e"}}>
                                         Като {item?.kato}
                                     </Text>
                                 </View>
@@ -185,25 +186,31 @@ export default function TradesListScreen({ route, navigation }) {
                                         borderRadius: 10,
                                     }}>
                                     <View style={{alignSelf: "flex-start", justifyContent: "space-between", flexDirection: "row"}}>
-                                        <Text style={{fontSize: 12, fontWeight: "bold", color: "#6e6e6e"}}>
+                                        <View>
+                                            <Text style={{fontSize: 12, fontWeight: "bold", color: "#6e6e6e"}}>
                                             Закуп №{item?.id}
-                                        </Text>
-                                        <Text style={{fontSize: 12, fontWeight: "bold", color: "#6e6e6e"}}>
+                                            </Text>
+                                        </View>
+                                        <View>
+                                            <Text style={{fontSize: 12, fontWeight: "bold", color: "#6e6e6e"}}>
                                             Корзина №{item?.id}
-                                        </Text>
-                                        <Text style={{fontSize: 12, fontWeight: "bold", color: "#6e6e6e"}}>
+                                            </Text>
+                                        </View>
+                                        <View>
+                                            <Text style={{fontSize: 12, fontWeight: "bold", color: "#6e6e6e"}}>
                                             Статус {item?.status}
-                                        </Text>
-                                    </View>
-                                    <View style={{alignSelf: "flex-start", justifyContent: "space-between", flexDirection: "row"}}>
-                                        <Text style={{fontSize: 12, fontWeight: "bold", color: "#6e6e6e"}}>
+                                            </Text>
+                                        </View>
+                                        <View style={{alignSelf: "flex-start", justifyContent: "space-between", flexDirection: "row"}}>
+                                            <Text style={{fontSize: 12, fontWeight: "bold", color: "#6e6e6e"}}>
                                             Товар {item?.id}
-                                        </Text>
-                                    </View>
-                                    <View style={{alignSelf: "flex-start", justifyContent: "space-between", flexDirection: "row"}}>
-                                        <Text style={{fontSize: 12, fontWeight: "bold", color: "#6e6e6e"}}>
+                                            </Text>
+                                        </View>
+                                        <View style={{alignSelf: "flex-start", justifyContent: "space-between", flexDirection: "row"}}>
+                                            <Text style={{fontSize: 12, fontWeight: "bold", color: "#6e6e6e"}}>
                                             Като {item?.kato}
-                                        </Text>
+                                            </Text>
+                                        </View>
                                     </View>
                                 </View>
                             </TouchableOpacity>
@@ -217,32 +224,38 @@ export default function TradesListScreen({ route, navigation }) {
                                             borderRadius: 10,
                                         }}>
                                         <View style={{alignSelf: "flex-start", justifyContent: "space-between", flexDirection: "row"}}>
-                                            <Text style={{fontSize: 12, fontWeight: "bold", color: "#6e6e6e"}}>
+                                            <View>
+                                                <Text style={{fontSize: 12, fontWeight: "bold", color: "#6e6e6e"}}>
                                                 Закуп №{item?.id}
-                                            </Text>
-                                            <Text style={{fontSize: 12, fontWeight: "bold", color: "#6e6e6e"}}>
+                                                </Text>
+                                            </View>
+                                            <View>
+                                                <Text style={{fontSize: 12, fontWeight: "bold", color: "#6e6e6e"}}>
                                                 Корзина №{item?.id}
-                                            </Text>
-                                            <Text style={{fontSize: 12, fontWeight: "bold", color: "#6e6e6e"}}>
+                                                </Text>
+                                            </View>
+                                            <View>
+                                                <Text style={{fontSize: 12, fontWeight: "bold", color: "#6e6e6e"}}>
                                                 Статус {item?.status}
-                                            </Text>
-                                        </View>
-                                        <View style={{alignSelf: "flex-start", justifyContent: "space-between", flexDirection: "row"}}>
-                                            <Text style={{fontSize: 12, fontWeight: "bold", color: "#6e6e6e"}}>
+                                                </Text>
+                                            </View>
+                                            <View style={{alignSelf: "flex-start", justifyContent: "space-between", flexDirection: "row"}}>
+                                                <Text style={{fontSize: 12, fontWeight: "bold", color: "#6e6e6e"}}>
                                                 Товар {item?.id}
-                                            </Text>
-                                        </View>
-                                        <View style={{alignSelf: "flex-start", justifyContent: "space-between", flexDirection: "row"}}>
-                                            <Text style={{fontSize: 12, fontWeight: "bold", color: "#6e6e6e"}}>
+                                                </Text>
+                                            </View>
+                                            <View style={{alignSelf: "flex-start", justifyContent: "space-between", flexDirection: "row"}}>
+                                                <Text style={{fontSize: 12, fontWeight: "bold", color: "#6e6e6e"}}>
                                                 Като {item?.kato}
-                                            </Text>
+                                                </Text>
+                                            </View>
                                         </View>
                                     </View>
                                 </TouchableOpacity>
                                 :
                                 null
                 }
-            </Swipeable>
+            </View>
         );
     };
 

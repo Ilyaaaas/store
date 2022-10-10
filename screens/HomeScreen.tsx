@@ -257,19 +257,18 @@ class HomeScreen extends React.Component {
                     >
                         {item.file_id !== null ?
                             <Image
-                                source={{uri: "https://skstore.kz/api/public_files/getfile/" + item.file_id}}
-                                style={{flex: 1, resizeMode: "contain", width: 100, height: 200}}
+                                source={{uri: "https://skstore.kz/mobile/getfile/" + item.file_id}}
+                                style={{flex: 1, resizeMode: "contain", width: 100, height: 100}}
                             />
                             :
                             <Image
-                                source={{uri: "https://skstore.kz/api/public_files/getfile/" + item.file_id}}
-                                style={{flex: 1, resizeMode: "contain", width: 100, height: 200}}
+                                source={{uri: "https://skstore.kz/mobile/getfile/" + item.file_id}}
+                                style={{flex: 1, resizeMode: "contain", width: 100, height: 100}}
                             />
                         }
                     </View>
-
-                    <View style={{ height: 60 }}>
-                        <Text style={{ fontWeight: "bold", fontSize: 12, marginTop: 10 }}>{item.title}</Text>
+                    <View style={{ height: 100 }}>
+                        <Text style={{ fontWeight: "bold", fontSize: 12, marginTop: 10,}}>{item.title}</Text>
                     </View>
                     <View
                         style={{
@@ -416,7 +415,7 @@ class HomeScreen extends React.Component {
                                           {this.state.currentGood.file_id != null ?
                                               <Image
                                                   source={{
-                                                      uri: "https://skstore.kz/api/public_files/getfile/" + this.state.currentGood.file_id,
+                                                      uri: "https://skstore.kz/mobile/getfile/" + this.state.currentGood.file_id,
                                                   }}
                                                   style={{
                                                       resizeMode: "contain",
@@ -441,7 +440,6 @@ class HomeScreen extends React.Component {
                                               <Text style={{fontWeight: "bold", fontSize: 20, }}>{this.state.currentGood.title}</Text>
                                               <Text>Артикул</Text>
                                               <TextInput
-                                                  keyboardType = 'numeric'
                                                   style={{backgroundColor: "#eeeeee", height: 40, borderRadius: 10, color: "#969595", padding: 10,}}>
                                                   {this.state.currentGood.CODE}
                                               </TextInput>
@@ -464,7 +462,6 @@ class HomeScreen extends React.Component {
                                               </View>
                                               <Text>Наименование товара</Text>
                                               <TextInput
-                                                  keyboardType = 'numeric'
                                                   style={{backgroundColor: "#eeeeee", height: 40, borderRadius: 10, color: "#969595", padding: 10,}}>
                                                   {this.state.currentGood.title}
                                               </TextInput>
@@ -482,7 +479,6 @@ class HomeScreen extends React.Component {
                                               </TextInput>
                                               <Text>Информация о гарантии</Text>
                                               <TextInput
-                                                  keyboardType = 'numeric'
                                                   style={{backgroundColor: "#eeeeee", height: 40, borderRadius: 10, color: "#969595", padding: 10,}}>
                                                   {this.state.currentGood.price}
                                               </TextInput>
@@ -531,11 +527,11 @@ class HomeScreen extends React.Component {
                                       <View style={styles.container}>
                                           <Image
                                               source={{
-                                                  uri: "https://skstore.kz/api/public_files/getfile/" + this.state.currentGood.file_id,
+                                                  uri: "https://skstore.kz/mobile/getfile/" + this.state.currentGood.file_id,
                                               }}
-                                              style={{resizeMode: "contain", width: "100%", height: 400,}}
+                                              style={{resizeMode: "contain", width: "100%", height: 300,}}
                                           />
-                                          <View style={{ addingLeft: 20, paddingRight: 20, paddingBottom: 20,}}>
+                                          <View style={{ addingLeft: 20, paddingRight: 20, paddingBottom: 5,}}>
                                               <Text style={styles.modalPrice}>{this.state.currentGood.price} тг</Text>
                                               <Text style={styles.modalItemDetail}>{this.state.currentGood.goodtitle}</Text>
                                               <Text style={styles.modalItemDetail}>{this.state.currentGood.brand}</Text>
@@ -547,8 +543,7 @@ class HomeScreen extends React.Component {
                                                   </View>
                                               ) : (
                                                   <View>
-                                                      <Text style={{fontWeight: "bold"}}>{this.state.currentGoodId}Коротко о товаре</Text>
-                                                      <Text>{this.state.currentGoodDescription}</Text>
+                                                      <Text style={{fontWeight: "bold"}}>Коротко о товаре</Text>                                                      <Text>{this.state.currentGoodDescription}</Text>
                                                       <Text style={{fontWeight: "bold"}}>Характеристики</Text>
                                                       {
                                                           this.state.currentGoodProperties.map((item, key) =>
@@ -955,7 +950,6 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         textAlign: "center",
     },
-
     textAreaContainer: {
         width: ScreenWidth - 20,
         borderColor: "grey",
@@ -1132,7 +1126,7 @@ const styles = StyleSheet.create({
         borderColor: "green",
     },
     card: {
-        height: 350,
+        height: 400,
         backgroundColor: "white",
         marginHorizontal: 2,
         borderRadius: 10,

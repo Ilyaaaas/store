@@ -2,7 +2,6 @@ import {Feather, AntDesign, FontAwesome} from "@expo/vector-icons";
 import * as React from "react";
 import {useEffect, useState} from "react";
 import {Text, View, StyleSheet, FlatList, SafeAreaView, Picker} from "react-native";
-import Swipeable from "react-native-gesture-handler/Swipeable";
 import { API, getToken } from "./constants";
 
 import Constants from "expo-constants";
@@ -58,13 +57,7 @@ export default function Notifications() {
         };
 
         return (
-            <Swipeable
-                renderRightActions={(progress, dragX) =>
-                    renderRightActions(progress, dragX, onClick)
-                }
-                onSwipeableOpen={() => closeRow(index)}
-                ref={(ref) => (row[index] = ref)}
-                rightOpenValue={-100}>
+            <View>
                 <View
                     style={{
                         margin: 4,
@@ -83,7 +76,7 @@ export default function Notifications() {
                         </Text>
                     </View>
                 </View>
-            </Swipeable>
+            </View>
         );
     };
 

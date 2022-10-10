@@ -58,13 +58,7 @@ export default function OpenTradesScreen() {
         };
 
         return (
-            <Swipeable
-                renderRightActions={(progress, dragX) =>
-                    renderRightActions(progress, dragX, onClick)
-                }
-                onSwipeableOpen={() => closeRow(index)}
-                ref={(ref) => (row[index] = ref)}
-                rightOpenValue={-100}>
+            <View>
                 <View
                     style={{
                         margin: 4,
@@ -83,7 +77,7 @@ export default function OpenTradesScreen() {
                         </Text>
                     </View>
                 </View>
-            </Swipeable>
+            </View>
         );
     };
 
