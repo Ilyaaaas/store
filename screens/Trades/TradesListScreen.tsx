@@ -444,10 +444,9 @@ export default function TradesListScreen({ route, navigation }) {
                         {route.params.arrayLevel == 0 || route.params.arrayLevel == 1 ?
                             <View style={styles.container}>
                                 <ScrollView style={{padding: 10, marginTop: 20}}>
-                                    <Text>{modalKato}</Text>
                                     <View style={{flexDirection: "column"}}>
                                         <View style={{flexDirection: "row", width: "100%"}}>
-                                            <Text style={{fontWeight: "bold"}}>Информация о закупке</Text>
+                                            <Text style={{fontWeight: "bold"}}>Информация о закупке № {id}</Text>
                                         </View>
                                         <View style={{flexDirection: "row", width: "100%"}}>
                                             <Text style={{fontWeight: "bold"}}>Дата начала: </Text>
@@ -455,42 +454,46 @@ export default function TradesListScreen({ route, navigation }) {
                                         </View>
                                         <View style={{flexDirection: "row", width: "100%"}}>
                                             <Text style={{fontWeight: "bold"}}>Время выделенное на закупку: </Text>
-                                            <Text>{modalScheduleTxt}</Text>
                                         </View>
                                         <View style={{flexDirection: "row", width: "100%"}}>
-                                            <Text style={{fontWeight: "bold"}}>Като</Text>
+                                            <Text style={{height: 20}}>{modalScheduleTxt}</Text>
+                                        </View>
+                                        <View style={{flexDirection: "row", width: "100%"}}>
+                                            <Text style={{fontWeight: "bold"}}>Като </Text>
                                             <Text>{modalKato}</Text>
                                         </View>
                                         <View style={{flexDirection: "row", width: "100%"}}>
-                                            <Text style={{fontWeight: "bold"}}>МКЕИ</Text>
+                                            <Text style={{fontWeight: "bold"}}>МКЕИ </Text>
                                             <Text>{modalMkei}</Text>
                                         </View>
                                         <View style={{flexDirection: "row", width: "100%"}}>
-                                            <Text style={{fontWeight: "bold"}}>Запланированная стоимость единицы</Text>
+                                            <Text style={{fontWeight: "bold"}}>Запланированная стоимость единицы </Text>
                                             <Text>{modalSumma}</Text>
                                         </View>
                                         <View style={{flexDirection: "row", width: "100%"}}>
-                                            <Text style={{fontWeight: "bold"}}>Срок на поставку</Text>
-                                            <Text>{modalScheduleTxt}</Text>
+                                            <Text style={{fontWeight: "bold"}}>Срок на поставку </Text>
                                         </View>
                                         <View style={{flexDirection: "row", width: "100%"}}>
-                                            <Text style={{fontWeight: "bold"}}>Адрес поставки</Text>
+                                            <Text style={{height: 20}}>{modalScheduleTxt}</Text>
+                                        </View>
+                                        <View style={{flexDirection: "row", width: "100%"}}>
+                                            <Text style={{fontWeight: "bold"}}>Адрес поставки </Text>
                                             <Text>{modalSupply_address}</Text>
                                         </View>
                                         <View style={{flexDirection: "row", width: "100%"}}>
-                                            <Text style={{fontWeight: "bold"}}>Товар</Text>
+                                            <Text style={{fontWeight: "bold"}}>Товар </Text>
                                             <Text>{modalTitle}</Text>
                                         </View>
                                         <View style={{flexDirection: "row", width: "100%"}}>
-                                            <Text style={{fontWeight: "bold"}}>Дополнительная информация</Text>
+                                            <Text style={{fontWeight: "bold"}}>Дополнительная информация </Text>
                                             <Text>{modalTitle}</Text>
                                         </View>
                                         <View style={{flexDirection: "row", width: "100%"}}>
-                                            <Text style={{fontWeight: "bold"}}>Цена за единицу без НДС/с НДС</Text>
+                                            <Text style={{fontWeight: "bold"}}>Цена за единицу без НДС/с НДС </Text>
                                             <Text>{modalPrice}</Text>
                                         </View>
                                         <View style={{flexDirection: "row", width: "100%"}}>
-                                            <Text style={{fontWeight: "bold"}}>Сумма без НДС/с НДС</Text>
+                                            <Text style={{fontWeight: "bold"}}>Сумма без НДС/с НДС </Text>
                                             <Text>{modalSummaWnds}</Text>
                                         </View>
                                         <Button
