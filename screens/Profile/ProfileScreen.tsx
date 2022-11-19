@@ -17,7 +17,6 @@ import {
     Switch,
     StyleSheet,
     Text,
-    AsyncStorage,
     RefreshControl,
     View,
     Image,
@@ -68,6 +67,7 @@ class ProfileScreen extends React.Component {
           });
 
           const responseJson = await response.json();
+          console.log(responseJson, "responseJsonresponseJson");
 
           if (responseJson[0][0] !== null) {
               this.setState({ list: responseJson[0][0] });
@@ -153,6 +153,14 @@ class ProfileScreen extends React.Component {
               ) : (
                   <View>
                       <View style={styles.settingListItem}>
+                          <Text style={styles.radioTitleFixedWidth}>Название</Text>
+                          <Input style={styles.input} placeholder={"Почта"} value={this.state.list.title} />
+                      </View>
+                      <View style={styles.settingListItem}>
+                          <Text style={styles.radioTitleFixedWidth}>Должность</Text>
+                          <Input style={styles.input} placeholder={"Почта"} value={this.state.list.jobtitle} />
+                      </View>
+                      <View style={styles.settingListItem}>
                           <Text style={styles.radioTitleFixedWidth}>Почта</Text>
                           <Input style={styles.input} placeholder={"Почта"} value={this.state.list.email} />
                       </View>
@@ -166,11 +174,39 @@ class ProfileScreen extends React.Component {
                       </View>
                       <View style={styles.settingListItem}>
                           <Text style={styles.radioTitleFixedWidth}>Мобильный телефон</Text>
-                          <Input style={styles.input} placeholder={"Мобильный телефон"} />
+                          <Input style={styles.input} placeholder={"Мобильный телефон"} value={this.state.list.mobile} />
                       </View>
                       <View style={styles.settingListItem}>
                           <Text style={styles.radioTitleFixedWidth}>Адрес</Text>
                           <Input style={styles.input} placeholder={"Адрес"} value={this.state.list.address} />
+                      </View>
+                      <View style={styles.settingListItem}>
+                          <Text style={styles.radioTitleFixedWidth}>Плательщик НДС</Text>
+                          <Input style={styles.input} placeholder={"Адрес"} value={this.state.list.info} />
+                      </View>
+                      <View style={styles.settingListItem}>
+                          <Text style={styles.radioTitleFixedWidth}>Номер договора</Text>
+                          <Input style={styles.input} placeholder={"Адрес"} value={this.state.list.contract_number} />
+                      </View>
+                      <View style={styles.settingListItem}>
+                          <Text style={styles.radioTitleFixedWidth}>bank_bin</Text>
+                          <Input style={styles.input} placeholder={"Адрес"} value={this.state.list.bank_bin} />
+                      </View>
+                      <View style={styles.settingListItem}>
+                          <Text style={styles.radioTitleFixedWidth}>bank_title</Text>
+                          <Input style={styles.input} placeholder={"Адрес"} value={this.state.list.bank_title} />
+                      </View>
+                      <View style={styles.settingListItem}>
+                          <Text style={styles.radioTitleFixedWidth}>bik</Text>
+                          <Input style={styles.input} placeholder={"Адрес"} value={this.state.list.bik} />
+                      </View>
+                      <View style={styles.settingListItem}>
+                          <Text style={styles.radioTitleFixedWidth}>iik</Text>
+                          <Input style={styles.input} placeholder={"Адрес"} value={this.state.list.iik} />
+                      </View>
+                      <View style={styles.settingListItem}>
+                          <Text style={styles.radioTitleFixedWidth}>additional_bankdetails</Text>
+                          <Input style={styles.input} placeholder={"Адрес"} value={this.state.list.additional_bankdetails} />
                       </View>
                       <View>
                           <Button style={styles.saveButton} onPress={() => this.saveProfileInfo()}>

@@ -113,7 +113,7 @@ export default function TradesListScreen({ route, navigation }) {
                                 backgroundColor: "#f8f8f8",
                                 borderRadius: 10,
                             }}>
-                            <View style={{alignSelf: "flex-start", justifyContent: "space-between", flexDirection: "row"}}>
+                            <View style={{alignSelf: "flex-start", justifyContent: "space-between", flexDirection: "column"}}>
                                 <View>
                                     <Text style={{fontSize: 12, fontWeight: "bold", color: "#6e6e6e"}}>
                                     Закуп №{item?.bargid}
@@ -185,7 +185,7 @@ export default function TradesListScreen({ route, navigation }) {
                                         backgroundColor: "#f8f8f8",
                                         borderRadius: 10,
                                     }}>
-                                    <View style={{alignSelf: "flex-start", justifyContent: "space-between", flexDirection: "row"}}>
+                                    <View style={{alignSelf: "flex-start", justifyContent: "space-between", flexDirection: "column"}}>
                                         <View>
                                             <Text style={{fontSize: 12, fontWeight: "bold", color: "#6e6e6e"}}>
                                             Закуп №{item?.id}
@@ -223,7 +223,7 @@ export default function TradesListScreen({ route, navigation }) {
                                             backgroundColor: "#f8f8f8",
                                             borderRadius: 10,
                                         }}>
-                                        <View style={{alignSelf: "flex-start", justifyContent: "space-between", flexDirection: "row"}}>
+                                        <View style={{alignSelf: "flex-start", justifyContent: "space-between", flexDirection: "column"}}>
                                             <View>
                                                 <Text style={{fontSize: 12, fontWeight: "bold", color: "#6e6e6e"}}>
                                                 Закуп №{item?.id}
@@ -502,25 +502,23 @@ export default function TradesListScreen({ route, navigation }) {
                                         >
                                             <Text style={{color: "#fff"}}>Добавить предложение</Text>
                                         </Button>
-                                        <View style={{flexDirection: "row", width: "100%"}}>
-                                            <DataTable style={{padding: 15,}}>
-                                                <DataTable.Header style={{backgroundColor: "#DCDCDC",}}>
-                                                    <DataTable.Title>Поставщик</DataTable.Title>
-                                                    <DataTable.Title>Цена</DataTable.Title>
-                                                    <DataTable.Title>Сумма</DataTable.Title>
-                                                    <DataTable.Title>Действия</DataTable.Title>
-                                                </DataTable.Header>
-                                                {modalBargDetail.map((data) => {
-                                                    return <DataTable.Row>
-                                                        <DataTable.Cell>{data[0]?.title}</DataTable.Cell>
-                                                        <DataTable.Cell>{data[0]?.price}</DataTable.Cell>
-                                                        <DataTable.Cell>{data[0]?.summa}</DataTable.Cell>
-                                                        <DataTable.Cell><Button onPress={() => alert("удалить")}><Text
-                                                            style={{padding: 5,}}>Удалить</Text></Button></DataTable.Cell>
-                                                    </DataTable.Row>;
-                                                })
-                                                }
-                                            </DataTable>
+                                        <View style={{flexDirection: "column", width: "100%",}}>
+                                            {console.log(modalBargDetail, "modalBargDetail")}
+                                            {modalBargDetail.map((data) => {
+                                                return <View style={{backgroundColor: "#c9c9c9", margin: 5, padding: 5, }}>
+                                                    <Text>Поставщик: {data[0]?.title}</Text>
+                                                    <Text>Цена за ед: {data[0]?.price}</Text>
+                                                    <Text>Цена за ед с НДС: {data[0]?.price_wnds}</Text>
+                                                    <Text>Сумма {data[0]?.summa}</Text>
+                                                    <Text>Сумма с НДС: {data[0]?.summa_wnds}</Text>
+                                                    <View style={{justifyContent: "flex-end", alignContent: "flex-end", alignSelf: "flex-end", margin: 5, }}>
+                                                        <Button style={{justifyContent: "flex-end", alignContent: "flex-end"}} onPress={() => alert("удалить")}>
+                                                            <Text style={{padding: 5, color: "#fff"}}>Удалить</Text>
+                                                        </Button>
+                                                    </View>
+                                                </View>;
+                                            })
+                                            }
                                         </View>
                                     </View>
                                 </ScrollView>
@@ -582,11 +580,11 @@ export default function TradesListScreen({ route, navigation }) {
                                     <View style={{flexDirection: "column", width: "100%"}}>
                                         <Text>Введите цену за единицу без НДС</Text>
                                         <Text>{tradeId}</Text>
-                                        <TextInput style={{height: 30, width: "100%", backgroundColor: "#c9c9c9"}} onChangeText={(val) => setPriceWithNDS(val)}>{priceWithNDS}</TextInput>
+                                        <TextInput keyboardType="numeric" style={{height: 30, width: "100%", backgroundColor: "#c9c9c9"}} onChangeText={(val) => setPriceWithNDS(val)}>{priceWithNDS}</TextInput>
                                     </View>
                                     <View style={{flexDirection: "column", width: "100%"}}>
                                         <Text>Общая стоимость доставки</Text>
-                                        <TextInput style={{height: 30, width: "100%", backgroundColor: "#c9c9c9"}} onChangeText={(val) => setPriceWithoutNDS(val)}>{priceWithoutNDS}</TextInput>
+                                        <TextInput keyboardType="numeric" style={{height: 30, width: "100%", backgroundColor: "#c9c9c9"}} onChangeText={(val) => setPriceWithoutNDS(val)}>{priceWithoutNDS}</TextInput>
                                     </View>
                                     <View style={{flexDirection: "row", width: "100%", justifyContent: "space-between"}}>
                                         <Button onPress={() => setModalPurpose(false)} style={{width: "50%"}}><Text>Отмена</Text></Button>

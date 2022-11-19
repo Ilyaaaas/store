@@ -3,7 +3,7 @@
     "name": "skstore",
     "description": "Мобильное приложение skstore",
     "slug": "skstore",
-    "version": "1.0.3",
+    "version": "1.0.5",
     "orientation": "portrait",
     "icon": "./assets/logo/logo-512.png",
     "platforms": [
@@ -34,7 +34,7 @@
     "android": {
       "useNextNotificationsApi": true,
       "package": "com.sk_store.kz",
-      "versionCode": 6,
+      "versionCode": 8,
       "permissions": []
     }
   }
