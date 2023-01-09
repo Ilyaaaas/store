@@ -218,7 +218,8 @@ class HomeScreen extends React.Component {
     };
 
     ItemView = ({ item }) => {
-        console.log("ItemViewItemView");
+        console.log(item, "ItemViewItemView");
+        console.log("https://skstore.kz/mobile/getfile/" + item.file_id, "888");
         return (
             <TouchableOpacity
                 activeOpacity={0.8}

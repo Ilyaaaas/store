@@ -182,31 +182,31 @@ class ProfileScreen extends React.Component {
                       </View>
                       <View style={styles.settingListItem}>
                           <Text style={styles.radioTitleFixedWidth}>Плательщик НДС</Text>
-                          <Input style={styles.input} placeholder={"Адрес"} value={this.state.list.info} />
+                          <Input style={styles.input} placeholder={"Плательщик НДС"} value={this.state.list.info} />
                       </View>
                       <View style={styles.settingListItem}>
                           <Text style={styles.radioTitleFixedWidth}>Номер договора</Text>
-                          <Input style={styles.input} placeholder={"Адрес"} value={this.state.list.contract_number} />
+                          <Input style={styles.input} placeholder={"Номер договора"} value={this.state.list.contract_number} />
                       </View>
                       <View style={styles.settingListItem}>
-                          <Text style={styles.radioTitleFixedWidth}>bank_bin</Text>
-                          <Input style={styles.input} placeholder={"Адрес"} value={this.state.list.bank_bin} />
+                          <Text style={styles.radioTitleFixedWidth}>БИН банка</Text>
+                          <Input style={styles.input} placeholder={"БИН банка"} value={this.state.list.bank_bin} />
                       </View>
                       <View style={styles.settingListItem}>
-                          <Text style={styles.radioTitleFixedWidth}>bank_title</Text>
-                          <Input style={styles.input} placeholder={"Адрес"} value={this.state.list.bank_title} />
+                          <Text style={styles.radioTitleFixedWidth}>Наименование банк</Text>
+                          <Input style={styles.input} placeholder={"Наименование банк"} value={this.state.list.bank_title} />
                       </View>
                       <View style={styles.settingListItem}>
-                          <Text style={styles.radioTitleFixedWidth}>bik</Text>
-                          <Input style={styles.input} placeholder={"Адрес"} value={this.state.list.bik} />
+                          <Text style={styles.radioTitleFixedWidth}>БИК</Text>
+                          <Input style={styles.input} placeholder={"БИК"} value={this.state.list.bik} />
                       </View>
                       <View style={styles.settingListItem}>
-                          <Text style={styles.radioTitleFixedWidth}>iik</Text>
-                          <Input style={styles.input} placeholder={"Адрес"} value={this.state.list.iik} />
+                          <Text style={styles.radioTitleFixedWidth}>ИИК</Text>
+                          <Input style={styles.input} placeholder={"ИИК"} value={this.state.list.iik} />
                       </View>
                       <View style={styles.settingListItem}>
-                          <Text style={styles.radioTitleFixedWidth}>additional_bankdetails</Text>
-                          <Input style={styles.input} placeholder={"Адрес"} value={this.state.list.additional_bankdetails} />
+                          <Text style={styles.radioTitleFixedWidth}>Информация о банке</Text>
+                          <Input style={styles.input} placeholder={"Информация о банке"} value={this.state.list.additional_bankdetails} />
                       </View>
                       <View>
                           <Button style={styles.saveButton} onPress={() => this.saveProfileInfo()}>
